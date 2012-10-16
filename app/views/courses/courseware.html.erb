@@ -1,0 +1,57 @@
+<% content_for :extra do %>
+    <ul class="nav nav-pills">
+    <li class=<%= (current_page?(student_show_course_path(@course)) ? 'active' : nil)  %>>
+    <%= link_to "Course Information", student_show_course_path(@course)%>
+    </li>
+    <li class=<%= (current_page?(courseware_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Courseware", courseware_course_path(@course)%></li>
+    <li class=<%= (current_page?(progress_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Progress", progress_course_path(@course)%></li>
+    </ul>
+<% end %>
+
+
+<div class="row">
+<div class="span3">
+
+
+<div class="accordion" id="accordion2">
+<div class="accordion-group">
+<div class="accordion-heading">
+<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+<center>Quizzes</center>
+</a>
+</div>
+<div id="collapseOne" class="accordion-body collapse in">
+
+
+<% @course.quizzes.each do |q| %>	
+<div class="accordion-inner">
+<%= link_to q.name, courseware_course_path(@course, :q => q) , :onclick =>"render_view(#{q.id})" , :class => "quiz"%>
+</div>
+<% end %>
+
+
+</div>
+</div>
+<div class="accordion-group">
+<div class="accordion-heading">
+<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+Collapsible Group Item #2
+</a>
+</div>
+<div id="collapseTwo" class="accordion-body collapse">
+<div class="accordion-inner">
+Anim pariatur cliche...
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="span9">
+<% if @q %>
+	<%= render @q %>
+<% end %>
+</div>
+</div>
+
+

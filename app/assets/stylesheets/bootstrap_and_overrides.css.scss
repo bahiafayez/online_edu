@@ -1,3 +1,34 @@
 @import "bootstrap";
 body { padding-top: 60px; }
 @import "bootstrap-responsive";
+
+
+.nav-pills > .active > a, .nav-pills > .active > a:hover {
+    background-color: #AAAAAA;
+    color: white;
+}
+
+.nav-pills > li > a,  {
+  color: #444444;
+  font-weight: bold;
+}
+
+
+
+.nav-pills > li > a:hover {
+  background-color: #DDDDDD;
+}
+
+.nav-pills > div>  li > a.quiz:hover {
+  background-color: #DDDDDD;
+  width: 100%;
+}
+
+
+.content {
+  background-color: #FFFFFF;
+}
+
+body {
+  background-color: #EEEEEE;
+}

@@ -1,0 +1,28 @@
+<%= simple_nested_form_for([@course,@quiz]) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+   <!-- <%= f.input :course_id %> -->
+    <%= f.input :name %>
+    <%= f.input :instructions %>
+  </div>
+	
+	
+	<%= f.fields_for :questions do |task_form| %>
+  	<%= task_form.text_field :content %>
+  	<%= task_form.link_to_remove "Remove this question" %>
+
+  		<%= task_form.fields_for :answers do |t| %>
+  		<%= t.text_field :content %>
+  		<%= t.link_to_remove "Remove this answer" %>
+  		<% end %>
+  		<p><%= task_form.link_to_add "Add an answer", :answers %></p>
+  	
+	<% end %>
+	<p><%= f.link_to_add "Add a question", :questions %></p>
+
+	
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

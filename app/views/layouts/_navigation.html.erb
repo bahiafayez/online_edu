@@ -1,8 +1,11 @@
 <%= link_to "Online Edu", root_path, :class => 'brand' %>
-<ul class="nav">
+<ul class="nav pull-right">
   <% if user_signed_in? %>
+  	<li>
+    <a>You are signed in as <%= current_user.name %></a>        
+    </li>
     <li>
-    <%= link_to 'Logout', destroy_user_session_path, :method=>'delete' %>        
+    <%= link_to 'Logout', destroy_user_session_path, :method=>'delete', :style => "float: right;" %>        
     </li>
   <% else %>
     <li>
@@ -23,4 +26,12 @@
     <%= link_to 'Sign up', new_user_registration_path %>
     </li>
   <% end %>
+</ul>
+
+<ul class="nav pull-left">
+	<% if user_signed_in? %>
+	<li>
+    <%= link_to 'Courses', courses_path , :style => "float: left;" %>
+    </li>
+    <% end %>
 </ul>

@@ -1,0 +1,20 @@
+<p>
+  <h4>Name:</h4>
+  <%= @quiz.name %>
+</p>
+
+<p>
+  <h4>Instructions:</h4>
+  <%= @quiz.instructions %>
+</p>
+
+<p>
+	<ul>
+	<h4>Questions:</h4>
+	<%= render @questions %>
+	</ul>
+</p>
+
+
+<%= link_to 'Edit', edit_course_quiz_path(@course,@quiz) %> |
+<%= link_to 'Back', course_quizzes_path(@course) %>

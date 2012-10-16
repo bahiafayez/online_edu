@@ -14,3 +14,55 @@
 //= require jquery_ujs
 //= require bootstrap
 //= require_tree .
+//= require jquery_nested_form
+
+
+
+add = function(student, url) {
+   $.getJSON(url,{"student":student}, function(resp){
+    
+    							// alert("heyyyy");
+                                // handle the result
+                                //document.getElementById("students['student']").hide();
+                                //console.debug("heyyyyy thereee b2aaaaaaaaa");
+                                //console.debug("students['student']");
+                             
+    
+});
+//alert("ffff");
+	//document.getElementById("students["+student+"]").hide();
+	a= "students["+student+"]"
+	b= "studentsin_"+student
+	document.getElementById(a).parentNode.parentNode.style.display="table-row"
+	//document.getElementById(a).style.display = 'none';
+	document.getElementById(b).parentNode.parentNode.style.display ="none";
+    console.debug("heyyyyy thereee b2aaaaaaaaa"+student);
+    console.debug("students["+student+"]");
+};
+
+remove = function(student, url) {
+    $.getJSON(url,{"student":student}, function(resp){
+    
+    							// alert("heyyyy");
+                                // handle the result
+                                //document.getElementById("students['student']").hide();
+                                //console.debug("heyyyyy thereee b2aaaaaaaaa");
+                                //console.debug("students['student']");
+                             
+    
+});
+//alert("ffff");
+	//document.getElementById("students["+student+"]").hide();
+	a= "students["+student+"]"
+	b= "studentsin_"+student
+	document.getElementById(a).parentNode.parentNode.style.display="none"
+	//document.getElementById(a).style.display = 'none';
+	document.getElementById(b).parentNode.parentNode.style.display ="table-row";
+	document.getElementById(b).checked=false   //uncheck the checkbox
+	
+    console.debug("heyyyyy thereee b2aaaaaaaaa"+student);
+    console.debug("students["+student+"]");
+};
+
+
+

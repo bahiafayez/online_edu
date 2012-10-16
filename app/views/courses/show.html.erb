@@ -1,0 +1,91 @@
+<div class="row">
+<div class="span6">
+  <h3> <%= @course.short_name %> - <%= @course.name %></h3>
+
+
+<p>
+  <b>Start date:</b>
+  <%= @course.start_date %>
+</p>
+
+<p>
+  <b>Duration:</b>
+  <%= @course.duration %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @course.description %>
+</p>
+
+<p>
+  <b>Prerequisites:</b>
+  <%= @course.prerequisites %>
+</p>
+
+<!-- <p>
+  <b>User:</b>
+  <%= @course.user_id %>
+</p> -->
+<br>
+
+<%= link_to 'Edit', edit_course_path(@course) %> |
+<%= link_to 'Back', courses_path %>
+</div>
+<div class="span6">
+
+	  <!-- This is obtrusive javascript-->
+
+<%= link_to "Students Enrolled", course_path(@course) , :onclick => "$('#invited_students').toggle()", :remote => true,  :id=>"show_now" %>
+<div id="invited_students", width="100%", style="display: none; overflow: auto">
+	<table width="100%"><%= render :partial => "student", :collection => @students , :locals=> {:remove=> true} %></table>
+</div>
+<br />
+<%= link_to "Invite students?", course_path(@course) , :onclick => "$('#show_students').toggle()", :remote => true,  :id=>"show_now" %>
+<div id="show_students", width="100%", style="display: none; overflow: auto">
+	<table height="100px", width="100%"><%= render :partial => "student", :collection => @students , :locals=> {:remove=> false} %></table>
+
+</div>
+</div>
+
+
+</div>
+<div class="row">
+<div class="span6">
+<h4>Course Material:</h4>
+
+<%= link_to "Quizzes" , course_quizzes_path(@course) %> <!-- want to redirect to courses/1/quizzes  see how-->
+
+</div>
+
+<div class="span6">
+</div>
+</div>
+
+
+<script>
+$(document).ready(function(){   // should put this somewhere elsee..
+    
+	
+	//document.getElementById(b).parentNode.parentNode.style.display ="none";
+
+var data =<%= @student_ids %>;
+var data2=<%= @student_ids2 %>;
+console.debug("i isssss "+data)
+
+for(i=0; i<data.length; i++){
+b= "studentsin_"+data[i]
+document.getElementById(b).parentNode.parentNode.style.display ="none";
+}
+
+for(i=0; i<data2.length; i++){
+
+b= "students["+data2[i]+"]"
+console.debug(b)
+document.getElementById(b).parentNode.parentNode.style.display ="none";
+}
+
+});
+</script>
+
+

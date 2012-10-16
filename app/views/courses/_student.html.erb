@@ -1,0 +1,25 @@
+<tr> 
+
+<% if remove==false %>
+<td>
+<%= check_box_tag "studentsin[#{student.id}]", 1, false,:onClick => "add(#{student.id}, '#{add_student_course_path(@course)}')" %>
+</td>
+<% end%>
+
+<td>
+<%= student.name %>
+</td>
+
+<td>
+<%= student.email %>
+</td>
+
+<td>
+<% if remove %>
+<%= link_to "Remove", course_path(@course), :onClick => "remove(#{student.id}, '#{remove_student_course_path(@course)}')", :remote => true , :id=> "students[#{student.id}]"%>
+<% end%>
+</td>
+
+
+</tr>
+

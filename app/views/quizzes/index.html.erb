@@ -1,0 +1,27 @@
+<h1><%= @course.short_name %> Quizzes</h1>
+
+<table class="table table-striped">
+  <tr>
+    <th>Course</th>
+    <th>Name</th>
+    <th>Instructions</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @quizzes.each do |quiz| %>
+  <tr>
+    <td><%= quiz.course_id %></td>
+    <td><%= quiz.name %></td>
+    <td><%= quiz.instructions %></td>
+    <td><%= link_to 'Show', course_quiz_path(@course.id, quiz.id) %></td>
+    <td><%= link_to 'Edit', edit_course_quiz_path(@course.id, quiz.id) %></td>
+    <td><%= link_to 'Destroy', course_quiz_path(@course.id, quiz.id), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Quiz', new_course_quiz_path(@course) %>

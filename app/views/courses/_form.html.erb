@@ -1,0 +1,21 @@
+<%= simple_nested_form_for(@course) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :short_name %>
+    <%= f.input :name %>
+    <%= f.input :start_date %>
+    <%= f.input :duration, :label => "Duration (weeks)" %>
+    <%= f.input :description %>
+    <%= f.input :prerequisites %>
+    
+    <%= f.association :users, :as => :check_boxes %> <!-- or leave out checkboxes and will be multiple select -->
+    	
+    <!--<%= f.input :user_id %>-->
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>
+
