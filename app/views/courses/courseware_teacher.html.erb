@@ -9,9 +9,7 @@
     </ul>
 <% end %>
 
-<h1>Editing quiz</h1>
 
-<%= render 'form' %>
+<h4>Course Material:</h4>
 
-<%= link_to 'Show', course_quiz_path(@course,@quiz) %> |
-<%= link_to 'Back', course_quizzes_path(@course) %>
+<%= link_to "Quizzes" , course_quizzes_path(@course) %> 

@@ -7,7 +7,7 @@
 
 <% else %>
 <li>
-<%= radio_button_tag "answer[#{question.id}]"  ,"#{answer.id}", false, :id => "answer[#{question.id}][#{answer.id}]" %> <%= answer.content %>
+<%= radio_button_tag "answer[#{question.id}]"  ,"#{answer.id}", (!@out.nil? and @out[question.id]==answer.id) ? true: false, :id => "answer[#{question.id}][#{answer.id}]" %> <%= answer.content %>
 </li>
 <% end %>
 

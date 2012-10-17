@@ -1,0 +1,15 @@
+<%= simple_form_for(@quiz_grade) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :user_id %>
+    <%= f.input :quiz_id %>
+    <%= f.input :question_id %>
+    <%= f.input :answer_id %>
+    <%= f.input :grade %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

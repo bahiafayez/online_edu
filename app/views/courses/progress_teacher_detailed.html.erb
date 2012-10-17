@@ -9,9 +9,30 @@
     </ul>
 <% end %>
 
-<h1>Editing quiz</h1>
 
-<%= render 'form' %>
-
-<%= link_to 'Show', course_quiz_path(@course,@quiz) %> |
-<%= link_to 'Back', course_quizzes_path(@course) %>
+<table class="table table-striped">
+<thead>
+	<th>
+		Quiz 
+	</th>
+	<th>
+		Instructions
+	</th>
+	<th>
+		Number of questions
+	</th>
+</thead>
+<% @quizzes_taken.each do |q| %>
+<tr>
+	<td>
+	<%= q.name %>
+	</td>
+	<td>
+	<%= q.instructions %>	
+	</td>
+	<td>
+	<%= q.questions.size %>	
+	</td>
+</tr>
+<% end %>
+</table>

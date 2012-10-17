@@ -1,0 +1,31 @@
+<h1>Listing quiz_grades</h1>
+
+<table>
+  <tr>
+    <th>User</th>
+    <th>Quiz</th>
+    <th>Question</th>
+    <th>Answer</th>
+    <th>Grade</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @quiz_grades.each do |quiz_grade| %>
+  <tr>
+    <td><%= quiz_grade.user_id %></td>
+    <td><%= quiz_grade.quiz_id %></td>
+    <td><%= quiz_grade.question_id %></td>
+    <td><%= quiz_grade.answer_id %></td>
+    <td><%= quiz_grade.grade %></td>
+    <td><%= link_to 'Show', quiz_grade %></td>
+    <td><%= link_to 'Edit', edit_quiz_grade_path(quiz_grade) %></td>
+    <td><%= link_to 'Destroy', quiz_grade, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Quiz grade', new_quiz_grade_path %>

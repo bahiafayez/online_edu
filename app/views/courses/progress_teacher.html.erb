@@ -9,9 +9,26 @@
     </ul>
 <% end %>
 
-<h1>Editing quiz</h1>
 
-<%= render 'form' %>
+<table class="table table-striped">
+<thead>
+	<th>
+		Student name 
+	</th>
+	<th>
+		Student Email
+	</th>
+</thead>
+<% @students.each do |q| %>
+<tr>
+	<td>
+	<%= link_to q.name, progress_teacher_detailed_course_path(@course, :q=>q.id) , :class => "btn"%>
+	</td>
+	<td>
+	<%= q.email %>	
+	</td>
+</tr>
+<% end %>
+</table>
 
-<%= link_to 'Show', course_quiz_path(@course,@quiz) %> |
-<%= link_to 'Back', course_quizzes_path(@course) %>
+

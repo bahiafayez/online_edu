@@ -146,14 +146,92 @@ class CoursesController < ApplicationController
   end
   
   def courseware
-    @q= Quiz.find(params[:q]) if params[:q]
+    if params[:q]
+      @q= Quiz.find(params[:q]) 
+      @answers= QuizGrade.select("question_id, answer_id").where(:user_id=>current_user.id , :quiz_id=> params[:q])
+      @out={}
+      @answers.each do |a|
+        @out[a.question_id]=a.answer_id
+      end
+      print "out isssss!!!!!!! #{@out}"
+    end
   end
   
+  def courseware_teacher
+    
+  end
+  def enrolled_students
+     @course = Course.find(params[:id])
+    
+    all_users= User.all #- User.joins(:courses).where("course_id == 3")
+    #User.joins(:courses).where("course_id == ?",params[:id])
+    @students = all_users.find_all{|u| u.has_role?('user')}  #returns students only.. later instead of User make Student
+    
+    
+    # enrolled students
+    @students2 = @course.users  # students enrolled in the course.
+    @student_ids= @students2.map{|a| a.id}
+    
+    #students not enrolled
+    all_users2= User.all - User.joins(:courses).where("course_id = ?", params[:id].to_i)
+
+    @student_ids2=all_users2.find_all{|u| u.has_role?('user')}.map{|a| a.id}
+    
+    logger.debug("students areeeee #{@students}")
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json { render json: @course }
+    end
+  end
   def progress
+    
+    #At the moment there are only quizzes.. later assigments, lectures, lecture quizzes,... graphs for grades..
+    @quizzes=Course.find(params[:id]).quizzes
+    @quizzes_taken=[]
+    @quizzes.each do |q|
+      if !QuizGrade.where(:quiz_id => q.id, :user_id => current_user.id).empty?
+        @quizzes_taken<<q
+      end
+    end
     
   end
   
+  def progress_teacher
+    @course=Course.find(params[:id])
+    @students=@course.users
+  end
+  
+  def progress_teacher_detailed
+    @course=Course.find(params[:id])
+    @student=params[:q]
+    
+    
+    #Quizzes student has taken:
+    @quizzes=Course.find(params[:id]).quizzes
+    @quizzes_taken=[]
+    @quizzes.each do |q|
+      if !QuizGrade.where(:quiz_id => q.id, :user_id => @student).empty?
+        @quizzes_taken<<q
+      end
+    end
+    
+  end
+  
+  
   def student_quiz
+    #could move to quiz_grades_controller later.
+    @answers=params[:answer]
+    @quiz_id=params[:quiz]
+    @user_id=current_user.id
+    
+    @answers.each do |a|
+      QuizGrade.create(:user_id => @user_id, :quiz_id => @quiz_id, :question_id => a[0], :answer_id => a[1], :grade => 0  )
+    end
+    
+    respond_to do |format|
+      format.html {redirect_to courseware_course_path(params[:id], :q => @quiz_id), notice: 'Quiz was successfully saved.'}
+    end
     
   end
 end

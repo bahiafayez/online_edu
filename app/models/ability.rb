@@ -11,6 +11,7 @@ class Ability
       can :student_show, Course
       can :progress, Course
       can :courseware, Course
+      can :student_quiz, Course
     end
     # Define abilities for the passed in user here. For example:
     #
