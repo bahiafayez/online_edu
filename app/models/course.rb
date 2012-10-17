@@ -4,7 +4,7 @@ class Course < ActiveRecord::Base
   has_many :enrollments, :dependent => :delete_all
   has_many :users, :through => :enrollments
   
-  attr_accessible :description, :duration, :name, :prerequisites, :short_name, :start_date, :user_ids
+  attr_accessible :description, :duration, :name, :prerequisites, :short_name, :start_date, :user_ids, :user_id
   
   validates :name, :duration, :short_name,:start_date, :user_id, :presence => true
   validates :duration, :numericality => { :only_integer => true }
