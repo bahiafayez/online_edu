@@ -1,3 +1,5 @@
+<% if can? :create, Question %>
+
 <li>
   <p><%= question_counter + 1%>:
   <%= question.content %></p><br />
@@ -6,3 +8,17 @@
   <%= render question.answers %>
   </ul>
 </li>
+
+<% else %>
+
+<li>
+  <p><%= question_counter + 1%>:
+  <%= question.content %></p><br />
+  <ul>
+  <b>Answers:</b>
+  <%= render :partial => question.answers, :locals => {:question => question} %>
+  </ul>
+</li>
+
+
+<% end %>

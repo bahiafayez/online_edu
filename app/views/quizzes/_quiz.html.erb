@@ -1,3 +1,7 @@
+<%= form_tag(student_quiz_course_path(@course)) do %>
+
+<%= hidden_field_tag 'quiz', quiz.id %>
+
 <p>
   <h4>Name:</h4>
   <%= quiz.name %>
@@ -14,4 +18,8 @@
 	<%= render quiz.questions %>
 	</ul>
 </p>
+
+<center><div><%= submit_tag 'Save' %></div></center>
+<% end -%>
+
 

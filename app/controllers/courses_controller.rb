@@ -152,4 +152,8 @@ class CoursesController < ApplicationController
   def progress
     
   end
+  
+  def student_quiz
+    
+  end
 end

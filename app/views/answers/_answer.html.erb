@@ -1,4 +1,14 @@
+<% if can? :create, Answer %>
+
 <li>
   <p>Answer <%= answer_counter + 1%>:
   <%= answer.content %></p><br />
 </li>
+
+<% else %>
+<li>
+<%= radio_button_tag "answer[#{question.id}]"  ,"#{answer.id}", false, :id => "answer[#{question.id}][#{answer.id}]" %> <%= answer.content %>
+</li>
+<% end %>
+
+

@@ -12,6 +12,7 @@ OnlineEdu::Application.routes.draw do
     get 'student_show'
     get 'courseware'
     get 'progress'
+    post 'student_quiz'
   end
     resources :quizzes
 end
