@@ -39,7 +39,7 @@ class CoursesController < ApplicationController
     @student_ids= @students2.map{|a| a.id}
     
     #students not enrolled
-    all_users2= User.all - User.joins(:courses).where("course_id == ?", params[:id].to_i)
+    all_users2= User.all - User.joins(:courses).where("course_id = ?", params[:id].to_i)
 
     @student_ids2=all_users2.find_all{|u| u.has_role?('user')}.map{|a| a.id}
     
