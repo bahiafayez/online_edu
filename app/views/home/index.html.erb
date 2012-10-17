@@ -1,4 +1,81 @@
+<script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script>
+
 <h3>Home</h3>
 <% @users.each do |user| %>
   <p>User: <%=link_to user.name, user %></p>
 <% end %>
+
+
+<div id="youtube" style="width:600px;height:400px;"></div>
+<div id="foo" style></div>
+
+<style type="text/css">
+#foo{
+
+top: 0px;
+position:absolute;
+padding-top: 32px;
+padding-left: 40px;
+
+}
+
+#youTube{
+
+
+overflow: hidden;
+width: 768px;
+position: relative;
+display: block;
+
+}
+</style>
+
+<script>
+// create our popcorn instance
+document.addEventListener( "DOMContentLoaded", function() {
+	
+var pop = Popcorn.youtube( "#youtube", "http://www.youtube.com/watch?v=v-7kf7OZQtw" ); //youtube unlike normal html5 needs to be run from a webserver
+pop.play();
+
+// listen to timeupdate
+pop.listen( "timeupdate", function() {
+    console.log( this.currentTime() );
+    if(this.currentTime()>4)
+    	{
+    		console.debug("more than 4 seconds");
+    		pop.pause();
+    		document.getElementById("foo").innerHTML = "<b>HELLO!!!</b>";
+    	}	
+});
+
+	
+	
+	
+    pop.footnote({
+        start: 1,
+        end: 15,
+        text: "Youtube working!",
+        target: "foo"
+    });
+    
+    pop.footnote({
+    "start": 3.988,
+    "end": 6.872,
+    "text": "Youtube working!",
+    "target": "foo",
+    //"target": "video-overlay",
+    //"src": "http://www.mozilla.org/img/covehead/firefox/brand-toolkit/identity-logo-firefox.png",
+    //"href": "http://www.mozilla.org/",
+    "width": 150,
+    "height": 150,
+    "top": 25,
+    "left": 75
+});
+    
+    // play video
+//pop.play();
+    
+}, false );
+
+
+</script>
