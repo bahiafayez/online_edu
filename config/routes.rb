@@ -1,4 +1,6 @@
 OnlineEdu::Application.routes.draw do
+  resources :lectures
+
   resources :quiz_grades
 
   resources :answers
