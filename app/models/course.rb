@@ -3,6 +3,7 @@ class Course < ActiveRecord::Base
   has_many :quizzes
   has_many :enrollments, :dependent => :delete_all
   has_many :users, :through => :enrollments
+  has_many :lectures
   
   attr_accessible :description, :duration, :name, :prerequisites, :short_name, :start_date, :user_ids, :user_id
   

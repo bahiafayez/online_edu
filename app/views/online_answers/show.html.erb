@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Online quiz:</b>
+  <%= @online_answer.online_quiz_id %>
+</p>
+
+<p>
+  <b>Answer:</b>
+  <%= @online_answer.answer %>
+</p>
+
+<p>
+  <b>Xcoor:</b>
+  <%= @online_answer.xcoor %>
+</p>
+
+<p>
+  <b>Ycoor:</b>
+  <%= @online_answer.ycoor %>
+</p>
+
+
+<%= link_to 'Edit', edit_online_answer_path(@online_answer) %> |
+<%= link_to 'Back', online_answers_path %>

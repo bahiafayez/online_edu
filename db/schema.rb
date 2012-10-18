@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121018075354) do
+ActiveRecord::Schema.define(:version => 20121018080355) do
 
   create_table "answers", :force => true do |t|
     t.integer  "question_id"
@@ -47,6 +47,23 @@ ActiveRecord::Schema.define(:version => 20121018075354) do
     t.string   "url"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+  end
+
+  create_table "online_answers", :force => true do |t|
+    t.integer  "online_quiz_id"
+    t.text     "answer"
+    t.float    "xcoor"
+    t.float    "ycoor"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  create_table "online_quizzes", :force => true do |t|
+    t.integer  "lecture_id"
+    t.text     "question"
+    t.float    "time"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "questions", :force => true do |t|

@@ -1,8 +1,18 @@
+<% content_for :extra do %>
+    <ul class="nav nav-pills">
+    <li class=<%= (current_page?(course_path(@course)) ? 'active' : nil)  %>>
+    <%= link_to "Course Information", course_path(@course)%>
+    </li>
+    <li class=<%= (current_page?(courseware_teacher_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Courseware", courseware_teacher_course_path(@course)%></li>
+    <li class=<%= (current_page?(enrolled_students_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Enrolled Students", enrolled_students_course_path(@course)%></li>
+    <li class=<%= (current_page?(progress_teacher_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Progress", progress_teacher_course_path(@course)%></li>
+    </ul>
+<% end %>
 <h1>Listing lectures</h1>
 
-<table>
+<table class="table table-striped">
   <tr>
-    <th>Course</th>
+    
     <th>Name</th>
     <th>Description</th>
     <th>Url</th>
@@ -13,17 +23,17 @@
 
 <% @lectures.each do |lecture| %>
   <tr>
-    <td><%= lecture.course_id %></td>
+    
     <td><%= lecture.name %></td>
     <td><%= lecture.description %></td>
     <td><%= lecture.url %></td>
-    <td><%= link_to 'Show', lecture %></td>
-    <td><%= link_to 'Edit', edit_lecture_path(lecture) %></td>
-    <td><%= link_to 'Destroy', lecture, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <td><%= link_to 'Show', [@course, lecture] %></td>
+    <td><%= link_to 'Edit', edit_course_lecture_path(@course,lecture) %></td>
+    <td><%= link_to 'Destroy', [@course, lecture], method: :delete, data: { confirm: 'Are you sure?' } %></td>
   </tr>
 <% end %>
 </table>
 
 <br />
 
-<%= link_to 'New Lecture', new_lecture_path %>
+<%= link_to 'New Lecture', new_course_lecture_path(@course) %>

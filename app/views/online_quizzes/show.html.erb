@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Lecture:</b>
+  <%= @online_quiz.lecture_id %>
+</p>
+
+<p>
+  <b>Question:</b>
+  <%= @online_quiz.question %>
+</p>
+
+<p>
+  <b>Time:</b>
+  <%= @online_quiz.time %>
+</p>
+
+
+<%= link_to 'Edit', edit_online_quiz_path(@online_quiz) %> |
+<%= link_to 'Back', online_quizzes_path %>

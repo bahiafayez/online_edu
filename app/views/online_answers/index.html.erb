@@ -1,0 +1,29 @@
+<h1>Listing online_answers</h1>
+
+<table>
+  <tr>
+    <th>Online quiz</th>
+    <th>Answer</th>
+    <th>Xcoor</th>
+    <th>Ycoor</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @online_answers.each do |online_answer| %>
+  <tr>
+    <td><%= online_answer.online_quiz_id %></td>
+    <td><%= online_answer.answer %></td>
+    <td><%= online_answer.xcoor %></td>
+    <td><%= online_answer.ycoor %></td>
+    <td><%= link_to 'Show', online_answer %></td>
+    <td><%= link_to 'Edit', edit_online_answer_path(online_answer) %></td>
+    <td><%= link_to 'Destroy', online_answer, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Online answer', new_online_answer_path %>

@@ -1,5 +1,9 @@
 OnlineEdu::Application.routes.draw do
-  resources :lectures
+  resources :online_answers
+
+  resources :online_quizzes
+
+
 
   resources :quiz_grades
 
@@ -23,6 +27,8 @@ OnlineEdu::Application.routes.draw do
     post 'student_quiz'
   end
     resources :quizzes
+    resources :lectures
+    
 end
 
   authenticated :user do

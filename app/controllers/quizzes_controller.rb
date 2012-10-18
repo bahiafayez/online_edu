@@ -82,9 +82,10 @@ class QuizzesController < ApplicationController
   def destroy
     @quiz = Quiz.find(params[:id])
     @quiz.destroy
+    @course = params[:course_id]
 
     respond_to do |format|
-      format.html { redirect_to course_quizzes_url }
+      format.html { redirect_to course_quizzes_url(@course) }
       format.json { head :no_content }
     end
   end

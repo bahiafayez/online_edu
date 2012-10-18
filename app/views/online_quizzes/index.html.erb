@@ -1,0 +1,27 @@
+<h1>Listing online_quizzes</h1>
+
+<table>
+  <tr>
+    <th>Lecture</th>
+    <th>Question</th>
+    <th>Time</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @online_quizzes.each do |online_quiz| %>
+  <tr>
+    <td><%= online_quiz.lecture_id %></td>
+    <td><%= online_quiz.question %></td>
+    <td><%= online_quiz.time %></td>
+    <td><%= link_to 'Show', online_quiz %></td>
+    <td><%= link_to 'Edit', edit_online_quiz_path(online_quiz) %></td>
+    <td><%= link_to 'Destroy', online_quiz, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Online quiz', new_online_quiz_path %>
