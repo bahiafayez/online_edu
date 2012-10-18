@@ -1,4 +1,13 @@
 <script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script>
+<style>
+	.ontop{
+		/*background:#fff;  /* invisible div*/
+        position:absolute;
+        min-width:600px;
+        min-height:365px;
+        z-index:99;
+	}
+</style>
 
 <% content_for :extra do %>
     <ul class="nav nav-pills">
@@ -28,14 +37,34 @@
 </p>
 
 <%= link_to 'Edit', edit_course_lecture_path([@course,@lecture]) %> |
-<%= link_to 'Back', course_lectures_path(@course) %>
+<%= link_to 'Back', course_lectures_path(@course) %><br>
+<br /><br />
+<b>Choose place to insert quiz and click button below</b><br />
+<%= link_to "Add Quiz", [@course,@lecture], :remote=> true, :onclick => "add_quiz(#{@lecture.id},'#{add_quiz_course_lecture_path(@course,@lecture)}')" %>
+<br><br>
+<div id="quizzes">
+	
+	<table class="table table-striped">
+	<% @quizzes.each do |q|%>
+	<tr>
+		<td><%= q.time %></td>
+		<td> <%= link_to "Remove", [@course,@lecture], :remote=> true, :onclick => "remove_quiz(#{q.id},'#{remove_quiz_course_lecture_path(@course,@lecture)}')" %> </td>
+		<td> <%= link_to "Coordinates",  coordinates_course_lecture_path(@course,@lecture, :quiz => q.id) %></td>
+		
+		
+	</tr>
+	<% end %>
+	</table>
+	
+	
+</div>
 
-
-
+<div id="pos" style="position:absolute"></div>
 </div>
 
 <div class="span8">
 <center><div style="width:600px" >
+<div class="ontop"></div>
 <div id="youtube" style="width:600px;height:400px;"></div>
 <div id="foo"></div>
 </div></center>
@@ -43,15 +72,105 @@
 
 
 
+<script language="JavaScript" type="text/JavaScript">
+
+$(document).ready(function() {
+  $('.ontop').click(function(e) {
+    var offset = $(this).offset();
+  	left= parseFloat(e.pageX) - parseFloat(offset.left) //not clientX because client depends on window.. so numbers change when scrolling.
+  	right = parseFloat(e.pageY) - parseFloat(offset.top)
+  	
+  	console.debug("offset is "+ left)
+  	
+    //document.getElementById('pos').innerHTML = 'Mouse position is: X='+left+' Y='+right;
+	//document.getElementById('pos').style.left = left;
+	//document.getElementById('pos').style.top = right;
+	//document.getElementById('pos').style.display='block';
+  });
+});
+
+
+/* function checkS(e){
+// capture the mouse position
+
+var t=e.srcElement.tagName
+
+var posx = 0;
+var posy = 0;
+if (!e) var e = window.event;
+if (e.pageX || e.pageY)
+{
+posx = e.pageX;
+posy = e.pageY;
+}
+else if (e.clientX || e.clientY)
+{
+posx = e.clientX;
+posy = e.clientY;
+}
+ 
+document.getElementById('pos').innerHTML = 'Mouse position is: X='+posx+' Y='+posy;
+document.getElementById('pos').style.left = posx;
+document.getElementById('pos').style.top = posy;
+document.getElementById('pos').style.display='block';
+}*/
+</script>
+ 
+
 
 
 <!-- Should move this somewhere else later -->
 
 <script>
+
+var pop
+
+//function add_quiz(lecture){
+	
+//}
+add_quiz = function(lecture,url) {
+    console.debug("time is "+pop.currentTime())
+    $.getJSON(url,{"lecture":lecture, "time":pop.currentTime()}, function(resp){
+    html="<table class='table table-striped'>"
+    console.debug(resp['q'])
+    
+    for(e in resp['q'])
+    {
+    	
+    	html+="<tr><td>"+resp['q'][e].time+"</td><td><a data-remote='true' onclick=remove_quiz("+resp['q'][e].id+",'"+resp['loc2']+"') href='"+resp['loc']+"' >Remove</a></td> "
+    	html+="<td><a href='"+resp['loc3']+"?quiz="+resp['q'][e].id+"'>Coordinates</a></td></tr>"
+    	
+    }
+    
+    html+="</table>"
+    document.getElementById("quizzes").innerHTML=html;
+});
+
+};
+
+
+remove_quiz = function(quiz,url) {
+    //console.debug("time is "+pop.currentTime())
+    $.getJSON(url,{"quiz":quiz }, function(resp){
+    html="<table class='table table-striped'>"
+    console.debug(resp['q'])
+    
+    for(e in resp['q'])
+    {
+    	html+="<tr><td>"+resp['q'][e].time+"</td><td><a data-remote='true' onclick=remove_quiz("+resp['q'][e].id+",'"+resp['loc2']+"') href='"+resp['loc']+"' >Remove</a></td> "
+    	html+="<td><a href='"+resp['loc3']+"?quiz="+resp['q'][e].id+"'>Coordinates</a></td></tr>"
+    }
+    html+="</table>"
+    document.getElementById("quizzes").innerHTML=html;
+});
+
+};
+
+
 // create our popcorn instance
 document.addEventListener( "DOMContentLoaded", function() {
 	
-var pop = Popcorn.youtube( "#youtube", "<%=  @lecture.url %>",{ width: 400, controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
+pop = Popcorn.youtube( "#youtube", "<%=  @lecture.url %>",{ width: 400, controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
 //var pop = Popcorn( Popcorn.youtube( '#youtube', 'http://www.youtube.com/watch?v=H9BXF6xJy54', { width: 400, controls: 0 } ) );
 
 pop.controls( false );                          

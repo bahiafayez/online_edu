@@ -15,7 +15,7 @@ class LecturesController < ApplicationController
   def show
     @lecture = Lecture.find(params[:id])
     @course = Course.find(params[:course_id])
-    
+    @quizzes= OnlineQuiz.where(:lecture_id => params[:id])
     
     respond_to do |format|
       format.html # show.html.erb
@@ -76,8 +76,68 @@ class LecturesController < ApplicationController
     end
   end
 
+  def add_quiz
+    logger.debug("in add quiz!!!!!!")
+    OnlineQuiz.create(:lecture_id => params[:id], :time => params[:time])
+    @quizzes= OnlineQuiz.where(:lecture_id => params[:id])#.pluck(:time)
+    @course= Course.find(params[:course_id])
+    @lecture= Lecture.find(params[:id])
+    @loc= course_lecture_path(@course,@lecture)
+    @loc2=remove_quiz_course_lecture_path(@course,@lecture)
+    @loc3=coordinates_course_lecture_path(@course,@lecture)
+    render json: {:q => @quizzes, :loc => @loc, :loc2=> @loc2, :loc3 => @loc3} 
+  end
+  
+  def remove_quiz
+    logger.debug("in remove quiz!!!!!!")
+    @a=OnlineQuiz.find(params[:quiz])
+    @a.destroy
+    @course= Course.find(params[:course_id])
+    @lecture= Lecture.find(params[:id])
+    @quizzes= OnlineQuiz.where(:lecture_id => params[:id])#.pluck(:time)
+    @loc= course_lecture_path(@course,@lecture)
+    @loc2=remove_quiz_course_lecture_path(@course,@lecture)
+    @loc3=coordinates_course_lecture_path(@course,@lecture)
+    render json: {:q => @quizzes, :loc => @loc, :loc2=> @loc2, :loc3 => @loc3} 
+    
+   # render json: {:q => @quizzes} 
+  end
   # DELETE /lectures/1
   # DELETE /lectures/1.json
+  def coordinates
+    @quiz=OnlineQuiz.find(params[:quiz])
+    @course= Course.find(params[:course_id])
+    @lecture= Lecture.find(params[:id])
+  end
+  
+  def add_answer
+    logger.debug("in add answer!!!#{params[:flag]}")
+    if params[:flag]!="false"
+      OnlineAnswer.create(:online_quiz_id => params[:quiz], :xcoor => params[:left], :ycoor => params[:top])
+    end
+    @answers= OnlineAnswer.where(:online_quiz_id => params[:quiz])#.pluck(:time)
+    @course= Course.find(params[:course_id])
+    @lecture= Lecture.find(params[:id])
+    @loc= coordinates_course_lecture_path(@course,@lecture)
+    @loc2=remove_answer_course_lecture_path(@course,@lecture)
+    #@loc3=coordinates_course_lecture_path(@course,@lecture)
+    render json: {:a => @answers, :loc => @loc, :loc2=> @loc2}#, :loc3 => @loc3}
+  end
+  
+  def remove_answer
+    logger.debug("in remove answer!!!!!!")
+    @a=OnlineAnswer.find(params[:answer])
+    @a.destroy
+    @course= Course.find(params[:course_id])
+    @lecture= Lecture.find(params[:id])
+    @answers= OnlineAnswer.where(:online_quiz_id => params[:quiz])#.pluck(:time)
+    @loc= coordinates_course_lecture_path(@course,@lecture, :quiz => params[:quiz])
+    @loc2=remove_answer_course_lecture_path(@course,@lecture)
+    #@loc3=coordinates_course_lecture_path(@course,@lecture)
+    render json: {:a => @answers, :loc => @loc, :loc2=> @loc2}#, :loc3 => @loc3} 
+    
+  end
+  
   def destroy
     @lecture = Lecture.find(params[:id])
     @course= params[:course_id]

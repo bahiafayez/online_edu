@@ -1,0 +1,131 @@
+<script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script>
+<style>
+	.ontop{
+		/*background:#fff;  /* invisible div*/
+        position:absolute;
+        min-width:600px;
+        min-height:400px;
+        z-index:99;
+	}
+</style>
+
+<% content_for :extra do %>
+    <ul class="nav nav-pills">
+    <li class=<%= (current_page?(course_path(@course)) ? 'active' : nil)  %>>
+    <%= link_to "Course Information", course_path(@course)%>
+    </li>
+    <li class=<%= (current_page?(courseware_teacher_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Courseware", courseware_teacher_course_path(@course)%></li>
+    <li class=<%= (current_page?(enrolled_students_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Enrolled Students", enrolled_students_course_path(@course)%></li>
+    <li class=<%= (current_page?(progress_teacher_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Progress", progress_teacher_course_path(@course)%></li>
+    </ul>
+<% end %>
+
+<div class="row">
+<div class="span4">
+Please Click on where you'd like the buttons to be.
+<div id="answer"></div>
+<%= link_to "Back to Lecture ", course_lecture_path(@course, @lecture)%>
+</div>
+
+<div class="span8">
+	
+<center><div style="width:600px" >
+<div class="ontop"></div>
+<div id="youtube" style="width:600px;height:400px;"></div>
+<div id="foo"></div>
+</div></center>
+</div>
+
+
+
+<script language="JavaScript" type="text/JavaScript">
+
+$(document).ready(function() {
+  $('.ontop').click(function(e) {
+    var offset = $(this).offset();
+  	left= parseFloat(e.pageX) - parseFloat(offset.left) //not clientX because client depends on window.. so numbers change when scrolling.
+  	top2 = parseFloat(e.pageY) - parseFloat(offset.top)
+  	
+  	console.debug("offset is "+ left)
+  	console.debug("offset is "+ top2)
+  	add_answer(left, top2, <%=@quiz.id %>, '<%= add_answer_course_lecture_path(@course, @lecture) %>', true)
+     
+  });
+  add_answer(0,0,<%=@quiz.id %>, '<%= add_answer_course_lecture_path(@course, @lecture) %>',false)
+});
+
+
+</script>
+ 
+
+
+
+<!-- Should move this somewhere else later -->
+
+<script>
+
+var pop
+
+//function add_quiz(lecture){
+	
+//}
+add_answer = function(left,top,quiz,url,flag) {
+    console.debug("time is "+top)
+    $.getJSON(url,{"left":left, "top":top, "quiz":quiz, "flag":flag}, function(resp){
+    	
+    html="<table class='table table-striped'>"
+    console.debug(resp['a'])
+    
+    for(e in resp['a'])
+    {
+    	
+    	html+="<tr><td>"+resp['a'][e].xcoor+"</td><td>"+resp['a'][e].ycoor+"</td><td><a data-remote='true' onclick=remove_answer("+resp['a'][e].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td> "
+    	
+    	
+    }
+    
+    html+="</table>"
+    document.getElementById("answer").innerHTML=html;
+});
+
+};
+
+
+remove_answer = function(answer,url, quiz) {
+    //console.debug("time is "+pop.currentTime())
+    $.getJSON(url,{"answer":answer , "quiz":quiz}, function(resp){
+    html="<table class='table table-striped'>"
+    console.debug(resp['a'])
+    
+    for(e in resp['a'])
+    {
+    	html+="<tr><td>"+resp['a'][e].xcoor+"</td><td>"+resp['a'][e].ycoor+"</td><td><a data-remote='true' onclick=remove_answer("+resp['a'][e].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td> "
+    }
+    html+="</table>"
+    document.getElementById("answer").innerHTML=html;
+});
+
+};
+
+
+// create our popcorn instance
+document.addEventListener( "DOMContentLoaded", function() {
+	
+pop = Popcorn.youtube( "#youtube", "<%=  @lecture.url %>",{ width: 400, controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
+//var pop = Popcorn( Popcorn.youtube( '#youtube', 'http://www.youtube.com/watch?v=H9BXF6xJy54', { width: 400, controls: 0 } ) );
+
+pop.controls( false ); 
+ 
+pop.on("loadeddata", function(){
+	this.currentTime(<%= @quiz.time %>)
+	this.pause;
+	 console.debug("pop duration isss"+this.currentTime())  
+	});                        
+
+                          
+
+}, false );
+
+
+</script>
+</div>

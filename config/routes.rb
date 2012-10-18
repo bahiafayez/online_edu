@@ -27,7 +27,15 @@ OnlineEdu::Application.routes.draw do
     post 'student_quiz'
   end
     resources :quizzes
-    resources :lectures
+    resources :lectures do
+      member do
+        get 'add_quiz'
+        get 'remove_quiz'
+        get 'coordinates'
+        get 'add_answer'
+        get 'remove_answer'
+      end
+    end
     
 end
 
