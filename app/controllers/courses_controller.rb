@@ -146,8 +146,9 @@ class CoursesController < ApplicationController
   end
   
   def courseware
-    if params[:q]
+    if params[:q]   #requesting quiz
       @q= Quiz.find(params[:q]) 
+      @type="quiz"
       @answers= QuizGrade.select("question_id, answer_id").where(:user_id=>current_user.id , :quiz_id=> params[:q])
       @out={}
       @answers.each do |a|
@@ -155,6 +156,19 @@ class CoursesController < ApplicationController
       end
       print "out isssss!!!!!!! #{@out}"
     end
+    
+    if params[:l]   #requesting lecture
+      @q= Lecture.find(params[:l])
+      @type="lecture" 
+      @url= get_answers_course_lecture_path(params[:id], params[:l])
+      #@an= QuizGrade.select("question_id, answer_id").where(:user_id=>current_user.id , :quiz_id=> params[:q])
+      #@out={}
+      #@answers.each do |a|
+      #  @out[a.question_id]=a.answer_id
+      #end
+      #print "out isssss!!!!!!! #{@out}"
+    end
+    
   end
   
   def courseware_teacher

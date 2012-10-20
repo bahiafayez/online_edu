@@ -34,6 +34,7 @@ OnlineEdu::Application.routes.draw do
         get 'coordinates'
         get 'add_answer'
         get 'remove_answer'
+        get 'get_answers'
       end
     end
     

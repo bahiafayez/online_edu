@@ -138,6 +138,11 @@ class LecturesController < ApplicationController
     
   end
   
+  def get_answers
+    @a= OnlineQuiz.find(params[:quiz]).online_answers
+    render json: @a
+  end
+  
   def destroy
     @lecture = Lecture.find(params[:id])
     @course= params[:course_id]

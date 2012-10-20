@@ -1,0 +1,100 @@
+<script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script>
+
+<style>
+	.ontop{
+		/*background:#fff;  /* invisible div*/
+        position:absolute;
+        min-width:600px;
+        min-height:365px;
+        z-index:99;
+	}
+</style>
+
+<p>
+  <b>Name:</b>
+  <%= lecture.name %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= lecture.description %>
+</p>
+
+<center><div style="width:600px" >
+<div class="ontop" id="ontop"></div>
+<div id="youtube" style="width:600px;height:400px;"></div>
+<div id="foo"></div>
+</div></center>
+
+<script>
+document.addEventListener( "DOMContentLoaded", function() {
+var pop;
+var last=0;
+var flag=0;
+pop = Popcorn.youtube( "#youtube", "<%=  lecture.url %>",{ width: 400, controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
+
+pop.controls( false );                          
+pop.play();
+
+// pop.listen("play", function(){
+	// console.debug("in play")
+	// if (flag==1)
+	// {
+		// flag=0;
+// 		
+	// }
+// });
+
+pop.listen( "timeupdate", function() {
+    console.log( this.currentTime() );
+    a= <%= raw lecture.online_quizzes.to_json %>;   // important how to convert rails array of objects to JS array of objects
+    //console.debug(a)
+    //console.debug(a[0])
+           for(key in a) {
+          console.debug("online quiz time isss "+a[key].time)
+          console.debug("flag isss "+flag)
+           if(this.currentTime()> parseFloat(a[key].time) && this.currentTime()< parseFloat(a[key].time)+0.5 && document.getElementById("foo").innerHTML=="" && flag==0 )
+           {
+           console.debug("more than 4 seconds");
+           document.getElementById("foo").innerHTML = "<b style='background-color: white;'>HELLO!!!</b>";
+          //  console.debug("pop duration isss"+pop.duration()) 
+           pop.pause();
+           flag=1;
+           last=parseFloat(a[key].time)
+           
+           // now i want to get the answers
+            $.getJSON("<%= @url %>",{"quiz":a[key].id }, function(resp){
+    			//console.debug(resp)
+    			html=""
+    			for(answer in resp) {
+           			console.debug( "x: "+resp[answer].xcoor+" y:"+resp[answer].ycoor)
+           			html+="<button style='position:absolute; top:"+resp[answer].ycoor+"px; left: "+resp[answer].xcoor+"px;'>Button "+answer+"</button>"
+           			document.getElementById("ontop").innerHTML=html;
+           			// absolute therefore xpos relative to parent div. i.e. xpos min awel el video.
+    		}
+    		});
+           
+           // need timer here so don't pause twice!!
+           
+           }
+           else
+           {
+           	console.debug("last issss "+last)
+           	if(this.currentTime() > last + 1.0 || (this.currentTime() < last && this.currentTime() >last-1) )   // 1 second from both directions so don't stop after playing.
+           	{
+           		flag=0;
+           	}
+           	
+           if (!this.paused()){
+           document.getElementById("foo").innerHTML=""   
+           document.getElementById("ontop").innerHTML=""
+           }
+           }
+
+           
+           }
+       });
+
+
+});
+</script>
