@@ -244,7 +244,7 @@ class CoursesController < ApplicationController
     end
     
     respond_to do |format|
-      format.html {redirect_to courseware_course_path(params[:id], :q => @quiz_id), notice: 'Quiz was successfully saved.'}
+      format.html {redirect_to courseware_course_path(params[:id], :q => @quiz_id), notice: 'Quiz was successfully submitted.'}
     end
     
   end
