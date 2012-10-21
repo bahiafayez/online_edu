@@ -16,7 +16,9 @@ class LecturesController < ApplicationController
     @lecture = Lecture.find(params[:id])
     @course = Course.find(params[:course_id])
     @quizzes= OnlineQuiz.where(:lecture_id => params[:id])
-    
+    @url= get_answers_course_lecture_path(params[:course_id], params[:id])
+    @s=params[:s] if params[:s]
+    logger.debug("s issssss #{@s}")
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @lecture }

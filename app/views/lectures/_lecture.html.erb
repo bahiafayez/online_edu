@@ -21,20 +21,76 @@
 </p>
 
 <center><div style="width:600px" >
+<div id="foo"></div><br>
 <div class="ontop" id="ontop"></div>
 <div id="youtube" style="width:600px;height:400px;"></div>
-<div id="foo"></div>
 </div></center>
 
 <script>
-document.addEventListener( "DOMContentLoaded", function() {
 var pop;
+
+function formatSecondsAsTime(secs, format) {
+  var hr  = Math.floor(secs / 3600);
+  var min = Math.floor((secs - (hr * 3600))/60);
+  var sec = Math.floor(secs - (hr * 3600) -  (min * 60));
+
+  if (hr < 10)   { hr    = "0" + hr; }
+  if (min < 10) { min = "0" + min; }
+  if (sec < 10)  { sec  = "0" + sec; }
+  if (hr)            { hr   = "00"; }
+
+  if (format != null) {
+    var formatted_time = format.replace('hh', hr);
+    formatted_time = formatted_time.replace('h', hr*1+""); // check for single hour formatting
+    formatted_time = formatted_time.replace('mm', min);
+    formatted_time = formatted_time.replace('m', min*1+""); // check for single minute formatting
+    formatted_time = formatted_time.replace('ss', sec);
+    formatted_time = formatted_time.replace('s', sec*1+""); // check for single second formatting
+    return formatted_time;
+  } else {
+    return hr + ':' + min + ':' + sec;
+  }
+}
+
+
+function skip_to(time)
+{
+	if (pop.currentTime()-0.5 < 0)
+	{
+		pop.currentTime(time-0.1);
+	}
+	else
+	{
+		pop.currentTime(time-0.5);
+	}
+	
+	//pop.play();	
+}
+
+document.addEventListener( "DOMContentLoaded", function() {
+
 var last=0;
 var flag=0;
 pop = Popcorn.youtube( "#youtube", "<%=  lecture.url %>",{ width: 400, controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
 
 pop.controls( false );                          
 pop.play();
+
+// I want to add the skip buttons
+skip="Skip to "
+
+
+
+data= <%= raw lecture.online_quizzes.to_json %>;   // important how to convert rails array of objects to JS array of objects
+   
+   for(element in data) {
+      
+      skip+="<button onclick='skip_to("+data[element].time+")'>Q"+element+" - "+formatSecondsAsTime(data[element].time)+"</button>"
+      
+           }
+
+document.getElementById("foo").innerHTML=skip
+
 
 // pop.listen("play", function(){
 	// console.debug("in play")
@@ -45,17 +101,19 @@ pop.play();
 	// }
 // });
 
+
+
 pop.listen( "timeupdate", function() {
-    console.log( this.currentTime() );
+    //console.log( this.currentTime() );
     a= <%= raw lecture.online_quizzes.to_json %>;   // important how to convert rails array of objects to JS array of objects
     //console.debug(a)
     //console.debug(a[0])
            for(key in a) {
-          console.debug("online quiz time isss "+a[key].time)
-          console.debug("flag isss "+flag)
-           if(this.currentTime()> parseFloat(a[key].time) && this.currentTime()< parseFloat(a[key].time)+0.5 && document.getElementById("foo").innerHTML=="" && flag==0 )
+          //console.debug("online quiz time isss "+a[key].time)
+          //console.debug("flag isss "+flag)
+           if(this.currentTime()> parseFloat(a[key].time) && this.currentTime()< parseFloat(a[key].time)+0.5 &&  flag==0 )
            {
-           console.debug("more than 4 seconds");
+           //console.debug("more than 4 seconds");
           // document.getElementById("foo").innerHTML = "<b style='background-color: white;'>HELLO!!!</b>";
           //  console.debug("pop duration isss"+pop.duration()) 
            pop.pause();
@@ -67,8 +125,10 @@ pop.listen( "timeupdate", function() {
     			//console.debug(resp)
     			html=""
     			for(answer in resp) {
-           			console.debug( "x: "+resp[answer].xcoor+" y:"+resp[answer].ycoor)
-           			html+="<button style='position:absolute; top:"+resp[answer].ycoor+"px; left: "+resp[answer].xcoor+"px;'>Button "+answer+"</button>"
+           			top3= parseFloat(resp[answer].ycoor)-5;
+           			left= parseFloat(resp[answer].xcoor)-8;
+           			console.debug( "x: "+top3+" y:"+left)
+           			html+="<button style='position:absolute; width: 3px; height: 5px; border: 1px solid #006; background: #9cf; top:"+top3+"px; left: "+left+"px;'></button>"
            			document.getElementById("ontop").innerHTML=html;
            			// absolute therefore xpos relative to parent div. i.e. xpos min awel el video.
     		}
@@ -79,15 +139,15 @@ pop.listen( "timeupdate", function() {
            }
            else
            {
-           	console.debug("last issss "+last)
-           	if(this.currentTime() > last + 1.0 || (this.currentTime() < last && this.currentTime() >last-1) )   // 1 second from both directions so don't stop after playing.
+           //	console.debug("last issss "+last)
+           	if(this.currentTime() > last + 1.0 || (this.currentTime() < last) )   // 1 second from both directions so don't stop after playing.
            	{
            		flag=0;
            	} 
            	
            	
            if (!this.paused()){
-           document.getElementById("foo").innerHTML=""   
+           //document.getElementById("foo").innerHTML=""   
            document.getElementById("ontop").innerHTML=""
            }
            }
