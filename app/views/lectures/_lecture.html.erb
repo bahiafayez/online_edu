@@ -83,7 +83,8 @@ pop.listen( "timeupdate", function() {
            	if(this.currentTime() > last + 1.0 || (this.currentTime() < last && this.currentTime() >last-1) )   // 1 second from both directions so don't stop after playing.
            	{
            		flag=0;
-           	}
+           	} 
+           	
            	
            if (!this.paused()){
            document.getElementById("foo").innerHTML=""   
