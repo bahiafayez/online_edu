@@ -226,30 +226,30 @@ var slides = {1.2 : [4, 1, "This is my first question"],  //need to change cuepo
        // });
                           
                           
-pop.listen( "timeupdate", function() {
-    console.log( this.currentTime() );
-    
-           for(key in slides) {
-                
-           if(this.currentTime()> parseFloat(key) && this.currentTime()< parseFloat(key)+0.3 && document.getElementById("foo").innerHTML=="" )
-           {
-           console.debug("more than 4 seconds");
-           document.getElementById("foo").innerHTML = "<b style='background-color: white;'>HELLO!!!</b>";
-            console.debug("pop duration isss"+pop.duration()) 
-           pop.pause();
-           // need timer here so don't pause twice!!
-           
-           }
-           else
-           {
-           if (!this.paused()){
-           document.getElementById("foo").innerHTML=""   
-           }
-           }
-
-           
-           }
-       });
+// pop.listen( "timeupdate", function() {
+    // console.log( this.currentTime() );
+//     
+           // for(key in slides) {
+//                 
+           // if(this.currentTime()> parseFloat(key) && this.currentTime()< parseFloat(key)+0.3 && document.getElementById("foo").innerHTML=="" )
+           // {
+           // console.debug("more than 4 seconds");
+           // document.getElementById("foo").innerHTML = "<b style='background-color: white;'>HELLO!!!</b>";
+            // console.debug("pop duration isss"+pop.duration()) 
+           // pop.pause();
+           // // need timer here so don't pause twice!!
+//            
+           // }
+           // else
+           // {
+           // if (!this.paused()){
+           // document.getElementById("foo").innerHTML=""   
+           // }
+           // }
+// 
+//            
+           // }
+       // });
 
 	
 	

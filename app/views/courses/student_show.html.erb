@@ -8,7 +8,29 @@
     </ul>
 <% end %>
 
-<div class="tabbable tabs-left">
+
+<h3> <%= @course.short_name %> - <%= @course.name %></h3>
+					<p>
+					  <b>Start date:</b>
+					  <%= @course.start_date %>
+					</p>
+					
+					<p>
+					  <b>Duration:</b>
+					  <%= @course.duration %>
+					</p>
+					
+					<p>
+					  <b>Description:</b>
+					  <%= @course.description %>
+					</p>
+					
+					<p>
+					  <b>Prerequisites:</b>
+					  <%= @course.prerequisites %>
+					</p>
+
+<!-- <div class="tabbable tabs-left">
 	<ul class="nav nav-tabs">
 		<li class="active">
 			<a data-toggle="tab" href="#lA">Course Information</a>
@@ -50,4 +72,4 @@
 			<p>What up girl, this is Section C.</p>
 		</div>
 	</div>
-</div>
+</div> -->

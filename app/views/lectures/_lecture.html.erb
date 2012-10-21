@@ -56,7 +56,7 @@ pop.listen( "timeupdate", function() {
            if(this.currentTime()> parseFloat(a[key].time) && this.currentTime()< parseFloat(a[key].time)+0.5 && document.getElementById("foo").innerHTML=="" && flag==0 )
            {
            console.debug("more than 4 seconds");
-           document.getElementById("foo").innerHTML = "<b style='background-color: white;'>HELLO!!!</b>";
+          // document.getElementById("foo").innerHTML = "<b style='background-color: white;'>HELLO!!!</b>";
           //  console.debug("pop duration isss"+pop.duration()) 
            pop.pause();
            flag=1;

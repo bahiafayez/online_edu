@@ -1,5 +1,6 @@
 class Lecture < ActiveRecord::Base
   
+  validates :name, :url, :presence => true
   has_many :online_quizzes
   belongs_to :course
   
