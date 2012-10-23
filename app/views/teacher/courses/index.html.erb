@@ -1,0 +1,43 @@
+<h1>My Courses</h1>
+
+<table class="table table-striped">
+  <!--<tr>
+    <th>Short name</th>
+    <th>Name</th>
+    <th>Start date</th>
+    <th>Duration</th>
+    <th>Description</th>
+    <th>Prerequisites</th>
+    <th>User</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>-->
+
+<% @courses.each do |course| %>
+  <tr>
+    <td><%= course.short_name %></td>
+    <td><%= course.name %></td>
+    <!--<td><%= course.start_date %></td>
+    <td><%= course.duration %></td>
+    <td><%= course.description %></td>
+    <td><%= course.prerequisites %></td>
+    <td><%= course.user_id %></td> -->
+    <% if can? :create, Course %>
+ 
+    	<td><%= link_to 'Show', course %></td>
+    	<td><%= link_to 'Edit', edit_course_path(course) %></td>
+    	<td><%= link_to 'Destroy', course, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <% else %>
+    	<td><%= link_to 'Show', student_show_course_path(course) %></td>
+   <% end %>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<% if can? :create, Course %>
+<%= link_to 'New Course', new_course_path %>
+<% end %>
+

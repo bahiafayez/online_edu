@@ -7,18 +7,22 @@
     <%= f.input :instructions %>
   </div>
 	
-	
 	<%= f.fields_for :questions do |task_form| %>
   	<%= task_form.text_field :content %>
   	<%= task_form.link_to_remove "Remove this question" %>
-
+		
   		<%= task_form.fields_for :answers do |t| %>
+  		<p style="background-color: #eeffff; margin-left: 40px; width: 400px">  <!-- style this better with css -->
   		<%= t.text_field :content %>
+  		Correct answer? <%= t.check_box :correct  %><br>
   		<%= t.link_to_remove "Remove this answer" %>
+  		</p>
   		<% end %>
+  		
   		<p><%= task_form.link_to_add "Add an answer", :answers %></p>
-  	
+  		
 	<% end %>
+	
 	<p><%= f.link_to_add "Add a question", :questions %></p>
 
 	

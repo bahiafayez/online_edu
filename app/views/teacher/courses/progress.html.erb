@@ -1,0 +1,38 @@
+<% content_for :extra do %>
+    <ul class="nav nav-pills">
+    <li class=<%= (current_page?(student_show_course_path(@course)) ? 'active' : nil)  %>>
+    <%= link_to "Course Information", student_show_course_path(@course)%>
+    </li>
+    <li class=<%= (current_page?(courseware_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Courseware", courseware_course_path(@course)%></li>
+    <li class=<%= (current_page?(progress_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Progress", progress_course_path(@course)%></li>
+    </ul>
+<% end %>
+
+
+You have taken:
+<table class="table table-striped">
+<thead>
+	<th>
+		Quiz 
+	</th>
+	<th>
+		Instructions
+	</th>
+	<th>
+		Number of questions
+	</th>
+</thead>
+<% @quizzes_taken.each do |q| %>
+<tr>
+	<td>
+	<%= link_to q.name, courseware_course_path(@course, :q=>q.id) %>
+	</td>
+	<td>
+	<%= q.instructions %>	
+	</td>
+	<td>
+	<%= q.questions.size %>	
+	</td>
+</tr>
+<% end %>
+</table>

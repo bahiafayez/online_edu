@@ -1,4 +1,4 @@
-class CoursesController < ApplicationController
+class Teacher::CoursesController < TeacherController
   load_and_authorize_resource   #cancan to check if user is allowed to perform an action. checks from ability.rb
   # GET /courses
   # GET /courses.json
@@ -150,26 +150,10 @@ class CoursesController < ApplicationController
       @q= Quiz.find(params[:q]) 
       @type="quiz"
       @answers= QuizGrade.select("question_id, answer_id").where(:user_id=>current_user.id , :quiz_id=> params[:q])
-      @correct_answers= QuizGrade.where(:user_id=>current_user.id , :quiz_id=> params[:q]).select("distinct(question_id), grade")
       @out={}
-      @correct={}
-      
-      
       @answers.each do |a|
-        if @out[a.question_id].nil?
-            @out[a.question_id]=[a.answer_id]
-        else
-          @out[a.question_id]<<a.answer_id
-        end   
+        @out[a.question_id]=a.answer_id
       end
-      
-      @correct_answers.each do |s|
-        @correct[s.question_id]= s.grade
-      end
-      
-      
-      
-      
       print "out isssss!!!!!!! #{@out}"
     end
     
@@ -251,50 +235,17 @@ class CoursesController < ApplicationController
   
   def student_quiz
     #could move to quiz_grades_controller later.
-    @answers=params[:answer] || []
+    @answers=params[:answer]
     @quiz_id=params[:quiz]
     @user_id=current_user.id
     
-    if @answers.empty? or @answers.keys.count < Quiz.find(@quiz_id).questions.count  #there qere unanswered questions.
-      redirect_to courseware_course_path(params[:id], :q=>@quiz_id), :alert => "There are unanswered questions"
-    else 
-    
-    
-    #delete old ones
-    a=QuizGrade.where(:user_id => @user_id, :quiz_id => @quiz_id)
-    a.destroy_all
-
-
-    #@answers.each do |a|
-      #print "answers are #{@answers}"
-      #print "keys #{@answers.keys}"
-      @answers.each do |k,v|
-        print "question: #{k}"
-        print "answers: #{v}"
-        if Answer.where(:question_id => k, :correct => true).pluck(:id).sort == v.keys.map{|f| f.to_i}.sort
-              g=1 #?? HOW!!
-         else
-              g=0
-         end
-         
-         print "g isssss #{Answer.where(:question_id => k, :correct => true).pluck(:id).sort} and #{v.keys.map{|f| f.to_i}.sort}"
-         #should find better way to record results, now put same number in all answers
-         
-        #@answers[b].keys.each do |k|
-          v.keys.each do |p|
-            #delete old ones first!!
-            #plus need to handle radio or checkbox!!
-            
-            QuizGrade.create(:user_id => @user_id, :quiz_id => @quiz_id, :question_id => k, :answer_id => p, :grade => g  )
-          end
-        #end
-      end
-      #QuizGrade.create(:user_id => @user_id, :quiz_id => @quiz_id, :question_id => a[0], :answer_id => a[1], :grade => 0  )
-    #end
+    @answers.each do |a|
+      QuizGrade.create(:user_id => @user_id, :quiz_id => @quiz_id, :question_id => a[0], :answer_id => a[1], :grade => 0  )
+    end
     
     respond_to do |format|
       format.html {redirect_to courseware_course_path(params[:id], :q => @quiz_id), notice: 'Quiz was successfully submitted.'}
     end
-    end
+    
   end
 end

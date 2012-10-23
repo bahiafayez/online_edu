@@ -11,14 +11,26 @@
 
 <% else %>
 
-<li>
-  <p><%= question_counter + 1%>:
-  <%= question.content %></p><br />
-  <ul>
-  <b>Answers:</b>
-  <%= render :partial => question.answers, :locals => {:question => question} %>
-  </ul>
-</li>
+  <tr>
+  <td> <%= question_counter + 1%>) </td>
+  <td> <%= question.content %></td>
+  <td><% if !@correct[question.id].nil? and @correct[question.id]==1 %>
+  	<b style="color:green">Correct</b>
+  	<% elsif !@correct[question.id].nil? and @correct[question.id]==0 %>
+  	<b style="color:red">Incorrect</b>
+ 	<% else%>
+ 	<b></b>
+  	<% end %>
+  </td>
+  </tr>
+ 
 
+  	
+  <%= render :partial => question.answers, :locals => {:question => question} %>
+  
+  
+  
+  <tr><td colspan="3"><hr /></td></tr>
+   
 
 <% end %>

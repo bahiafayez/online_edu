@@ -1,0 +1,84 @@
+<% content_for :extra do %>
+    <ul class="nav nav-pills">
+    <li class=<%= (current_page?(course_path(@course)) ? 'active' : nil)  %>>
+    <%= link_to "Course Information", course_path(@course)%>
+    </li>
+    <li class=<%= (current_page?(courseware_teacher_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Courseware", courseware_teacher_course_path(@course)%></li>
+    <li class=<%= (current_page?(enrolled_students_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Enrolled Students", enrolled_students_course_path(@course)%></li>
+    <li class=<%= (current_page?(progress_teacher_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Progress", progress_teacher_course_path(@course)%></li>
+    </ul>
+<% end %>
+
+<div class="row">
+<div class="span6">
+  <h3> <%= @course.short_name %> - <%= @course.name %></h3>
+
+
+<p>
+  <b>Start date:</b>
+  <%= @course.start_date %>
+</p>
+
+<p>
+  <b>Duration:</b>
+  <%= @course.duration %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @course.description %>
+</p>
+
+<p>
+  <b>Prerequisites:</b>
+  <%= @course.prerequisites %>
+</p>
+
+<!-- <p>
+  <b>User:</b>
+  <%= @course.user_id %>
+</p> -->
+<br>
+
+<%= link_to 'Edit', edit_course_path(@course) %> |
+<%= link_to 'Back', courses_path %>
+</div>
+
+</div> 
+<div class="row">
+<div class="span6">
+<!-- <h4>Course Material:</h4>
+
+<%= link_to "Quizzes" , course_quizzes_path(@course) %> <!-- want to redirect to courses/1/quizzes  see how--> 
+</div>
+
+<div class="span6">
+</div>
+</div>
+
+
+<!-- <script>
+$(document).ready(function(){   // should put this somewhere elsee..
+    
+	
+	//document.getElementById(b).parentNode.parentNode.style.display ="none";
+
+var data =<%= @student_ids %>;
+var data2=<%= @student_ids2 %>;
+console.debug("i isssss "+data)
+
+for(i=0; i<data.length; i++){
+b= "studentsin_"+data[i]
+document.getElementById(b).parentNode.parentNode.style.display ="none";
+}
+
+for(i=0; i<data2.length; i++){
+
+b= "students["+data2[i]+"]"
+console.debug(b)
+document.getElementById(b).parentNode.parentNode.style.display ="none";
+}
+
+});
+</script> -->
+

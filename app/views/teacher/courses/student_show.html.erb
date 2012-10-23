@@ -1,0 +1,75 @@
+<% content_for :extra do %>
+    <ul class="nav nav-pills">
+    <li class=<%= (current_page?(student_show_course_path(@course)) ? 'active' : nil)  %>>
+    <a href="#">Course Information</a>
+    </li>
+    <li class=<%= (current_page?(courseware_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Courseware", courseware_course_path(@course)%></li>
+    <li class=<%= (current_page?(progress_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Progress", progress_course_path(@course)%></li>
+    </ul>
+<% end %>
+
+
+<h3> <%= @course.short_name %> - <%= @course.name %></h3>
+					<p>
+					  <b>Start date:</b>
+					  <%= @course.start_date %>
+					</p>
+					
+					<p>
+					  <b>Duration:</b>
+					  <%= @course.duration %>
+					</p>
+					
+					<p>
+					  <b>Description:</b>
+					  <%= @course.description %>
+					</p>
+					
+					<p>
+					  <b>Prerequisites:</b>
+					  <%= @course.prerequisites %>
+					</p>
+
+<!-- <div class="tabbable tabs-left">
+	<ul class="nav nav-tabs">
+		<li class="active">
+			<a data-toggle="tab" href="#lA">Course Information</a>
+		</li>
+		<li class="">
+			<a data-toggle="tab" href="#lB">Courseware</a>
+		</li>
+		<li class="">
+			<a data-toggle="tab" href="#lC">Progress</a>
+		</li>
+	</ul>
+	<div class="tab-content">
+		<div id="lA" class="tab-pane active">
+			<h3> <%= @course.short_name %> - <%= @course.name %></h3>
+					<p>
+					  <b>Start date:</b>
+					  <%= @course.start_date %>
+					</p>
+					
+					<p>
+					  <b>Duration:</b>
+					  <%= @course.duration %>
+					</p>
+					
+					<p>
+					  <b>Description:</b>
+					  <%= @course.description %>
+					</p>
+					
+					<p>
+					  <b>Prerequisites:</b>
+					  <%= @course.prerequisites %>
+					</p>
+		</div>
+		<div id="lB" class="tab-pane">
+			<p>Howdy, I'm in Section B.</p>
+		</div>
+		<div id="lC" class="tab-pane">
+			<p>What up girl, this is Section C.</p>
+		</div>
+	</div>
+</div> -->

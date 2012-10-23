@@ -147,30 +147,7 @@ $(document).ready(function() {
 });
 
 
-/* function checkS(e){
-// capture the mouse position
 
-var t=e.srcElement.tagName
-
-var posx = 0;
-var posy = 0;
-if (!e) var e = window.event;
-if (e.pageX || e.pageY)
-{
-posx = e.pageX;
-posy = e.pageY;
-}
-else if (e.clientX || e.clientY)
-{
-posx = e.clientX;
-posy = e.clientY;
-}
- 
-document.getElementById('pos').innerHTML = 'Mouse position is: X='+posx+' Y='+posy;
-document.getElementById('pos').style.left = posx;
-document.getElementById('pos').style.top = posy;
-document.getElementById('pos').style.display='block';
-}*/
 </script>
  
 
@@ -265,97 +242,7 @@ data= <%= raw @lecture.online_quizzes.to_json %>;   // important how to convert 
 document.getElementById("foo").innerHTML=skip
 console.debug("inside student is true")
 }            
-// listen to timeupdate
-                          
-//another way is to have them ordered by time. And start checking on the first, when done, remove, move to second.. so on.
-// new video player
 
-// pop.on("loadeddata", function(){
-// console.debug("pop duration in loaded iss"+pop.duration())
-       // console.debug("pop media isss "+pop.media);
-// player = new VideoPlayer({
-// media: pop.media,
-// resized: true,
-// callback: function(ctx) {
-// var i, x, width = ctx.canvas.width - 12;
-// if (!pop.duration()) {
-// console.debug("will return")
-// return;
-// }
-                         // console.debug("not returning")
-// ctx.strokeStyle = '#303030';
-// ctx.lineWidth = 2;
-// ctx.lineCap = 'butt';
-// ctx.beginPath();
-// 
-// for(key in slides)
-// {
-// 
-// x = 6 + width * parseFloat(key) / pop.duration();
-// ctx.moveTo(x, 6);
-// ctx.lineTo(x, 18);
-// 
-// //console.debug
-// ctx.stroke();
-// 
-// }
-// }
-// 
-// });
-       // });
-                          
-                          
-// pop.listen( "timeupdate", function() {
-    // console.log( this.currentTime() );
-//     
-           // for(key in slides) {
-//                 
-           // if(this.currentTime()> parseFloat(key) && this.currentTime()< parseFloat(key)+0.3 && document.getElementById("foo").innerHTML=="" )
-           // {
-           // console.debug("more than 4 seconds");
-           // document.getElementById("foo").innerHTML = "<b style='background-color: white;'>HELLO!!!</b>";
-            // console.debug("pop duration isss"+pop.duration()) 
-           // pop.pause();
-           // // need timer here so don't pause twice!!
-//            
-           // }
-           // else
-           // {
-           // if (!this.paused()){
-           // document.getElementById("foo").innerHTML=""   
-           // }
-           // }
-// 
-//            
-           // }
-       // });
-
-	
-	
-	
-//    pop.footnote({
-//        start: 1,
-//        end: 15,
-//        text: "Youtube working!",
-//        target: "foo"
-//    });
-//    
-//    pop.footnote({
-//    "start": 3.988,
-//    "end": 6.872,
-//    "text": "Youtube working!",
-//    "target": "foo",
-//    //"target": "video-overlay",
-//    //"src": "http://www.mozilla.org/img/covehead/firefox/brand-toolkit/identity-logo-firefox.png",
-//    //"href": "http://www.mozilla.org/",
-//    "width": 150,
-//    "height": 150,
-//    "top": 25,
-//    "left": 75
-//});
-    
-    // play video
-//pop.play();
 
 if(student==true)
 {

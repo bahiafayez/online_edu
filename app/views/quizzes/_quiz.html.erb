@@ -1,22 +1,32 @@
-<%= form_tag(student_quiz_course_path(@course)) do %>
+<script>
+	function validate(something)
+	{
+		console.debug(something)
+	}
+</script>
+
+<%= form_tag(student_quiz_course_path(@course), {:onSubmit => 'validate(this)'}) do %>
 
 <%= hidden_field_tag 'quiz', quiz.id %>
 
 <p>
-  <h4>Name:</h4>
-  <%= quiz.name %>
-</p>
+  <h4><%= quiz.name %></h4>
+</p><br />
 
 <p>
-  <h4>Instructions:</h4>
   <%= quiz.instructions %>
 </p>
 
 <p>
-	<ul>
-	<h4>Questions:</h4>
+	
+	<br />
+	<table width="100%" %>
+		
+	
 	<%= render quiz.questions %>
-	</ul>
+	
+	</table>
+	
 </p>
 
 <center><div><%= submit_tag 'Submit' %></div></center>

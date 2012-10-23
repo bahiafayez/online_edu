@@ -1,4 +1,16 @@
 OnlineEdu::Application.routes.draw do
+  ActiveAdmin.routes(self)
+
+  devise_for :admin_users, ActiveAdmin::Devise.config
+
+  get "courses/new"
+
+  get "courses/index"
+
+  get "courses/create"
+
+  get "courses/update"
+
   resources :online_answers
 
   resources :online_quizzes
@@ -11,7 +23,9 @@ OnlineEdu::Application.routes.draw do
 
   resources :questions
 
-  
+ # namespace :teacher do
+ #   resources :courses
+ # end  
 
   resources :courses do
   member do
