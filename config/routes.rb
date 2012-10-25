@@ -49,6 +49,7 @@ OnlineEdu::Application.routes.draw do
         get 'add_answer'
         get 'remove_answer'
         get 'get_answers'
+        get 'save_answers'
       end
     end
     

@@ -21,13 +21,13 @@
 <% end %>
 
 <div class="row">
-<div class="span4">
+<div class="span5">
 Please Click on where you'd like the buttons to be.
 <div id="answer"></div>
-<%= link_to "Back to Lecture ", course_lecture_path(@course, @lecture)%>
+<!-- <%= link_to "Back to Lecture ", course_lecture_path(@course, @lecture)%> -->
 </div>
 
-<div class="span8">
+<div class="span7">
 	
 <center><div style="width:600px" >
 <div class="ontop"></div>
@@ -43,8 +43,8 @@ Please Click on where you'd like the buttons to be.
 $(document).ready(function() {
   $('.ontop').click(function(e) {
     var offset = $(this).offset();
-  	left= parseFloat(e.pageX) - parseFloat(offset.left) //not clientX because client depends on window.. so numbers change when scrolling.
-  	top2 = parseFloat(e.pageY) - parseFloat(offset.top)
+  	left= parseInt(e.pageX) - parseInt(offset.left) //not clientX because client depends on window.. so numbers change when scrolling.
+  	top2 = parseInt(e.pageY) - parseInt(offset.top)
   	
   	console.debug("offset is "+ left)
   	console.debug("offset is "+ top2)
@@ -73,18 +73,24 @@ add_answer = function(left,top,quiz,url,flag) {
     console.debug("time is "+top)
     $.getJSON(url,{"left":left, "top":top, "quiz":quiz, "flag":flag}, function(resp){
     	
-    html="<table class='table table-striped'>"
+    html="<form name='input' action='"+resp['save']+"' method='get'><table class='table table-striped'> <tr><th>X</th><th>Y</th><th>Explanation</th><th>Correct</th><th></th><th></th></tr>"
     console.debug(resp['a'])
     
     for(e in resp['a'])
     {
+    	if(resp['a'][e].correct == true)
+    	{
+    		check='checked'
+    	}else{
+    		check=''
+    	}
     	
-    	html+="<tr><td>"+resp['a'][e].xcoor+"</td><td>"+resp['a'][e].ycoor+"</td><td><a data-remote='true' onclick=remove_answer("+resp['a'][e].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td> "
+    	html+="<tr><td><input type='text' style='width:30px' size='5' value='"+resp['a'][e].xcoor+"' name='xcoor["+resp['a'][e].id+"]'</td><td><input type='text' style='width:30px' value='"+resp['a'][e].ycoor+"' name='ycoor["+resp['a'][e].id+"]'</td><td><input type='text' value='"+resp['a'][e].answer+"' name='reason["+resp['a'][e].id+"]'></td><td><input type='radio' name='quiz["+quiz+"]' value='"+resp['a'][e].id+"' "+check+" ></td><td><a data-remote='true' onclick=remove_answer("+resp['a'][e].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td> "
     	
     	
     }
     
-    html+="</table>"
+    html+="</table><br><center> <input type='submit' value='Save'> </center></form>"
     document.getElementById("answer").innerHTML=html;
 });
 
@@ -94,14 +100,27 @@ add_answer = function(left,top,quiz,url,flag) {
 remove_answer = function(answer,url, quiz) {
     //console.debug("time is "+pop.currentTime())
     $.getJSON(url,{"answer":answer , "quiz":quiz}, function(resp){
-    html="<table class='table table-striped'>"
+    
+    html="<form name='input' action='"+resp['save']+"' method='get'><table class='table table-striped'> <tr><th>X</th><th>Y</th><th>Explanation</th><th>Correct</th><th></th><th></th></tr>"
     console.debug(resp['a'])
     
     for(e in resp['a'])
     {
-    	html+="<tr><td>"+resp['a'][e].xcoor+"</td><td>"+resp['a'][e].ycoor+"</td><td><a data-remote='true' onclick=remove_answer("+resp['a'][e].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td> "
+    	if(resp['a'][e].correct == true)
+    	{
+    		check='checked'
+    	}else{
+    		check=''
+    	}
+    	
+    	html+="<tr><td><input type='text' style='width:30px' size='5' value='"+resp['a'][e].xcoor+"' name='xcoor["+resp['a'][e].id+"]'</td><td><input type='text' style='width:30px' value='"+resp['a'][e].ycoor+"' name='ycoor["+resp['a'][e].id+"]'</td><td><input type='text' value='"+resp['a'][e].answer+"' name='reason["+resp['a'][e].id+"]'></td><td><input type='radio' name='quiz["+quiz+"]' value='"+resp['a'][e].id+"' "+check+" ></td><td><a data-remote='true' onclick=remove_answer("+resp['a'][e].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td> "
+    	
+    	
     }
-    html+="</table>"
+    
+    html+="</table><br><center> <input type='submit' value='Save'> </center></form>"
+    
+    
     document.getElementById("answer").innerHTML=html;
 });
 

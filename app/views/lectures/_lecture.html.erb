@@ -127,9 +127,28 @@ pop.listen( "timeupdate", function() {
     			for(answer in resp) {
            			top3= parseFloat(resp[answer].ycoor)-5;
            			left= parseFloat(resp[answer].xcoor)-8;
-           			console.debug( "x: "+top3+" y:"+left)
-           			html+="<button style='position:absolute; width: 3px; height: 5px; border: 1px solid #006; background: #9cf; top:"+top3+"px; left: "+left+"px;'></button>"
+           			
+           			reason= resp[answer].answer
+           			if(resp[answer].correct==true)
+           			{
+           				title="<b style='color:green'>Correct</b>"
+           			}else{
+           				title="<b style='color:red'>Incorrect</b>"
+           			}
+           			
+           			console.debug( "x: "+top3+" y:"+left+" reason: "+resp[answer].answer)
+           			
+           			html+="<button rel='popover' id='"+resp[answer].id+"' data-original-title=\""+title+"\" class='pop' data-content=\""+reason+"\"  style='position:absolute; width: 3px; height: 5px; border: 1px solid #006; background: #9cf; top:"+top3+"px; left: "+left+"px;'></button>"
+           			//onclick='show_reason(\""+reason+"\")'
+           			//$('.pop').popover()
            			document.getElementById("ontop").innerHTML=html;
+           			
+           			$("[rel=popover]").popover(); //{trigger: 'manual'}
+           			
+           			
+           			//console.debug( "x: "+top3+" y:"+left)
+           			//html+="<button style='position:absolute; width: 3px; height: 5px; border: 1px solid #006; background: #9cf; top:"+top3+"px; left: "+left+"px;'></button>"
+           			//document.getElementById("ontop").innerHTML=html;
            			// absolute therefore xpos relative to parent div. i.e. xpos min awel el video.
     		}
     		});

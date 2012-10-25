@@ -38,8 +38,10 @@
 
 <%= link_to 'Edit', edit_course_lecture_path(@course,@lecture) %> |
 <%= link_to 'Back', course_lectures_path(@course) %>
-
 <br /><br />
+
+<!-- <button rel='popover' class='pop' data-content='And heres some amaz'></button> -->
+
 <% if @s!="true"%>
 <b>Choose place to insert quiz and click button below</b><br />
 <%= link_to "Add Quiz", [@course,@lecture], :remote=> true, :onclick => "add_quiz(#{@lecture.id},'#{add_quiz_course_lecture_path(@course,@lecture)}')" %>
@@ -183,6 +185,7 @@ add_quiz = function(lecture,url) {
 };
 
 
+
 remove_quiz = function(quiz,url) {
     //console.debug("time is "+pop.currentTime())
     $.getJSON(url,{"quiz":quiz }, function(resp){
@@ -270,9 +273,32 @@ if(student==true)
     			for(answer in resp) {
            			top3= parseFloat(resp[answer].ycoor)-5;
            			left= parseFloat(resp[answer].xcoor)-8;
-           			console.debug( "x: "+top3+" y:"+left)
-           			html+="<button style='position:absolute; width: 3px; height: 5px; border: 1px solid #006; background: #9cf; top:"+top3+"px; left: "+left+"px;'></button>"
+           			reason= resp[answer].answer
+           			if(resp[answer].correct==true)
+           			{
+           				title="<b style='color:green'>Correct</b>"
+           			}else{
+           				title="<b style='color:red'>Incorrect</b>"
+           			}
+           			
+           			console.debug( "x: "+top3+" y:"+left+" reason: "+resp[answer].answer)
+           			
+           			html+="<button rel='popover' id='"+resp[answer].id+"' data-original-title=\""+title+"\" class='pop' data-content=\""+reason+"\"  style='position:absolute; width: 3px; height: 5px; border: 1px solid #006; background: #9cf; top:"+top3+"px; left: "+left+"px;'></button>"
+           			//onclick='show_reason(\""+reason+"\")'
+           			//$('.pop').popover()
            			document.getElementById("ontop").innerHTML=html;
+           			
+           			$("[rel=popover]").popover(); //{trigger: 'manual'}
+           			
+           			//$("[rel=popover]").click(function(event){
+						//$('.pop').popover('hide')
+						//$(this).popover('toggle')
+						//console.debug("in thing popover this is"+$(this))
+					//});
+           			//$("[rel=popover]").click(function(event){
+						//$('.pop').popover('hide')
+						//$(this).popover('toggle')
+					//});
            			// absolute therefore xpos relative to parent div. i.e. xpos min awel el video.
     		}
     		});
@@ -303,6 +329,20 @@ if(student==true)
     
 }, false );
 
+
+
+function show_reason(answer)
+{
+	//alert("haha"+ answer)
+	//$('.pop').popover('hide')
+	
+	if(answer=="Correct")
+	{
+		pop.play()
+	}
+}
+
+// $("[rel=popover]").popover();
 
 </script>
 </div>

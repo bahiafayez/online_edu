@@ -122,8 +122,42 @@ class LecturesController < ApplicationController
     @lecture= Lecture.find(params[:id])
     @loc= coordinates_course_lecture_path(@course,@lecture)
     @loc2=remove_answer_course_lecture_path(@course,@lecture)
+    @save= save_answers_course_lecture_path(@course,@lecture)
     #@loc3=coordinates_course_lecture_path(@course,@lecture)
-    render json: {:a => @answers, :loc => @loc, :loc2=> @loc2}#, :loc3 => @loc3}
+    render json: {:a => @answers, :loc => @loc, :loc2=> @loc2, :save => @save}#, :loc3 => @loc3}
+  end
+  
+  def save_answers
+    @course= Course.find(params[:course_id])
+    @lecture= Lecture.find(params[:id])
+    #Just need to save now.
+    @reasons=params[:reason]
+    @xcoor=params[:xcoor]
+    @ycoor=params[:ycoor]
+    
+    @reasons.each do |k,v|
+      OnlineAnswer.find(k.to_i).update_attributes(:answer => v)
+    end
+    
+    @xcoor.each do |k,v|
+      OnlineAnswer.find(k.to_i).update_attributes(:xcoor => v)
+    end
+    
+    @ycoor.each do |k,v|
+      OnlineAnswer.find(k.to_i).update_attributes(:ycoor => v)
+    end
+
+    
+    #update correct and all others not correct.
+    
+    if params[:quiz]
+      OnlineQuiz.find(params[:quiz].keys[0].to_i).online_answers.each do |a|
+        a.update_attributes(:correct => false)
+      end
+      OnlineAnswer.find(params[:quiz].values[0].to_i).update_attributes(:correct => true)
+    end
+    
+    redirect_to course_lecture_path(@course,@lecture)
   end
   
   def remove_answer
@@ -135,8 +169,9 @@ class LecturesController < ApplicationController
     @answers= OnlineAnswer.where(:online_quiz_id => params[:quiz])#.pluck(:time)
     @loc= coordinates_course_lecture_path(@course,@lecture, :quiz => params[:quiz])
     @loc2=remove_answer_course_lecture_path(@course,@lecture)
+    @save= save_answers_course_lecture_path(@course,@lecture)
     #@loc3=coordinates_course_lecture_path(@course,@lecture)
-    render json: {:a => @answers, :loc => @loc, :loc2=> @loc2}#, :loc3 => @loc3} 
+    render json: {:a => @answers, :loc => @loc, :loc2=> @loc2, :save => @save}#, :loc3 => @loc3} 
     
   end
   
