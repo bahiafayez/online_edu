@@ -218,11 +218,25 @@ class CoursesController < ApplicationController
     
     #At the moment there are only quizzes.. later assigments, lectures, lecture quizzes,... graphs for grades..
     @quizzes=Course.find(params[:id]).quizzes
+    @quizNames=[]
     @quizzes_taken=[]
+    @quizScores=[]
     @quizzes.each do |q|
       if !QuizGrade.where(:quiz_id => q.id, :user_id => current_user.id).empty?
         @quizzes_taken<<q
+        @quizNames<<q.name
+        count=q.questions.count
+        num=0.0
+        QuizGrade.where(:quiz_id => q.id, :user_id => current_user.id).select("distinct(question_id), grade").each do |ques|
+        #q.questions.each do |ques|
+          if ques.grade==1
+            num+=1.0
+          end
+        end
+        logger.debug("num isss #{num/count}")
+        @quizScores<< num/count * 100
       end
+      
     end
     
   end
@@ -230,6 +244,29 @@ class CoursesController < ApplicationController
   def progress_teacher
     @course=Course.find(params[:id])
     @students=@course.users
+    @quizzes=@course.quizzes
+    @student_names=[]
+    @data=[]
+    @quizScores=[]
+    
+      
+      @quizzes.each do |q|
+        @students.each do |s|
+          @student_names<<s.name
+          num=0
+          QuizGrade.where(:quiz_id => q.id, :user_id => s.id).select("distinct(question_id), grade").each do |ques|
+            if ques.grade==1
+              num+=1.0
+            end
+          end
+          @quizScores<< num/q.questions.count * 100
+      end
+      @data<<{:name => q.name, :data => @quizScores}
+      @quizScores=[]
+    end
+    
+    @data = @data.to_json   #json : javascript object!!
+    
   end
   
   def progress_teacher_detailed

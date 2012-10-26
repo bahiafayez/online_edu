@@ -9,6 +9,8 @@
 <% end %>
 
 
+<div id="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+
 You have taken:
 <table class="table table-striped">
 <thead>
@@ -36,3 +38,65 @@ You have taken:
 </tr>
 <% end %>
 </table>
+
+
+<script>
+// for chart
+$(function () {
+    var chart;
+    $(document).ready(function() {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'container',
+                type: 'column'
+            },
+            title: {
+                text: 'Grades'
+            },
+            //subtitle: {
+            //    text: 'Source: WorldClimate.com'
+            //},
+            xAxis: {
+                categories: 
+                    <%= raw @quizNames %>
+                
+            },
+            yAxis: {
+                min: 0,
+                max: 100,
+                title: {
+                    text: 'Grade (%)'
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                backgroundColor: '#FFFFFF',
+                align: 'left',
+                verticalAlign: 'top',
+                x: 100,
+                y: 70,
+                floating: true,
+                shadow: true
+            },
+            tooltip: {
+                formatter: function() {
+                    return ''+
+                        this.x +': '+ this.y +' mm';
+                }
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+                series: [{
+                    showInLegend: false,
+                data: <%= raw @quizScores %>
+    
+            }]
+        });
+    });
+    
+});
+</script>
