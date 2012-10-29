@@ -69,11 +69,12 @@ var pop
 //function add_quiz(lecture){
 	
 //}
-add_answer = function(left,top,quiz,url,flag) {
+add_answer = function(left,top2,quiz,url,flag) {
     console.debug("time is "+top)
-    $.getJSON(url,{"left":left, "top":top, "quiz":quiz, "flag":flag}, function(resp){
+    $.getJSON(url,{"left":left, "top":top2, "quiz":quiz, "flag":flag}, function(resp){
     	
-    html="<form name='input' action='"+resp['save']+"' method='get'><table class='table table-striped'> <tr><th>X</th><th>Y</th><th>Explanation</th><th>Correct</th><th></th><th></th></tr>"
+    if(document.getElementById("answer").innerHTML==""){	
+    html="<form name='input' action='"+resp['save']+"' method='get'><table id='table_new' class='table table-striped'> <tr><th>X</th><th>Y</th><th>Explanation</th><th>Correct</th><th></th><th></th></tr>"
     console.debug(resp['a'])
     
     for(e in resp['a'])
@@ -85,13 +86,18 @@ add_answer = function(left,top,quiz,url,flag) {
     		check=''
     	}
     	
-    	html+="<tr><td><input type='text' style='width:30px' size='5' value='"+resp['a'][e].xcoor+"' name='xcoor["+resp['a'][e].id+"]'</td><td><input type='text' style='width:30px' value='"+resp['a'][e].ycoor+"' name='ycoor["+resp['a'][e].id+"]'</td><td><input type='text' value='"+resp['a'][e].answer+"' name='reason["+resp['a'][e].id+"]'></td><td><input type='radio' name='quiz["+quiz+"]' value='"+resp['a'][e].id+"' "+check+" ></td><td><a data-remote='true' onclick=remove_answer("+resp['a'][e].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td> "
+    	html+="<tr id='row_"+resp['a'][e].id+"'><td><input type='text' style='width:30px' size='5' value='"+resp['a'][e].xcoor+"' name='xcoor["+resp['a'][e].id+"]'</td><td><input type='text' style='width:30px' value='"+resp['a'][e].ycoor+"' name='ycoor["+resp['a'][e].id+"]'</td><td><input type='text' value='"+resp['a'][e].answer+"' name='reason["+resp['a'][e].id+"]'></td><td><input type='radio' name='quiz["+quiz+"]' value='"+resp['a'][e].id+"' "+check+" ></td><td><a data-remote='true' onclick=remove_answer("+resp['a'][e].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td></tr> "
     	
     	
     }
     
     html+="</table><br><center> <input type='submit' value='Save'> </center></form>"
     document.getElementById("answer").innerHTML=html;
+    }
+    else{
+    //document.getElementById("table_new").appendChild()
+    $('#table_new').append("<tr id='row_"+resp['current'].id+"'><td><input type='text' style='width:30px' size='5' value='"+left+"' name='xcoor["+resp['current'].id+"]'</td><td><input type='text' style='width:30px' value='"+top2+"' name='ycoor["+resp['current'].id+"]'</td><td><input type='text' value='"+resp['current'].answer+"' name='reason["+resp['current'].id+"]'></td><td><input type='radio' name='quiz["+quiz+"]' value='"+resp['current'].id+"' ></td><td><a data-remote='true' onclick=remove_answer("+resp['current'].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td></tr>")	
+    }
 });
 
 };
@@ -101,27 +107,28 @@ remove_answer = function(answer,url, quiz) {
     //console.debug("time is "+pop.currentTime())
     $.getJSON(url,{"answer":answer , "quiz":quiz}, function(resp){
     
-    html="<form name='input' action='"+resp['save']+"' method='get'><table class='table table-striped'> <tr><th>X</th><th>Y</th><th>Explanation</th><th>Correct</th><th></th><th></th></tr>"
-    console.debug(resp['a'])
+    // html="<form name='input' action='"+resp['save']+"' method='get'><table class='table table-striped'> <tr><th>X</th><th>Y</th><th>Explanation</th><th>Correct</th><th></th><th></th></tr>"
+    // console.debug(resp['a'])
+//     
+    // for(e in resp['a'])
+    // {
+    	// if(resp['a'][e].correct == true)
+    	// {
+    		// check='checked'
+    	// }else{
+    		// check=''
+    	// }
+//     	
+    	// html+="<tr><td><input type='text' style='width:30px' size='5' value='"+resp['a'][e].xcoor+"' name='xcoor["+resp['a'][e].id+"]'</td><td><input type='text' style='width:30px' value='"+resp['a'][e].ycoor+"' name='ycoor["+resp['a'][e].id+"]'</td><td><input type='text' value='"+resp['a'][e].answer+"' name='reason["+resp['a'][e].id+"]'></td><td><input type='radio' name='quiz["+quiz+"]' value='"+resp['a'][e].id+"' "+check+" ></td><td><a data-remote='true' onclick=remove_answer("+resp['a'][e].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td> "
+//     	
+//     	
+    // }
+//     
+    // html+="</table><br><center> <input type='submit' value='Save'> </center></form>"
+//     
     
-    for(e in resp['a'])
-    {
-    	if(resp['a'][e].correct == true)
-    	{
-    		check='checked'
-    	}else{
-    		check=''
-    	}
-    	
-    	html+="<tr><td><input type='text' style='width:30px' size='5' value='"+resp['a'][e].xcoor+"' name='xcoor["+resp['a'][e].id+"]'</td><td><input type='text' style='width:30px' value='"+resp['a'][e].ycoor+"' name='ycoor["+resp['a'][e].id+"]'</td><td><input type='text' value='"+resp['a'][e].answer+"' name='reason["+resp['a'][e].id+"]'></td><td><input type='radio' name='quiz["+quiz+"]' value='"+resp['a'][e].id+"' "+check+" ></td><td><a data-remote='true' onclick=remove_answer("+resp['a'][e].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td> "
-    	
-    	
-    }
-    
-    html+="</table><br><center> <input type='submit' value='Save'> </center></form>"
-    
-    
-    document.getElementById("answer").innerHTML=html;
+    //document.getElementById("answer").innerHTML=html;
+    $("tr#row_"+answer).remove();
 });
 
 };

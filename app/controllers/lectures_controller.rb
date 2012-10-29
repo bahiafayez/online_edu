@@ -115,7 +115,7 @@ class LecturesController < ApplicationController
   def add_answer
     logger.debug("in add answer!!!#{params[:flag]}")
     if params[:flag]!="false"
-      OnlineAnswer.create(:online_quiz_id => params[:quiz], :xcoor => params[:left], :ycoor => params[:top])
+      @current=OnlineAnswer.create(:online_quiz_id => params[:quiz], :xcoor => params[:left], :ycoor => params[:top])
     end
     @answers= OnlineAnswer.where(:online_quiz_id => params[:quiz])#.pluck(:time)
     @course= Course.find(params[:course_id])
@@ -124,16 +124,16 @@ class LecturesController < ApplicationController
     @loc2=remove_answer_course_lecture_path(@course,@lecture)
     @save= save_answers_course_lecture_path(@course,@lecture)
     #@loc3=coordinates_course_lecture_path(@course,@lecture)
-    render json: {:a => @answers, :loc => @loc, :loc2=> @loc2, :save => @save}#, :loc3 => @loc3}
+    render json: {:a => @answers, :loc => @loc, :loc2=> @loc2, :save => @save, :current => @current}#, :loc3 => @loc3}
   end
   
   def save_answers
     @course= Course.find(params[:course_id])
     @lecture= Lecture.find(params[:id])
     #Just need to save now.
-    @reasons=params[:reason]
-    @xcoor=params[:xcoor]
-    @ycoor=params[:ycoor]
+    @reasons=params[:reason] || []
+    @xcoor=params[:xcoor] || []
+    @ycoor=params[:ycoor] || []
     
     @reasons.each do |k,v|
       OnlineAnswer.find(k.to_i).update_attributes(:answer => v)
