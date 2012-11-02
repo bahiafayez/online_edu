@@ -3,13 +3,13 @@ OnlineEdu::Application.routes.draw do
 
   devise_for :admin_users, ActiveAdmin::Devise.config
 
-  get "courses/new"
+  #get "courses/new"
 
-  get "courses/index"
+  #get "courses/index"
 
-  get "courses/create"
+  #get "courses/create"
 
-  get "courses/update"
+  #get "courses/update"
 
   resources :online_answers
 

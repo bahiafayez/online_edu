@@ -6,12 +6,17 @@ class Ability
     if user.has_role? :admin
       can :create, Course
       can :manage, :all
+      cannot :courseware, Course
+      cannot :student_show, Course
+      cannot :progress, Course
     elsif user.has_role? :user
       can :read, Course
       can :student_show, Course
       can :progress, Course
       can :courseware, Course
       can :student_quiz, Course
+      cannot :manage, Lecture
+      cannot :manage, Quiz
     end
     # Define abilities for the passed in user here. For example:
     #

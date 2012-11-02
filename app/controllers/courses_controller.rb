@@ -1,7 +1,16 @@
 class CoursesController < ApplicationController
   load_and_authorize_resource   #cancan to check if user is allowed to perform an action. checks from ability.rb
+  before_filter :correct_user, :except => [:index]
   # GET /courses
   # GET /courses.json
+  def correct_user
+    @c=Course.find(params[:id])
+    puts "!!!!!!!!!!!!!!!!!!!!! course is #{@c.users.include?(current_user)} and other is #{@c.user == current_user} together #{ (!@c.users.include?(current_user))  and !(@c.user == current_user)}"
+    if !@c.users.include?(current_user) and !(@c.user == current_user)
+      redirect_to courses_path, :alert => "You are not authorized to see requested page"
+    end
+  end
+  
   def index
   
     if can? :update, @course #instructor   
@@ -147,7 +156,11 @@ class CoursesController < ApplicationController
   
   def courseware
     if params[:q]   #requesting quiz
-      @q= Quiz.find(params[:q]) 
+      #@q= Quiz.find(params[:q]) 
+      @q= Quiz.where(:id => params[:q], :course_id => params[:id]).first
+      if @q.nil?
+        redirect_to courseware_course_path(params[:id]), :alert => "No such quiz"
+      end
       @type="quiz"
       @answers= QuizGrade.select("question_id, answer_id").where(:user_id=>current_user.id , :quiz_id=> params[:q])
       @correct_answers= QuizGrade.where(:user_id=>current_user.id , :quiz_id=> params[:q]).select("distinct(question_id), grade")
@@ -174,7 +187,11 @@ class CoursesController < ApplicationController
     end
     
     if params[:l]   #requesting lecture
-      @q= Lecture.find(params[:l])
+      #@q= Lecture.find(params[:l])
+      @q= Lecture.where(:id => params[:l], :course_id => params[:id]).first
+      if @q.nil?
+        redirect_to courseware_course_path(params[:id]), :alert => "No such lecture"
+      end
       @type="lecture" 
       @url= get_answers_course_lecture_path(params[:id], params[:l])
       #@an= QuizGrade.select("question_id, answer_id").where(:user_id=>current_user.id , :quiz_id=> params[:q])
