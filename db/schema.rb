@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121025113224) do
+ActiveRecord::Schema.define(:version => 20121102112653) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -120,9 +120,9 @@ ActiveRecord::Schema.define(:version => 20121025113224) do
   create_table "quizzes", :force => true do |t|
     t.integer  "course_id"
     t.string   "name"
-    t.string   "instructions"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.text     "instructions", :limit => 255
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
   end
 
   create_table "roles", :force => true do |t|
