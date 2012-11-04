@@ -1,22 +1,23 @@
-<%= simple_nested_form_for([@course,@quiz]) do |f| %>
+<%= simple_nested_form_for([@course,@quiz], :html => { :class => 'form-horizontal' })  do |f| %>
   <%= f.error_notification %>
+  
 
   <div class="form-inputs">
    <!-- <%= f.input :course_id %> -->
     <%= f.input :name %>
-    <%= f.input :instructions %>
+    <%= f.input :instructions , :input_html => {:style => 'width: 250px; height: 50px'} %>
   </div>
 	
 	<%= f.fields_for :questions do |task_form| %>
-  	<%= task_form.text_field :content %>
+  	<%= task_form.input :content, :label => "Question", :input_html => {:style => 'width: 250px; height: 50px'} %>
   	<%= task_form.link_to_remove "Remove this question" %>
-		
+	<!-- <%= task_form.full_error :content %> -->	
   		<%= task_form.fields_for :answers do |t| %>
-  		<p style="background-color: #eeffff; margin-left: 40px; width: 400px">  <!-- style this better with css -->
-  		<%= t.text_field :content %>
-  		Correct answer? <%= t.check_box :correct  %><br>
+  		<!-- <p style="background-color: #eeffff; margin-left: 40px; width: 400px">  <!-- style this better with css --> 
+  		<%= t.input :content ,:label => "Answer", :label_html =>{:style => 'margin-left: 40px;' },:input_html => {:style => 'margin-left: 40px; width: 250px; height: 50px'} %>
+  		<%= t.input :correct ,:label => "Correct Answer?", :label_html =>{:style => 'margin-left: 40px;' }, :input_html => {:style => 'margin-left: 40px;'} %><br>
   		<%= t.link_to_remove "Remove this answer" %>
-  		</p>
+  		<!-- </p> -->
   		<% end %>
   		
   		<p><%= task_form.link_to_add "Add an answer", :answers %></p>

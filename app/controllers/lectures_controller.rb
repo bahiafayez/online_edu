@@ -13,8 +13,19 @@ class LecturesController < ApplicationController
   # GET /lectures/1
   # GET /lectures/1.json
   def show
-    @lecture = Lecture.find(params[:id])
+    #@lecture = Lecture.find(params[:id])
+    #@course = Course.find(params[:course_id])
+    
+    @lecture=Lecture.where(:id => params[:id], :course_id => params[:course_id])
     @course = Course.find(params[:course_id])
+    
+    if @lecture.empty?
+      redirect_to course_lectures_path(params[:course_id]), :alert=> "No such lecture"
+    else
+    
+    @lecture=@lecture.first
+    
+    
     @quizzes= OnlineQuiz.where(:lecture_id => params[:id])
     @url= get_answers_course_lecture_path(params[:course_id], params[:id])
     @s=params[:s] if params[:s]
@@ -22,6 +33,7 @@ class LecturesController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @lecture }
+    end
     end
   end
 
@@ -39,8 +51,17 @@ class LecturesController < ApplicationController
 
   # GET /lectures/1/edit
   def edit
-    @lecture = Lecture.find(params[:id])
+    #@lecture = Lecture.find(params[:id])
+    #@course = Course.find(params[:course_id])
+    
+    @lecture=Lecture.where(:id => params[:id], :course_id => params[:course_id])
     @course = Course.find(params[:course_id])
+    
+    if @lecture.empty?
+      redirect_to course_lectures_path(params[:course_id]), :alert=> "No such lecture"
+    else
+      @lecture=@lecture.first
+    end
   end
 
   # POST /lectures

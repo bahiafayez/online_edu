@@ -1,4 +1,4 @@
-<%= simple_nested_form_for(@course) do |f| %>
+<%= simple_nested_form_for(@course, :html => { :class => 'form-horizontal' }) do |f| %>
   <%= f.error_notification %>
 
   <div class="form-inputs">
@@ -6,8 +6,8 @@
     <%= f.input :name %>
     <%= f.input :start_date %>
     <%= f.input :duration, :label => "Duration (weeks)" %>
-    <%= f.input :description %>
-    <%= f.input :prerequisites %>
+    <%= f.input :description, :input_html => {:style => 'width: 210px; height: 100px'} %>
+    <%= f.input :prerequisites, :input_html => {:style => 'width: 210px; height: 100px'} %>
     
     
     <!-- Removed association for demo , could add it later-->

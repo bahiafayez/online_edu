@@ -13,13 +13,21 @@ class QuizzesController < ApplicationController
   # GET /quizzes/1
   # GET /quizzes/1.json
   def show
-    @quiz = Quiz.find(params[:id])
+    #@quiz = Quiz.find(params[:id])
+    @quiz=Quiz.where(:id => params[:id], :course_id => params[:course_id])
     @course = Course.find(params[:course_id])
+    
+    if @quiz.empty?
+      redirect_to course_quizzes_path(params[:course_id]), :alert=> "No such quiz"
+    else
+    
+    @quiz=@quiz.first
     @questions= @quiz.questions
 
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @quiz }
+    end
     end
   end
 
@@ -37,9 +45,19 @@ class QuizzesController < ApplicationController
 
   # GET /quizzes/1/edit
   def edit
-    @quiz = Quiz.find(params[:id])
-    @course = Course.find(params[:course_id])
+    #@quiz = Quiz.find(params[:id])
+    #@course = Course.find(params[:course_id])
 
+    @quiz=Quiz.where(:id => params[:id], :course_id => params[:course_id])
+    @course = Course.find(params[:course_id])
+    
+    if @quiz.empty?
+      redirect_to course_quizzes_path(params[:course_id]), :alert=> "No such quiz"
+    else 
+      @quiz=@quiz.first
+    end
+    
+      
   end
 
   # POST /quizzes
@@ -48,6 +66,7 @@ class QuizzesController < ApplicationController
     
      
     @quiz = Quiz.new(params[:quiz])
+    @course = Course.find(params[:course_id])
     @quiz.course_id = params[:course_id]
 
     respond_to do |format|
@@ -65,6 +84,8 @@ class QuizzesController < ApplicationController
   # PUT /quizzes/1.json
   def update
     @quiz = Quiz.find(params[:id])
+     @course = Course.find(params[:course_id])
+
 
     respond_to do |format|
       if @quiz.update_attributes(params[:quiz])

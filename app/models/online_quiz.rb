@@ -4,4 +4,5 @@ class OnlineQuiz < ActiveRecord::Base
   has_many :online_answers, :dependent => :destroy
   
   attr_accessible :lecture_id, :question, :time
+  validates :time, :presence => true
 end
