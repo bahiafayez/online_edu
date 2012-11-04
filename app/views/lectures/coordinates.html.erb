@@ -22,7 +22,7 @@
 
 <div class="row">
 <div class="span5">
-Please Click on where you'd like the buttons to be. [x and y coordinates should be integer values]
+Please Click on where you'd like the buttons to be.
 <div id="answer"></div>
 <!-- <%= link_to "Back to Lecture ", course_lecture_path(@course, @lecture)%> -->
 </div>
@@ -86,7 +86,7 @@ add_answer = function(left,top2,quiz,url,flag) {
     		check=''
     	}
     	
-    	html+="<tr id='row_"+resp['a'][e].id+"'><td><input type='text' style='width:30px' size='5' value='"+resp['a'][e].xcoor+"' name='xcoor["+resp['a'][e].id+"]' required='required' pattern='[0-9]*'></td><td><input type='text' pattern='[0-9]*'  style='width:30px' value='"+resp['a'][e].ycoor+"' name='ycoor["+resp['a'][e].id+"]' required='required'></td><td><input type='text' value='"+resp['a'][e].answer+"' name='reason["+resp['a'][e].id+"]'></td><td><input type='radio' name='quiz["+quiz+"]' value='"+resp['a'][e].id+"' "+check+" ></td><td><a data-remote='true' onclick=remove_answer("+resp['a'][e].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td></tr> "
+    	html+="<tr id='row_"+resp['a'][e].id+"'><td><input type='text' style='width:30px' size='5' value='"+resp['a'][e].xcoor+"' name='xcoor["+resp['a'][e].id+"]' required='required' pattern='[0-9]*' title='Integers only'></td><td><input type='text' pattern='[0-9]*'  title='Integers only' style='width:30px' value='"+resp['a'][e].ycoor+"' name='ycoor["+resp['a'][e].id+"]' required='required'></td><td><input type='text' value='"+resp['a'][e].answer+"' name='reason["+resp['a'][e].id+"]'></td><td><input type='radio' name='quiz["+quiz+"]' value='"+resp['a'][e].id+"' "+check+" ></td><td><a data-remote='true' onclick=remove_answer("+resp['a'][e].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td></tr> "
     	//could have type=number
     	
     }
@@ -96,7 +96,7 @@ add_answer = function(left,top2,quiz,url,flag) {
     }
     else{
     //document.getElementById("table_new").appendChild()
-    $('#table_new').append("<tr id='row_"+resp['current'].id+"'><td><input type='text' style='width:30px' size='5' value='"+left+"' name='xcoor["+resp['current'].id+"]' required='required' pattern='[0-9]*'></td><td><input type='text' pattern='[0-9]*' style='width:30px' value='"+top2+"' name='ycoor["+resp['current'].id+"]' required='required'></td><td><input type='text' value='"+resp['current'].answer+"' name='reason["+resp['current'].id+"]'></td><td><input type='radio' name='quiz["+quiz+"]' value='"+resp['current'].id+"' ></td><td><a data-remote='true' onclick=remove_answer("+resp['current'].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td></tr>")	
+    $('#table_new').append("<tr id='row_"+resp['current'].id+"'><td><input type='text' style='width:30px' size='5' value='"+left+"' name='xcoor["+resp['current'].id+"]' required='required' pattern='[0-9]*' title='Integers only'></td><td><input type='text' pattern='[0-9]*' title='Integers only' style='width:30px' value='"+top2+"' name='ycoor["+resp['current'].id+"]' required='required'></td><td><input type='text' value='"+resp['current'].answer+"' name='reason["+resp['current'].id+"]'></td><td><input type='radio' name='quiz["+quiz+"]' value='"+resp['current'].id+"' ></td><td><a data-remote='true' onclick=remove_answer("+resp['current'].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td></tr>")	
     }
 });
 
