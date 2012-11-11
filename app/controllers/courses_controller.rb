@@ -176,10 +176,17 @@ class CoursesController < ApplicationController
         end   
       end
       
-      @correct_answers.each do |s|
-        @correct[s.question_id]= s.grade
-      end
+      #puts "correct_answers #{@correct_answers.length}"
+      #puts "quiz count #{@q.questions}"
       
+      if @correct_answers.length == @q.questions.length   #Change this condition later, to display correct/incorrect IF and only IF quiz was submitted.
+      
+            @correct_answers.each do |s|
+              @correct[s.question_id]= s.grade
+              #puts "correct_answers #{s.question_id}"
+            end
+            
+      end
       
       
       
@@ -194,6 +201,8 @@ class CoursesController < ApplicationController
       end
       @type="lecture" 
       @url= get_answers_course_lecture_path(params[:id], params[:l])
+      @saveOnline= save_online_course_lecture_path(params[:id], params[:l])
+      @answered_path= answered_course_lecture_path(params[:id], params[:l])
       #@an= QuizGrade.select("question_id, answer_id").where(:user_id=>current_user.id , :quiz_id=> params[:q])
       #@out={}
       #@answers.each do |a|
@@ -284,6 +293,65 @@ class CoursesController < ApplicationController
     
     @data = @data.to_json   #json : javascript object!!
     
+    ############ If lecture #################
+    
+    if params[:l]   #requesting lecture
+      #@q= Lecture.find(params[:l])
+      @q= Lecture.where(:id => params[:l], :course_id => params[:id]).first
+      if @q.nil?
+        redirect_to progress_teacher_course_path(params[:id]), :alert => "No such lecture"
+      end
+      @type="lecture"
+       
+      @correct=[] 
+      @chart_data={} 
+      @q.online_quizzes.order(:time).each_with_index do |online_q, j|   
+        @chart_data[Time.at(online_q.time).gmtime.strftime('%R:%S')] = []      
+        online_q.online_answers.order('ycoor').each_with_index do |ans, i|
+          @correct[j]=i if ans.correct
+          @chart_data[Time.at(online_q.time).gmtime.strftime('%R:%S')]<<OnlineQuizGrade.where(:online_quiz_id => online_q.id, :online_answer_id => ans.id).length  
+          #must be ordered like this series=[{name => question1, data => [1,2,3,2,1]},{},{}] so first data is the count of question 1 in all quizzes
+        end  
+      end
+      
+      #sort chart_data according to keys.
+      
+      #@chart_data=Hash[@chart_data.sort] #ordered in query instead
+      
+      #first need to make all of them the same size so that we can transpose. DONE
+      # and we need to order answers by y coordinates.. DONE
+      # also order online quizzes by time. DONE
+      # need to indicate which is the correct answer.
+      
+      # there must be a better way than this!! here i make them all the same size by adding 0's to the smaller ones.
+      max=0 
+      @chart_data.values.each do |a|
+        max=a.length if a.length>max
+      end
+      
+      @chart_data.each do |k,v|
+        while v.length < max
+          v<<0
+        end
+      end
+      
+      
+      
+      @transposed=@chart_data.values.transpose
+      @otherway=[]
+      i=0;
+      @transposed.each do |t|
+        i+=1;
+        @otherway<<{:name => "Answer #{i}", :data => t}
+      end
+      @otherway = @otherway.to_json
+     end 
+     
+     
+     puts "correct is #{@correct}"
+     #finding out which is the correct answer
+      
+    
   end
   
   def progress_teacher_detailed
@@ -309,10 +377,7 @@ class CoursesController < ApplicationController
     @quiz_id=params[:quiz]
     @user_id=current_user.id
     
-    if @answers.empty? or @answers.keys.count < Quiz.find(@quiz_id).questions.count  #there qere unanswered questions.
-      redirect_to courseware_course_path(params[:id], :q=>@quiz_id), :alert => "There are unanswered questions"
-    else 
-    
+   
     
     #delete old ones
     a=QuizGrade.where(:user_id => @user_id, :quiz_id => @quiz_id)
@@ -345,6 +410,9 @@ class CoursesController < ApplicationController
       end
       #QuizGrade.create(:user_id => @user_id, :quiz_id => @quiz_id, :question_id => a[0], :answer_id => a[1], :grade => 0  )
     #end
+     if @answers.empty? or @answers.keys.count < Quiz.find(@quiz_id).questions.count  #there qere unanswered questions.
+      redirect_to courseware_course_path(params[:id], :q=>@quiz_id), :alert => "There are unanswered questions"
+    else 
     
     respond_to do |format|
       format.html {redirect_to courseware_course_path(params[:id], :q => @quiz_id), notice: 'Quiz was successfully submitted.'}

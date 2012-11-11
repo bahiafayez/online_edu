@@ -128,9 +128,17 @@ class LecturesController < ApplicationController
   # DELETE /lectures/1
   # DELETE /lectures/1.json
   def coordinates
-    @quiz=OnlineQuiz.find(params[:quiz])
+    #@quiz=OnlineQuiz.find(params[:quiz])
+    @quiz=OnlineQuiz.where(:id => params[:quiz], :lecture_id => params[:id])
     @course= Course.find(params[:course_id])
     @lecture= Lecture.find(params[:id])
+    
+    if @quiz.empty?
+      redirect_to course_lecture_path(@course, @lecture), :alert => "Requested quiz does not exist"
+    else
+      @quiz=@quiz.first
+    end
+    
   end
   
   def add_answer
@@ -141,7 +149,7 @@ class LecturesController < ApplicationController
     @answers= OnlineAnswer.where(:online_quiz_id => params[:quiz])#.pluck(:time)
     @course= Course.find(params[:course_id])
     @lecture= Lecture.find(params[:id])
-    @loc= coordinates_course_lecture_path(@course,@lecture)
+    @loc= coordinates_course_lecture_path(@course,@lecture, :quiz => params[:quiz])
     @loc2=remove_answer_course_lecture_path(@course,@lecture)
     @save= save_answers_course_lecture_path(@course,@lecture)
     #@loc3=coordinates_course_lecture_path(@course,@lecture)
@@ -198,7 +206,33 @@ class LecturesController < ApplicationController
   
   def get_answers
     @a= OnlineQuiz.find(params[:quiz]).online_answers
-    render json: @a
+    @answered= !OnlineQuizGrade.where(:user_id => current_user.id, :online_quiz_id => params[:quiz]).empty? ? "Answered" : "Not Answered"
+    render json: {:answers => @a, :ans => @answered}
+  end
+  
+  def save_online
+    @answer= params[:answer]
+    @quiz= params[:quiz]
+    @grade = params[:correct]=="Correct" ? 1 : 0
+    a= OnlineQuizGrade.where(:user_id => current_user.id, :online_quiz_id => @quiz)
+    if a.empty?
+      OnlineQuizGrade.create(:user_id => current_user.id, :online_quiz_id => @quiz, :online_answer_id => @answer, :grade => @grade)
+      render json: {:msg => "Successfully Submitted"}
+    else
+      render json: {:msg =>"Sorry, you already answered this question", :ans => a.first.online_answer_id }
+    end
+  end
+  
+  def answered
+    #@quiz= params[:quiz]
+    @lecture = Lecture.find(params[:id])
+    @qs=@lecture.online_quizzes.find(:all, :order => 'time')
+    @answered=[]
+    @qs.each do |q|
+      @answered<< !OnlineQuizGrade.where(:user_id => current_user.id, :online_quiz_id => q.id).empty?  
+    end
+    
+    render json: {:answered => @answered, :qs => @qs}
   end
   
   def destroy

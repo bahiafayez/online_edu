@@ -7,6 +7,10 @@
         min-height:400px;
         z-index:99;
 	}
+	
+	.myclass{
+		width:100px;
+	}
 </style>
 
 <% content_for :extra do %>
@@ -30,7 +34,7 @@ Please Click on where you'd like the buttons to be.
 <div class="span7">
 	
 <center><div style="width:600px" >
-<div class="ontop"></div>
+<div class="ontop" id="ontop"></div>
 <div id="youtube" style="width:600px;height:400px;"></div>
 <div id="foo"></div>
 </div></center>
@@ -75,6 +79,7 @@ add_answer = function(left,top2,quiz,url,flag) {
     	
     if(document.getElementById("answer").innerHTML==""){	
     html="<form data-validate='yes' name='input' action='"+resp['save']+"' method='get'><table id='table_new' class='table table-striped'> <tr><th>X</th><th>Y</th><th>Explanation</th><th>Correct</th><th></th><th></th></tr>"
+    html2=""
     console.debug(resp['a'])
     
     for(e in resp['a'])
@@ -86,23 +91,44 @@ add_answer = function(left,top2,quiz,url,flag) {
     		check=''
     	}
     	
-    	html+="<tr id='row_"+resp['a'][e].id+"'><td><input type='text' style='width:30px' size='5' value='"+resp['a'][e].xcoor+"' name='xcoor["+resp['a'][e].id+"]' required='required' pattern='[0-9]*' title='Integers only'></td><td><input type='text' pattern='[0-9]*'  title='Integers only' style='width:30px' value='"+resp['a'][e].ycoor+"' name='ycoor["+resp['a'][e].id+"]' required='required'></td><td><input type='text' value='"+resp['a'][e].answer+"' name='reason["+resp['a'][e].id+"]'></td><td><input type='radio' name='quiz["+quiz+"]' value='"+resp['a'][e].id+"' "+check+" ></td><td><a data-remote='true' onclick=remove_answer("+resp['a'][e].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td></tr> "
-    	//could have type=number
+    	html+="<tr id='row_"+resp['a'][e].id+"'><td><input type='text' onchange='positionChanged("+resp['a'][e].id+")' style='width:30px' size='5' value='"+resp['a'][e].xcoor+"' name='xcoor["+resp['a'][e].id+"]' id='xcoor["+resp['a'][e].id+"]' required='required' pattern='[0-9]*' title='Integers only'></td><td><input type='text' onchange='positionChanged("+resp['a'][e].id+")' pattern='[0-9]*'  title='Integers only' style='width:30px' value='"+resp['a'][e].ycoor+"' name='ycoor["+resp['a'][e].id+"]' id='ycoor["+resp['a'][e].id+"]' required='required'></td><td><input type='text' value='"+resp['a'][e].answer+"' name='reason["+resp['a'][e].id+"]'></td><td><input type='radio' name='quiz["+quiz+"]' value='"+resp['a'][e].id+"' "+check+" ></td><td><a data-remote='true' onclick=remove_answer("+resp['a'][e].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td></tr> "
+    	title="button"
+    	reason=resp['a'][e].xcoor+", "+resp['a'][e].ycoor
+    	top3= parseFloat(resp['a'][e].ycoor)-8;
+    	left3= parseFloat(resp['a'][e].xcoor)-8;
+    	html2+="<input rel='popover' class='pop' data-content=\""+reason+"\" id='button_"+resp['a'][e].id+"' type='radio' name='group1' value="+resp['a'][e].id+" style='position:absolute;top:"+top3+"px; left: "+left3+"px;'>"//could have type=number
     	
     }
     
     html+="</table><br><center> <input type='submit' value='Save'> </center></form>"
     document.getElementById("answer").innerHTML=html;
+    document.getElementById("ontop").innerHTML=html2;
+    $("[rel=popover]").popover({trigger: 'hover', template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'});
     }
     else{
     //document.getElementById("table_new").appendChild()
-    $('#table_new').append("<tr id='row_"+resp['current'].id+"'><td><input type='text' style='width:30px' size='5' value='"+left+"' name='xcoor["+resp['current'].id+"]' required='required' pattern='[0-9]*' title='Integers only'></td><td><input type='text' pattern='[0-9]*' title='Integers only' style='width:30px' value='"+top2+"' name='ycoor["+resp['current'].id+"]' required='required'></td><td><input type='text' value='"+resp['current'].answer+"' name='reason["+resp['current'].id+"]'></td><td><input type='radio' name='quiz["+quiz+"]' value='"+resp['current'].id+"' ></td><td><a data-remote='true' onclick=remove_answer("+resp['current'].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td></tr>")	
+    top3= parseFloat(top2)-8;
+    left3= parseFloat(left)-8;
+    reason=left+", "+top2
+    $('#ontop').append("<input rel='popover' class='pop' data-content=\""+reason+"\" id='button_"+resp['current'].id+"' type='radio' name='group1' value="+resp['current'].id+" style='position:absolute;top:"+top3+"px; left: "+left3+"px;'>")//could have type=number)
+    $('#table_new').append("<tr id='row_"+resp['current'].id+"'><td><input type='text' onchange='positionChanged("+resp['current'].id+")' style='width:30px' size='5' value='"+left+"' name='xcoor["+resp['current'].id+"]' id='xcoor["+resp['current'].id+"]' required='required' pattern='[0-9]*' title='Integers only'></td><td><input type='text' pattern='[0-9]*' title='Integers only' style='width:30px' onchange='positionChanged("+resp['current'].id+")' value='"+top2+"' name='ycoor["+resp['current'].id+"]' id='ycoor["+resp['current'].id+"]' required='required'></td><td><input type='text' value='"+resp['current'].answer+"' name='reason["+resp['current'].id+"]'></td><td><input type='radio' name='quiz["+quiz+"]' value='"+resp['current'].id+"' ></td><td><a data-remote='true' onclick=remove_answer("+resp['current'].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td></tr>")	
+    $("[rel=popover]").popover({trigger: 'hover', template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'
+});
     }
 });
 
 };
 
-
+positionChanged= function(id){
+	x=document.getElementById("xcoor["+id+"]").value
+	y=document.getElementById("ycoor["+id+"]").value
+	reason=x+", "+y
+	y=y-8
+	x=x-8
+	document.getElementById("button_"+id).style.top=y+"px";
+	document.getElementById("button_"+id).style.left=x+"px";
+	document.getElementById("button_"+id).attributes.getNamedItem('data-content').value=reason
+}
 remove_answer = function(answer,url, quiz) {
     //console.debug("time is "+pop.currentTime())
     $.getJSON(url,{"answer":answer , "quiz":quiz}, function(resp){
@@ -129,6 +155,7 @@ remove_answer = function(answer,url, quiz) {
     
     //document.getElementById("answer").innerHTML=html;
     $("tr#row_"+answer).remove();
+    $("#button_"+answer).remove();
 });
 
 };

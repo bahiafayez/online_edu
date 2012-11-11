@@ -1,4 +1,6 @@
 OnlineEdu::Application.routes.draw do
+  resources :online_quiz_grades
+
   ActiveAdmin.routes(self)
 
   devise_for :admin_users, ActiveAdmin::Devise.config
@@ -50,14 +52,22 @@ OnlineEdu::Application.routes.draw do
         get 'remove_answer'
         get 'get_answers'
         get 'save_answers'
+        get 'save_online'
+        get 'answered'
       end
     end
     
 end
 
   authenticated :user do
-    root :to => 'home#index'
+    #root :to => 'home#index'
+    root :to => 'courses#index' #later make this home#index when we have a home#index!!
   end
+  
+  #authenticated :admin_user do
+  #  root :to => 'admin#dashboard'
+  #end
+  
   root :to => "home#index"
   devise_for :users
   resources :users

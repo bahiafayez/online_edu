@@ -26,6 +26,24 @@
 <div id="youtube" style="width:600px;height:400px;"></div>
 </div></center>
 
+
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 id="myModalLabel">Modal header</h3>
+</div>
+<div class="modal-body">
+<p id="bookid"></p>
+<div id='others'></div>
+</div>
+
+<div class="modal-footer">
+<div id='message'></div>
+<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+<!-- <button class="btn btn-primary">Save changes</button> -->
+</div>
+</div>
+
 <script>
 var pop;
 
@@ -77,19 +95,34 @@ pop.controls( false );
 pop.play();
 
 // I want to add the skip buttons
-skip="Skip to "
+skip="Skip to <select><option></option>"  ;
 
 
 
-data= <%= raw lecture.online_quizzes.to_json %>;   // important how to convert rails array of objects to JS array of objects
+//data= <%= raw lecture.online_quizzes.find(:all, :order => 'time').to_json %>;   // important how to convert rails array of objects to JS array of objects
    
-   for(element in data) {
-      
-      skip+="<button onclick='skip_to("+data[element].time+")'>Q"+element+" - "+formatSecondsAsTime(data[element].time)+"</button>"
-      
-           }
+   // getting which quizzes were answered to put that in the skip to menu
+//   for(element in data) {
+   		$.getJSON("<%= @answered_path %>", function(resp){
+      answered2= resp['answered']
+      qs=resp['qs']
+      for(element in qs){
+      	console.debug("element is "+element+" and qs[element] is "+qs[element].time+" answered is "+answered2[element])
+      //skip+="<button onclick='skip_to("+data[element].time+")'>Q"+element+" - "+formatSecondsAsTime(data[element].time)+"</button>"
+      if(answered2[element]){
+      	answered="Answered"
+      }else{
+      	answered="Not Answered"
+      }
+      skip+="<option onclick='skip_to("+qs[element].time+")'>Q"+element+" - "+formatSecondsAsTime(qs[element].time)+" - "+answered+"</option>"
+       console.debug("skip isss "+skip)
+      }
+		skip+="</select>";
+		document.getElementById("foo").innerHTML=skip
+        });
+           
 
-document.getElementById("foo").innerHTML=skip
+
 
 
 // pop.listen("play", function(){
@@ -102,7 +135,7 @@ document.getElementById("foo").innerHTML=skip
 // });
 
 
-
+currentID=""
 pop.listen( "timeupdate", function() {
     //console.log( this.currentTime() );
     a= <%= raw lecture.online_quizzes.to_json %>;   // important how to convert rails array of objects to JS array of objects
@@ -119,31 +152,41 @@ pop.listen( "timeupdate", function() {
            pop.pause();
            flag=1;
            last=parseFloat(a[key].time)
-           
+           currentID = a[key].id
            // now i want to get the answers
+           console.debug("before "+a[key].id)
+          
             $.getJSON("<%= @url %>",{"quiz":a[key].id }, function(resp){
+    			console.debug("after "+a[key].id) // changes for some reason so stick to currentID
     			//console.debug(resp)
+    			everything={}
+    			ordered={}
     			html=""
-    			for(answer in resp) {
-           			top3= parseFloat(resp[answer].ycoor)-5;
-           			left= parseFloat(resp[answer].xcoor)-8;
+    			for(answer in resp['answers']) {
+           			top3= parseFloat(resp['answers'][answer].ycoor)-8;
+           			left= parseFloat(resp['answers'][answer].xcoor)-8;
            			
-           			reason= resp[answer].answer
-           			if(resp[answer].correct==true)
+           			reason= resp['answers'][answer].answer
+           			if(resp['answers'][answer].correct==true)
            			{
            				title="<b style='color:green'>Correct</b>"
+           				t2="Correct"
            			}else{
            				title="<b style='color:red'>Incorrect</b>"
+           				t2="Incorrect"
            			}
            			
-           			console.debug( "x: "+top3+" y:"+left+" reason: "+resp[answer].answer)
-           			
-           			html+="<button rel='popover' id='"+resp[answer].id+"' data-original-title=\""+title+"\" class='pop' data-content=\""+reason+"\"  style='position:absolute; width: 3px; height: 5px; border: 1px solid #006; background: #9cf; top:"+top3+"px; left: "+left+"px;'></button>"
+           			console.debug( "x: "+top3+" y:"+left+" reason: "+resp['answers'][answer].answer)
+           			everything[resp['answers'][answer].id]=[t2, reason]
+           			ordered[resp['answers'][answer].ycoor]=[resp['answers'][answer].id,title, reason]
+           			console.debug("current ID is "+currentID)
+           			console.debug("a[key].id iss "+a[key].id)
+           			html+="<input name='button_"+currentID+"'type='radio' rel='popover' id='"+resp['answers'][answer].id+"' data-original-title=\""+title+"\" class='pop' data-content=\""+reason+"\" style='position:absolute; border: 1px solid #006; background: #9cf; top:"+top3+"px; left: "+left+"px;'>"
            			//onclick='show_reason(\""+reason+"\")'
            			//$('.pop').popover()
-           			document.getElementById("ontop").innerHTML=html;
            			
-           			$("[rel=popover]").popover(); //{trigger: 'manual'}
+           			
+           			//$("[rel=popover]").popover(); //{trigger: 'manual'}
            			
            			
            			//console.debug( "x: "+top3+" y:"+left)
@@ -151,6 +194,85 @@ pop.listen( "timeupdate", function() {
            			//document.getElementById("ontop").innerHTML=html;
            			// absolute therefore xpos relative to parent div. i.e. xpos min awel el video.
     		}
+    		console.debug("answereddd? "+resp['ans'])
+    		html += "<input class='check' type='button' data-toggle='modal' data-target='#myModal' style='position:absolute; top:340px; left:240px' value='Check My Answer'></button><p style='color:red; background-color:white;position:relative;'>"+resp['ans']+"</p>"
+    		document.getElementById("ontop").innerHTML=html;
+    		
+    		$(document).on("click", ".check", function () {
+    			var selected= checkedRadioBtn('button_'+currentID)
+    			if(selected==null)
+    			{
+    				$(".modal-body #bookid").text("")
+    				$('div#others').html(" ");
+    				$('div#message').html(" ");
+    				$("#myModalLabel").text("Please Choose an Answer")
+    				$("#myModalLabel").css('color','red');
+    				return
+    			}
+    			
+    			var message=""
+    			
+			     //var myBookId = $(this).data('id');
+			     console.debug("selected is"+selected)
+			     //console.debug("message outside isss"+message)
+			     // Display chosen answer first
+			     $(".modal-body #bookid").text( everything[selected][1] );
+			     //$("#myModalLabel").text(everything[selected][0])
+			     if(everything[selected][0]=="Correct"){
+			     	$("#myModalLabel").css('color','green');
+			     }else{
+			     	$("#myModalLabel").css('color','red');
+			     }
+			     // Display other answers
+			     var f=0;
+			     others="<table class='table table-striped'>"
+			     
+			     arr1=Object.keys(ordered)
+			     var result = arr1.map(function (x) { 
+				    return parseInt(x); 
+				});
+				sorted= result.sort(function(a,b){return a-b}) // needed to add function to sort numeric, otherwise sorts alphabetic
+				
+				// here call the controller function to save to database!!
+    			$.getJSON("<%= @saveOnline %>",{"quiz":currentID, "answer":selected , "correct":everything[selected][0]}, function(resp){
+    				message=resp["msg"]
+    				console.debug("message issssss"+message)
+    				//console.debug("quiz time is "+a[key].time)
+    				var f2=0
+    				if(resp['ans'])
+    				{
+    					for (var k in sorted) {
+					     	f2++;
+					     	console.debug("k is "+k)
+					     	if(ordered[sorted[k]][0]==resp['ans']){
+					     		break;
+		    				}
+		    			}
+		    			message+= " Your Answer: "+f2;
+		    		}
+    				$('div#message').html("<b style='color:red;float:left'>"+message+"</b>");
+    			});
+			     
+			     // displaying the answers on modal
+			     for (var k in sorted) {
+			     	f++;
+			     	console.debug("k is "+k)
+			     	if(ordered[sorted[k]][0]==selected){
+			     		$("#myModalLabel").text(f+"-"+everything[selected][0])
+			     		}
+			     	else{
+			     		others+="<tr><td>"+f+"</td><td>"+ordered[""+sorted[k]][1]+"</td><td>"+ordered[""+sorted[k]][2]+"</td></tr>"
+			     	}
+			     		
+			     }
+			     console.debug(sorted)
+			     others+="</table>"
+			     $('div#others').html(others);
+			     
+			    $('#myModal').modal('show');
+			});
+			    		
+    		
     		});
            
            // need timer here so don't pause twice!!
@@ -177,4 +299,20 @@ pop.listen( "timeupdate", function() {
 
 
 });
+
+
+function checkedRadioBtn(sGroupName)
+    {   
+        var group = document.getElementsByName(sGroupName);
+
+        for ( var i = 0; i < group.length; i++) {
+            if (group.item(i).checked) {
+                return group.item(i).id;
+            } else if (group[0].type !== 'radio') {
+                //if you find any in the group not a radio button return null
+                return null;
+            }
+        }
+        return null
+    }
 </script>

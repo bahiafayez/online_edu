@@ -127,7 +127,7 @@ function skip_to(time)
 	{
 		pop.currentTime(time-0.5);
 	}
-	
+	console.debug(pop.currentTime())
 	//pop.play();	
 }
 
@@ -230,18 +230,19 @@ var slides = {1.2 : [4, 1, "This is my first question"],  //need to change cuepo
 
 student= <%= @s %>
 //console.debug("student isss "+student)
-skip="Skip to "
 
+skip="Skip to <select><option></option>"  ; 
 
-if (student==true){
-data= <%= raw @lecture.online_quizzes.to_json %>;   // important how to convert rails array of objects to JS array of objects
-   
+if(student==true){
+  // important how to convert rails array of objects to JS array of objects
+data= <%= raw @lecture.online_quizzes.find(:all, :order => 'time').to_json %>;  //to order by time
+
    for(element in data) {
       
-      skip+="<button onclick='skip_to("+data[element].time+")'>Q"+element+" - "+formatSecondsAsTime(data[element].time)+"</button>"
-      
+     // skip+="<button onclick='skip_to("+data[element].time+")'>Q"+element+" - "+formatSecondsAsTime(data[element].time)+"</button>"
+      skip+="<option onclick='skip_to("+data[element].time+")'>Q"+element+" - "+formatSecondsAsTime(data[element].time)+"</option>"
            }
-
+skip+="</select>";
 document.getElementById("foo").innerHTML=skip
 console.debug("inside student is true")
 }            
@@ -256,7 +257,7 @@ if(student==true)
     //console.debug(a[0])
            for(key in a) {
           //console.debug("online quiz time isss "+a[key].time)
-          //console.debug("flag isss "+flag)
+          console.debug("flag isss "+flag)
            if(this.currentTime()> parseFloat(a[key].time) && this.currentTime()< parseFloat(a[key].time)+0.5 &&  flag==0 )
            {
            //console.debug("more than 4 seconds");
@@ -286,9 +287,6 @@ if(student==true)
            			html+="<button rel='popover' id='"+resp[answer].id+"' data-original-title=\""+title+"\" class='pop' data-content=\""+reason+"\"  style='position:absolute; width: 3px; height: 5px; border: 1px solid #006; background: #9cf; top:"+top3+"px; left: "+left+"px;'></button>"
            			//onclick='show_reason(\""+reason+"\")'
            			//$('.pop').popover()
-           			document.getElementById("ontop").innerHTML=html;
-           			
-           			$("[rel=popover]").popover(); //{trigger: 'manual'}
            			
            			//$("[rel=popover]").click(function(event){
 						//$('.pop').popover('hide')
@@ -301,6 +299,13 @@ if(student==true)
 					//});
            			// absolute therefore xpos relative to parent div. i.e. xpos min awel el video.
     		}
+    		
+    		
+    		document.getElementById("ontop").innerHTML=html;
+           			
+           	$("[rel=popover]").popover({trigger: 'hover'}); //{trigger: 'manual'}
+           			
+           			
     		});
            
            // need timer here so don't pause twice!!
