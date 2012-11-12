@@ -1,0 +1,34 @@
+<%= render 'shared/head' %>
+
+<p>
+  <b>Name:</b>
+  <%= @group.name %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @group.description %>
+</p>
+
+<p>
+  <b>Course:</b>
+  <%= @group.course_id %>
+</p>
+
+<p>
+  <b>Lectures:</b>
+  <% @group.lectures.each do |l| %>
+  	 <%=link_to l.name, course_lecture_path(@course,l) %>
+  <% end %>
+</p>
+
+<p>
+  <b>Quizzes:</b>
+  <% @group.quizzes.each do |q| %>
+  	 <%=link_to q.name, course_quiz_path(@course,q)%>
+  <% end %>
+</p>
+
+
+<%= link_to 'Edit', edit_course_group_path(@course,@group) %> |
+<%= link_to 'Back', course_groups_path(@course) %>

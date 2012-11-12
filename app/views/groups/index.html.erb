@@ -1,0 +1,29 @@
+<%= render 'shared/head' %>
+
+<h1>Listing groups</h1>
+
+<table class="table table-striped">
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Course</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @groups.each do |group| %>
+  <tr>
+    <td><%= group.name %></td>
+    <td><%= group.description %></td>
+    <td><%= group.course_id %></td>
+    <td><%= link_to 'Show', [@course,group] %></td>
+    <td><%= link_to 'Edit', edit_course_group_path(@course,group) %></td>
+    <td><%= link_to 'Destroy', [@course,group], method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Group', new_course_group_path(@course) %>

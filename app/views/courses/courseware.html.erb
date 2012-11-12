@@ -14,47 +14,63 @@
 
 
 <div class="accordion" id="accordion2">
+
+<% @course.groups.each do |g| %>	
 <div class="accordion-group">
 <div class="accordion-heading">
-<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-<center>Quizzes</center>
-</a>
-</div>
-<% if @type == "quiz"%>
-<div id="collapseOne" class="accordion-body collapse in">
-<% else %>
-<div id="collapseOne" class="accordion-body collapse">
-<% end %>
+	
+<center><%= link_to g.name, "#group_#{g.id}", :class =>"accordion-toggle", "data-toggle"=> "collapse", "data-parent"=>"#accordian2" %></center>
 
-<% @course.quizzes.each do |q| %>	
+</div>
+<% if @typeGroup == g.id %> <!-- opening the group we're in -->
+<%= div_for(g, :class =>"accordion-body collapse in" ) do %>
+<% flag=1 %>
+<% g.lectures.each do |q| %>	
+<% flag=0 %>
 <div class="accordion-inner">
-<%= link_to q.name, courseware_course_path(@course, :q => q) , :class => "quiz"%>
+<%= link_to "Lecture: #{q.name}", courseware_course_path(@course, :l => q) , :class => "quiz"%>
 </div>
 <% end %>
-
-
-</div>
-</div>
-<div class="accordion-group">
-<div class="accordion-heading">
-<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
-<center>Lectures</center>
-</a>
-</div>
-<% if @type == "lecture"%>
-<div id="collapseTwo" class="accordion-body collapse in">
-<% else %>
-<div id="collapseTwo" class="accordion-body collapse">
-<% end %>
-<% @course.lectures.each do |q| %>
+<% g.quizzes.each do |q| %>	
+<% flag=0 %>
 <div class="accordion-inner">
-<%= link_to q.name, courseware_course_path(@course, :l => q)  , :class => "lecture"%>
+<%= link_to "Quiz: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz"%>
+</div>
+<% end %>
+<% if flag==1 %>
+<div class="accordion-inner">
+Empty
+</div>
+<% end %>
+
+<% end %>
+<% else %>
+<%= div_for(g, :class =>"accordion-body collapse" ) do %> <!-- closing the groups we're not in -->
+<% flag=1 %>
+<% g.lectures.each do |q| %>	
+<% flag=0 %>
+<div class="accordion-inner">
+<%= link_to "Lecture: #{q.name}", courseware_course_path(@course, :l => q) , :class => "quiz"%>
+</div>
+<% end %>
+<% g.quizzes.each do |q| %>	
+<% flag=0 %>
+<div class="accordion-inner">
+<%= link_to "Quiz: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz"%>
+</div>
+<% end %>
+<% if flag==1 %>
+<div class="accordion-inner">
+Empty
+</div>
+<% end %>
+
+<% end %>
+<% end %>
+
 </div>
 <% end %>
 </div>
-</div>
-</div>
-
 </div>
 
 <div class="span9">

@@ -6,6 +6,8 @@
     <%= f.input :name %>
     <%= f.input :description , :input_html => {:style => 'width: 210px; height: 100px'} %>
     <%= f.input :url %>
+    <%= f.association :group , :collection => Group.where(:course_id => @course.id) %>
+    
   </div>
 
   <div class="form-actions">

@@ -162,6 +162,7 @@ class CoursesController < ApplicationController
         redirect_to courseware_course_path(params[:id]), :alert => "No such quiz"
       end
       @type="quiz"
+      @typeGroup=@q.group.id
       @answers= QuizGrade.select("question_id, answer_id").where(:user_id=>current_user.id , :quiz_id=> params[:q])
       @correct_answers= QuizGrade.where(:user_id=>current_user.id , :quiz_id=> params[:q]).select("distinct(question_id), grade")
       @out={}
@@ -200,6 +201,7 @@ class CoursesController < ApplicationController
         redirect_to courseware_course_path(params[:id]), :alert => "No such lecture"
       end
       @type="lecture" 
+      @typeGroup=@q.group.id
       @url= get_answers_course_lecture_path(params[:id], params[:l])
       @saveOnline= save_online_course_lecture_path(params[:id], params[:l])
       @answered_path= answered_course_lecture_path(params[:id], params[:l])
@@ -285,7 +287,7 @@ class CoursesController < ApplicationController
               num+=1.0
             end
           end
-          @quizScores<< num/q.questions.count * 100
+          @quizScores<< num/q.questions.count * 100 if !q.questions.empty?
       end
       @data<<{:name => q.name, :data => @quizScores}
       @quizScores=[]
