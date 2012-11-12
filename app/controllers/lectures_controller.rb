@@ -213,10 +213,11 @@ class LecturesController < ApplicationController
   def save_online
     @answer= params[:answer]
     @quiz= params[:quiz]
+    @lecture= Lecture.find(params[:id])
     @grade = params[:correct]=="Correct" ? 1 : 0
     a= OnlineQuizGrade.where(:user_id => current_user.id, :online_quiz_id => @quiz)
     if a.empty?
-      OnlineQuizGrade.create(:user_id => current_user.id, :online_quiz_id => @quiz, :online_answer_id => @answer, :grade => @grade)
+      OnlineQuizGrade.create(:lecture_id => params[:id], :user_id => current_user.id, :online_quiz_id => @quiz, :online_answer_id => @answer, :grade => @grade)
       render json: {:msg => "Successfully Submitted"}
     else
       render json: {:msg =>"Sorry, you already answered this question", :ans => a.first.online_answer_id }

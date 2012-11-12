@@ -195,7 +195,7 @@ pop.listen( "timeupdate", function() {
            			// absolute therefore xpos relative to parent div. i.e. xpos min awel el video.
     		}
     		console.debug("answereddd? "+resp['ans'])
-    		html += "<input class='check' type='button' data-toggle='modal' data-target='#myModal' style='position:absolute; top:340px; left:240px' value='Check My Answer'></button><p style='color:red; background-color:white;position:relative;'>"+resp['ans']+"</p>"
+    		html += "<input class='check' type='button' data-toggle='modal' data-target='#myModal' style='position:absolute; top:340px; left:240px' value='Check My Answer'></button><p id='tochange' style='color:red; background-color:white;position:relative;'>"+resp['ans']+"</p>"
     		document.getElementById("ontop").innerHTML=html;
     		
     		$(document).on("click", ".check", function () {
@@ -250,6 +250,8 @@ pop.listen( "timeupdate", function() {
 		    			}
 		    			message+= " Your Answer: "+f2;
 		    		}
+		    		document.getElementById('tochange').textContent="Answered"  // kda kda either not and now answered, or answered both ways
+    				//document.getElementById('skipper'+currentID).textContent="Answered"
     				$('div#message').html("<b style='color:red;float:left'>"+message+"</b>");
     			});
 			     

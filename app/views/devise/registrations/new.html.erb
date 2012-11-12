@@ -5,6 +5,7 @@
   <%= f.input :email, :required => true %>
   <%= f.input :password, :required => true %>
   <%= f.input :password_confirmation, :required => true %>
+  
 <!--   <% for role in Role.find(:all) %>   only admin can set roles
     <div>
       <%= check_box_tag "user[role_ids][]", role.id, @user.roles.include?(role) %>

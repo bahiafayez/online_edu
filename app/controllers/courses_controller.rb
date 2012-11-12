@@ -349,6 +349,38 @@ class CoursesController < ApplicationController
       @otherway = @otherway.to_json
      end 
      
+     #if progress chart
+     if params[:p]
+       @type="Progress"
+       @p="Progress Chart"
+       @student_progress={}
+       @students.each do |s|
+         #getting number of quizzes student solved in this course (long since course_id not in table.. should consider adding it)
+         # now any question solved in the quiz and i consider it, later only consider those with status = submitted
+         @n_solved=s.quiz_grades.select('distinct quiz_id').select{|v| Course.find(@course.id).quizzes.pluck(:id).include?v.quiz_id}.length
+         @n_total= Course.find(@course.id).quizzes.count
+         #number of lectures where i count a lecture if atleast one online quiz is solved.
+         @nl_solved=s.online_quiz_grades.select('distinct lecture_id').select{|v| Course.find(@course.id).lectures.pluck(:id).include?v.lecture_id}.length
+         @nl_total= Course.find(@course.id).lectures.count 
+         
+         if @n_solved.nil? || @n_total==0
+           @result1=0
+         else
+           @result1=@n_solved.to_f/@n_total.to_f*100
+         end
+         
+         if @nl_solved.nil? || @nl_total==0
+           @result2=0
+         else
+           @result2=@nl_solved.to_f/@nl_total.to_f*100
+         end
+         
+         @student_progress[s.id]=[s.name, @result1, @result2]
+       end
+       @student_progress_json= @student_progress.to_json
+       logger.debug("student progress is #{@student_progress_json}")
+     end
+     
      
      puts "correct is #{@correct}"
      #finding out which is the correct answer

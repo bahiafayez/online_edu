@@ -44,6 +44,27 @@
 <% end %>
 </div>
 </div>
+
+
+<div class="accordion-group">
+<div class="accordion-heading">
+<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">
+<center>Progress</center>
+</a>
+</div>
+<% if @type == "Progress"%>
+<div id="collapseThree" class="accordion-body collapse in">
+<% else %>
+<div id="collapseThree" class="accordion-body collapse">
+<% end %>
+
+<div class="accordion-inner">
+<%= link_to "Progress Chart", progress_teacher_course_path(@course, :p => "p")  , :class => "lecture"%>
+</div>
+
+</div>
+</div>
+
 </div>
 
 </div>
@@ -51,6 +72,9 @@
 <div class="span9">
 <% if @q %>
 	<%= render 'chart1' %>
+<% end %>
+<% if @p %>
+	<%= render 'chart_progress' %>
 <% end %>
 </div>
 </div>

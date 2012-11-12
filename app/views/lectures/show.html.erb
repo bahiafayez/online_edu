@@ -253,7 +253,7 @@ if(student==true)
     //console.debug(a[0])
            for(key in a) {
           //console.debug("online quiz time isss "+a[key].time)
-          console.debug("flag isss "+flag)
+          //console.debug("flag isss "+flag)
            if(this.currentTime()> parseFloat(a[key].time) && this.currentTime()< parseFloat(a[key].time)+0.5 &&  flag==0 )
            {
            //console.debug("more than 4 seconds");
@@ -267,20 +267,20 @@ if(student==true)
             $.getJSON("<%= @url %>",{"quiz":a[key].id }, function(resp){
     			//console.debug(resp)
     			html=""
-    			for(answer in resp) {
-           			top3= parseFloat(resp[answer].ycoor)-5;
-           			left= parseFloat(resp[answer].xcoor)-8;
-           			reason= resp[answer].answer
-           			if(resp[answer].correct==true)
+    			for(answer in resp['answers']) {
+           			top3= parseFloat(resp['answers'][answer].ycoor)-5;
+           			left= parseFloat(resp['answers'][answer].xcoor)-8;
+           			reason= resp['answers'][answer].answer
+           			if(resp['answers'][answer].correct==true)
            			{
            				title="<b style='color:green'>Correct</b>"
            			}else{
            				title="<b style='color:red'>Incorrect</b>"
            			}
            			
-           			console.debug( "x: "+top3+" y:"+left+" reason: "+resp[answer].answer)
+           			console.debug( "x: "+top3+" y:"+left+" reason: "+resp['answers'][answer].answer)
            			
-           			html+="<button rel='popover' id='"+resp[answer].id+"' data-original-title=\""+title+"\" class='pop' data-content=\""+reason+"\"  style='position:absolute; width: 3px; height: 5px; border: 1px solid #006; background: #9cf; top:"+top3+"px; left: "+left+"px;'></button>"
+           			html+="<button rel='popover' id='"+resp['answers'][answer].id+"' data-original-title=\""+title+"\" class='pop' data-content=\""+reason+"\"  style='position:absolute; width: 3px; height: 5px; border: 1px solid #006; background: #9cf; top:"+top3+"px; left: "+left+"px;'></button>"
            			//onclick='show_reason(\""+reason+"\")'
            			//$('.pop').popover()
            			

@@ -12,7 +12,9 @@
 
 <p>
   <b>Group:</b>
+  <% if @quiz.group %>
   <%= link_to @quiz.group.name, course_group_path(@course,@quiz.group) %>
+  <% end %>
 </p>
 
 <p>

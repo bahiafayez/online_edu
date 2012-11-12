@@ -17,6 +17,8 @@ class Ability
       can :student_quiz, Course
       cannot :manage, Lecture
       cannot :manage, Quiz
+    else
+      can :index, Course  #so that people without role can live until they get a role.
     end
     # Define abilities for the passed in user here. For example:
     #

@@ -1,7 +1,8 @@
 class User < ActiveRecord::Base
   
   has_many :subjects, :class_name => "Course"  # to get this call user.subjects
-  
+  has_many :quiz_grades#, :conditions => :user kda its like im defining a method called quiz grades, which returns something when user = ... not what i want.
+  has_many :online_quiz_grades
   has_many :enrollments, :dependent => :delete_all
   has_many :courses, :through => :enrollments
   
