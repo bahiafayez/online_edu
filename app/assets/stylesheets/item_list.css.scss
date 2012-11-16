@@ -1,0 +1,192 @@
+.item_list {
+  border: 1px solid #ddd;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-box-shadow: 0px 0px 3px #ccc;
+  -moz-box-shadow: 0px 0px 3px #ccc;
+  box-shadow: 0px 0px 3px #ccc;
+	width: 100%;
+  overflow: hidden;
+  margin-bottom: 20px;
+  #background-image: url("arrow.png");
+}
+
+.item_section_list {
+    margin: -10px;
+    overflow: auto;
+}
+
+.item_row {
+	clear: both;
+	padding-top: 8px;
+	padding-bottom: 8px;
+    overflow: auto;
+}
+
+.item_section_row:first-child {
+  #border-top: none;
+}
+
+.item_section_row {
+  border-top: 1px solid #ddd;
+	background: #f9f9f9;
+	#padding:10px;
+	cursor:pointer;
+}
+
+.item_item_row {
+}
+
+.item_item_row:hover {
+	background: #FFF;
+}
+
+.item_status_box {
+	margin-left: 5px;
+	width: 25px;
+	height: 20px;
+	float: left;
+}
+
+.item_expand_control.expanded {
+	background-image: url("arrow_down.png");
+	background-position: 0px 4px;
+	background-repeat: no-repeat;
+}
+
+.item_expand_control.contracted {
+	background-image: url("arrow_down.png");
+	background-position: 0px 4px;
+	background-repeat: no-repeat;
+}
+
+.item_viewed_status.not_viewed {
+	background-image: url("../../lecture/img/white.png");
+	background-position: 10px 4px;
+	background-repeat: no-repeat;
+}
+
+.item_viewed_status.viewed {
+	background-image: url("../../lecture/img/small_tick.png");
+	background-position: 10px 4px;
+	background-repeat: no-repeat;
+}
+
+.item_section, .item_item {
+	width: 95%;
+	float: left;
+}
+
+.item_section {
+	font-size: 150%;
+	font-weight: bold;
+}
+.item_row .item_section {
+	color: #404040;
+	text-align: left;
+}
+
+button {
+	width: 100%;
+}
+
+.item_item {
+}
+
+.clear {
+	clear: both;
+}
+
+.data_container {
+	display: none;
+}
+
+.borderless th,
+.borderless td {
+    border: 0px;
+}
+
+/* Old styles above for compatibility */
+/* New styles here! */
+.expanded {
+	background-image: url("arrow_down2.png");
+	background-position: 15px 15px;
+	background-repeat: no-repeat;
+}
+
+.contracted {
+	background-image: url("arrow_right2.png");
+	background-position: 15px 15px;
+	background-repeat: no-repeat;
+}
+
+.unviewed {
+	background: #FFF;
+	border: 2px solid #FFF;
+}
+
+.unviewed:hover {
+	border: 2px solid #CCC;
+}
+
+.viewed {
+	background: url("../../lecture/img/small_tick.png");
+	background-position: 15px 11px;
+	background-repeat: no-repeat;
+	border: 2px solid #FFF;
+}
+
+.viewed:hover {
+	border: 2px solid #CCC;
+}
+
+.list_header{
+	text-align: left;
+	font-size: 14px;
+}
+
+.list_header_link, .list_header_link:hover, .list_header_link:visited, .list_header_link:active{
+	background-color: #f9f9f9;
+	color: #000;
+	text-decoration: none;
+	display: block;
+	margin-bottom: -11px
+	
+	/*display: block;*/
+}
+.list_header_link:hover{
+	background-color: #f5f5f5;
+}
+
+/* Spacing for icons */
+.list_header{
+	padding: 0px 0px 5px 40px;  /* 5 40 to be bigger*/
+	#display: block;
+	border-bottom:1px solid;
+	line-height: 20px;  /*remove to be bigger*/
+}
+.item_row{
+	padding: 10px 40px 20px;
+}
+
+/* Borders */
+
+.list_header_link{
+	border-top: 2px solid #ddd;
+	line-height:25px; /*remove to be bigger*/
+}
+.list_header_link:first-child{
+	#border-top: 0px;
+}
+
+.condensed-table th,.condensed-table td{
+	padding:5px 5px 4px;
+	text-align: left;
+	}
+
+.plain-table tbody th, .plain-table tbody td {
+    border: medium none;
+    padding: 2px 4px;
+    font-size: 13px;
+}
