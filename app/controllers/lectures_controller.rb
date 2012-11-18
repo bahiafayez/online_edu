@@ -137,6 +137,7 @@ class LecturesController < ApplicationController
       redirect_to course_lecture_path(@course, @lecture), :alert => "Requested quiz does not exist"
     else
       @quiz=@quiz.first
+      @old= OnlineAnswer.where(:online_quiz_id => params[:quiz]).to_json
     end
     
   end
@@ -156,38 +157,52 @@ class LecturesController < ApplicationController
     render json: {:a => @answers, :loc => @loc, :loc2=> @loc2, :save => @save, :current => @current}#, :loc3 => @loc3}
   end
   
-  def save_answers
+  def save_answers2
+    @data=params[:stored]
+    puts @data
     @course= Course.find(params[:course_id])
     @lecture= Lecture.find(params[:id])
-    #Just need to save now.
-    @reasons=params[:reason] || []
-    @xcoor=params[:xcoor] || []
-    @ycoor=params[:ycoor] || []
-    
-    @reasons.each do |k,v|
-      OnlineAnswer.find(k.to_i).update_attributes(:answer => v)
+    @data||=[]
+    @data.each do |k,v|
+      OnlineAnswer.find(k.to_i).update_attributes(:answer => v[1], :correct => v[0] , :ycoor => v[2], :xcoor => v[3])
     end
     
-    @xcoor.each do |k,v|
-      OnlineAnswer.find(k.to_i).update_attributes(:xcoor => v)
-    end
-    
-    @ycoor.each do |k,v|
-      OnlineAnswer.find(k.to_i).update_attributes(:ycoor => v)
-    end
-
-    
-    #update correct and all others not correct.
-    
-    if params[:quiz]
-      OnlineQuiz.find(params[:quiz].keys[0].to_i).online_answers.each do |a|
-        a.update_attributes(:correct => false)
-      end
-      OnlineAnswer.find(params[:quiz].values[0].to_i).update_attributes(:correct => true)
-    end
-    
-    redirect_to course_lecture_path(@course,@lecture)
+    #redirect_to course_lecture_path(@course,@lecture)
+    render json: {:done => "done"}
   end
+  
+  # def save_answers
+    # @course= Course.find(params[:course_id])
+    # @lecture= Lecture.find(params[:id])
+    # #Just need to save now.
+    # @reasons=params[:reason] || []
+    # @xcoor=params[:xcoor] || []
+    # @ycoor=params[:ycoor] || []
+#     
+    # @reasons.each do |k,v|
+      # OnlineAnswer.find(k.to_i).update_attributes(:answer => v)
+    # end
+#     
+    # @xcoor.each do |k,v|
+      # OnlineAnswer.find(k.to_i).update_attributes(:xcoor => v)
+    # end
+#     
+    # @ycoor.each do |k,v|
+      # OnlineAnswer.find(k.to_i).update_attributes(:ycoor => v)
+    # end
+# 
+#     
+    # #update correct and all others not correct.
+#     
+    # if params[:quiz]
+      # OnlineQuiz.find(params[:quiz].keys[0].to_i).online_answers.each do |a|
+        # a.update_attributes(:correct => false)
+      # end
+      # OnlineAnswer.find(params[:quiz].values[0].to_i).update_attributes(:correct => true)
+    # end
+#     
+    # redirect_to course_lecture_path(@course,@lecture)
+  # end
   
   def remove_answer
     logger.debug("in remove answer!!!!!!")

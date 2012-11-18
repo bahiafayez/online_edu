@@ -1,0 +1,198 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf360
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red28\green2\blue255;\red3\green106\blue7;\red0\green102\blue255;
+\red109\green121\blue222;\red6\green150\blue14;\red0\green0\blue205;\red0\green0\blue255;\red104\green118\blue135;
+\red49\green132\blue149;\red88\green92\blue246;\red0\green0\blue162;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww9000\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720
+
+\f0\fs22 \cf2 <\cf0 script src\cf2 =\cf3 "http://popcornjs.org/code/dist/popcorn-complete.js"\cf2 ></\cf0 script\cf2 >\cf0 \
+\cf2 <\cf0 style\cf2 >\cf0 \
+	.ontop\{\
+		\cf4 /*background:#fff;  /* invisible div*/\cf0 \
+        \cf5 position\cf0 :\cf6 absolute\cf0 ;\
+        \cf5 min-width\cf0 :\cf7 600\cf8 px\cf0 ;\
+        \cf5 min-height\cf0 :\cf7 400\cf8 px\cf0 ;\
+        \cf5 z-index\cf0 :\cf7 99\cf0 ;\
+	\}\
+	\
+	.myclass\{\
+		\cf5 width\cf0 :\cf7 100\cf8 px\cf0 ;\
+	\}\
+\cf2 </\cf0 style\cf2 >\cf0 \
+\
+<%= render \cf3 'shared/head'\cf0  %>\
+\
+\cf2 <\cf0 div class\cf2 =\cf3 "row"\cf2 >\cf0 \
+\cf2 <\cf0 div class\cf2 =\cf3 "span5"\cf2 >\cf0 \
+Please Click on where you'd like the buttons to be.\
+\cf2 <\cf0 div id\cf2 =\cf3 "answer"\cf2 ></\cf0 div\cf2 >\cf0 \
+\pard\pardeftab720
+\cf4 <!-- <%= link_to "Back to Lecture ", course_lecture_path(@course, @lecture)%> -->\cf0 \
+\pard\pardeftab720
+\cf2 </\cf0 div\cf2 >\cf0 \
+\
+\cf2 <\cf0 div class\cf2 =\cf3 "span7"\cf2 >\cf0 \
+	\
+\cf2 <\cf0 center\cf2 ><\cf0 div style\cf2 =\cf3 "\cf5 width\cf2 :\cf7 600\cf8 px\cf3 " \cf2 >\cf0 \
+\cf2 <\cf0 div class\cf2 =\cf3 "ontop" \cf0 id\cf2 =\cf3 "ontop"\cf2 ></\cf0 div\cf2 >\cf0 \
+\cf2 <\cf0 div id\cf2 =\cf3 "youtube" \cf0 style\cf2 =\cf3 "\cf5 width\cf2 :\cf7 600\cf8 px\cf2 ;\cf5 height\cf2 :\cf7 400\cf8 px\cf2 ;\cf3 "\cf2 ></\cf0 div\cf2 >\cf0 \
+\cf2 <\cf0 div id\cf2 =\cf3 "foo"\cf2 ></\cf0 div\cf2 >\cf0 \
+\cf2 </\cf0 div\cf2 ></\cf0 center\cf2 >\cf0 \
+\cf2 </\cf0 div\cf2 >\cf0 \
+\
+\
+\
+\cf2 <\cf0 script language\cf2 =\cf3 "JavaScript" \cf0 type\cf2 =\cf3 "text/JavaScript"\cf2 >\cf0 \
+\
+$(\cf5 document\cf0 ).ready(\cf8 function\cf0 () \{\
+  $(\cf3 '.ontop'\cf0 ).dblclick(\cf8 function\cf0 (e) \{\
+    \cf8 var \cf0 offset \cf9 = \cf0 $(\cf10 this\cf0 ).offset();\
+  	left\cf9 = \cf0 parseInt(e.pageX) \cf9 - \cf0 parseInt(offset.left) \cf4 //not clientX because client depends on window.. so numbers change when scrolling.\cf0 \
+  	top2 \cf9 = \cf0 parseInt(e.pageY) \cf9 - \cf0 parseInt(offset.top)\
+  	\
+  	console.debug(\cf3 "offset is "\cf9 + \cf0 left)\
+  	console.debug(\cf3 "offset is "\cf9 + \cf0 top2)\
+  	add_answer(left, top2, <%=\cf10 @quiz\cf0 .id %>, \cf3 '\cf0 <%= add_answer_course_lecture_path(\cf10 @course\cf0 , \cf10 @lecture\cf0 ) %>\cf3 '\cf0 , \cf11 true\cf0 )\
+     \
+  \});\
+  add_answer(\cf7 0\cf0 ,\cf7 0\cf0 ,<%=\cf10 @quiz\cf0 .id %>, \cf3 '\cf0 <%= add_answer_course_lecture_path(\cf10 @course\cf0 , \cf10 @lecture\cf0 ) %>\cf3 '\cf0 ,\cf11 false\cf0 )\
+\});\
+\
+\
+\cf2 </\cf0 script\cf2 >\cf0 \
+ \
+\
+\
+\
+\pard\pardeftab720
+\cf4 <!-- Should move this somewhere else later -->\cf0 \
+\
+\pard\pardeftab720
+\cf2 <\cf0 script\cf2 >\cf0 \
+\
+\pard\pardeftab720
+\cf8 var \cf0 pop\
+\
+\pard\pardeftab720
+\cf4 //function add_quiz(lecture)\{\cf0 \
+	\
+\cf4 //\}\cf0 \
+\pard\pardeftab720
+\cf12 add_answer \cf9 = \cf8 function\cf0 (left,top2,quiz,url,flag) \{\
+    console.debug(\cf3 "time is "\cf9 +\cf0 top)\
+    $.getJSON(url,\{\cf3 "left"\cf0 :left, \cf3 "top"\cf0 :top2, \cf3 "quiz"\cf0 :quiz, \cf3 "flag"\cf0 :flag\}, \cf8 function\cf0 (resp)\{\
+    	\
+    \cf8 if\cf0 (\cf5 document\cf0 .getElementById(\cf3 "answer"\cf0 ).innerHTML\cf9 ==\cf3 ""\cf0 )\{	\
+    html\cf9 =\cf3 "<form data-validate='yes' name='input' action='"\cf9 +\cf0 resp[\cf3 'save'\cf0 ]\cf9 +\cf3 "' method='get'><table id='table_new' class='table table-striped'> <tr><th>X</th><th>Y</th><th>Explanation</th><th>Correct</th><th></th><th></th></tr>"\cf0 \
+    html2\cf9 =\cf3 ""\cf0 \
+    console.debug(resp[\cf3 'a'\cf0 ])\
+    \
+    \cf8 for\cf0 (e \cf9 in \cf0 resp[\cf3 'a'\cf0 ])\
+    \{\
+    	\cf8 if\cf0 (resp[\cf3 'a'\cf0 ][e].correct \cf9 == \cf11 true\cf0 )\
+    	\{\
+    		check\cf9 =\cf3 'checked'\cf0 \
+    	\}\cf8 else\cf0 \{\
+    		check\cf9 =\cf3 ''\cf0 \
+    	\}\
+    	\
+    	html\cf9 +=\cf3 "<tr id='row_"\cf9 +\cf0 resp[\cf3 'a'\cf0 ][e].id\cf9 +\cf3 "'><td><input type='text' onchange='positionChanged("\cf9 +\cf0 resp[\cf3 'a'\cf0 ][e].id\cf9 +\cf3 ")' style='width:30px' size='5' value='"\cf9 +\cf0 resp[\cf3 'a'\cf0 ][e].xcoor\cf9 +\cf3 "' name='xcoor["\cf9 +\cf0 resp[\cf3 'a'\cf0 ][e].id\cf9 +\cf3 "]' id='xcoor["\cf9 +\cf0 resp[\cf3 'a'\cf0 ][e].id\cf9 +\cf3 "]' required='required' pattern='[0-9]*' title='Integers only'></td><td><input type='text' onchange='positionChanged("\cf9 +\cf0 resp[\cf3 'a'\cf0 ][e].id\cf9 +\cf3 ")' pattern='[0-9]*'  title='Integers only' style='width:30px' value='"\cf9 +\cf0 resp[\cf3 'a'\cf0 ][e].ycoor\cf9 +\cf3 "' name='ycoor["\cf9 +\cf0 resp[\cf3 'a'\cf0 ][e].id\cf9 +\cf3 "]' id='ycoor["\cf9 +\cf0 resp[\cf3 'a'\cf0 ][e].id\cf9 +\cf3 "]' required='required'></td><td><input type='text' value='"\cf9 +\cf0 resp[\cf3 'a'\cf0 ][e].answer\cf9 +\cf3 "' name='reason["\cf9 +\cf0 resp[\cf3 'a'\cf0 ][e].id\cf9 +\cf3 "]'></td><td><input type='radio' name='quiz["\cf9 +\cf0 quiz\cf9 +\cf3 "]' value='"\cf9 +\cf0 resp[\cf3 'a'\cf0 ][e].id\cf9 +\cf3 "' "\cf9 +\cf0 check\cf9 +\cf3 " ></td><td><a data-remote='true' onclick=remove_answer("\cf9 +\cf0 resp[\cf3 'a'\cf0 ][e].id\cf9 +\cf3 ",'"\cf9 +\cf0 resp[\cf3 'loc2'\cf0 ]\cf9 +\cf3 "',"\cf9 +\cf0 quiz\cf9 +\cf3 ") href='"\cf9 +\cf0 resp[\cf3 'loc'\cf0 ]\cf9 +\cf3 "' >Remove</a></td></tr> "\cf0 \
+    	title\cf9 =\cf3 "button"\cf0 \
+    	reason\cf9 =\cf0 resp[\cf3 'a'\cf0 ][e].xcoor\cf9 +\cf3 ", "\cf9 +\cf0 resp[\cf3 'a'\cf0 ][e].ycoor\
+    	top3\cf9 = \cf0 parseFloat(resp[\cf3 'a'\cf0 ][e].ycoor)\cf9 -\cf7 8\cf0 ;\
+    	left3\cf9 = \cf0 parseFloat(resp[\cf3 'a'\cf0 ][e].xcoor)\cf9 -\cf7 8\cf0 ;\
+    	html2\cf9 +=\cf3 "<input rel='popover' class='pop' data-content=\\""\cf9 +\cf0 reason\cf9 +\cf3 "\\" id='button_"\cf9 +\cf0 resp[\cf3 'a'\cf0 ][e].id\cf9 +\cf3 "' type='radio' name='group1' value="\cf9 +\cf0 resp[\cf3 'a'\cf0 ][e].id\cf9 +\cf3 " style='position:absolute;top:"\cf9 +\cf0 top3\cf9 +\cf3 "px; left: "\cf9 +\cf0 left3\cf9 +\cf3 "px;'>"\cf4 //could have type=number\cf0 \
+    	\
+    \}\
+    \
+    html\cf9 +=\cf3 "</table><br><center> <input type='submit' value='Save'> </center></form>"\cf0 \
+    \cf5 document\cf0 .getElementById(\cf3 "answer"\cf0 ).innerHTML\cf9 =\cf0 html;\
+    \cf5 document\cf0 .getElementById(\cf3 "ontop"\cf0 ).innerHTML\cf9 =\cf0 html2;\
+    $(\cf3 "[rel=popover]"\cf0 ).popover(\{trigger: \cf3 'hover'\cf0 , template:  \cf3 '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'\cf0 \});\
+    \}\
+    \cf8 else\cf0 \{\
+    \cf4 //document.getElementById("table_new").appendChild()\cf0 \
+    top3\cf9 = \cf0 parseFloat(top2)\cf9 -\cf7 8\cf0 ;\
+    left3\cf9 = \cf0 parseFloat(left)\cf9 -\cf7 8\cf0 ;\
+    reason\cf9 =\cf0 left\cf9 +\cf3 ", "\cf9 +\cf0 top2\
+    $(\cf3 '#ontop'\cf0 ).append(\cf3 "<input rel='popover' class='pop' data-content=\\""\cf9 +\cf0 reason\cf9 +\cf3 "\\" id='button_"\cf9 +\cf0 resp[\cf3 'current'\cf0 ].id\cf9 +\cf3 "' type='radio' name='group1' value="\cf9 +\cf0 resp[\cf3 'current'\cf0 ].id\cf9 +\cf3 " style='position:absolute;top:"\cf9 +\cf0 top3\cf9 +\cf3 "px; left: "\cf9 +\cf0 left3\cf9 +\cf3 "px;'>"\cf0 )\cf4 //could have type=number)\cf0 \
+    $(\cf3 '#table_new'\cf0 ).append(\cf3 "<tr id='row_"\cf9 +\cf0 resp[\cf3 'current'\cf0 ].id\cf9 +\cf3 "'><td><input type='text' onchange='positionChanged("\cf9 +\cf0 resp[\cf3 'current'\cf0 ].id\cf9 +\cf3 ")' style='width:30px' size='5' value='"\cf9 +\cf0 left\cf9 +\cf3 "' name='xcoor["\cf9 +\cf0 resp[\cf3 'current'\cf0 ].id\cf9 +\cf3 "]' id='xcoor["\cf9 +\cf0 resp[\cf3 'current'\cf0 ].id\cf9 +\cf3 "]' required='required' pattern='[0-9]*' title='Integers only'></td><td><input type='text' pattern='[0-9]*' title='Integers only' style='width:30px' onchange='positionChanged("\cf9 +\cf0 resp[\cf3 'current'\cf0 ].id\cf9 +\cf3 ")' value='"\cf9 +\cf0 top2\cf9 +\cf3 "' name='ycoor["\cf9 +\cf0 resp[\cf3 'current'\cf0 ].id\cf9 +\cf3 "]' id='ycoor["\cf9 +\cf0 resp[\cf3 'current'\cf0 ].id\cf9 +\cf3 "]' required='required'></td><td><input type='text' value='"\cf9 +\cf0 resp[\cf3 'current'\cf0 ].answer\cf9 +\cf3 "' name='reason["\cf9 +\cf0 resp[\cf3 'current'\cf0 ].id\cf9 +\cf3 "]'></td><td><input type='radio' name='quiz["\cf9 +\cf0 quiz\cf9 +\cf3 "]' value='"\cf9 +\cf0 resp[\cf3 'current'\cf0 ].id\cf9 +\cf3 "' ></td><td><a data-remote='true' onclick=remove_answer("\cf9 +\cf0 resp[\cf3 'current'\cf0 ].id\cf9 +\cf3 ",'"\cf9 +\cf0 resp[\cf3 'loc2'\cf0 ]\cf9 +\cf3 "',"\cf9 +\cf0 quiz\cf9 +\cf3 ") href='"\cf9 +\cf0 resp[\cf3 'loc'\cf0 ]\cf9 +\cf3 "' >Remove</a></td></tr>"\cf0 )	\
+    $(\cf3 "[rel=popover]"\cf0 ).popover(\{trigger: \cf3 'hover'\cf0 , template:  \cf3 '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'\cf0 \
+\});\
+    \}\
+\});\
+\
+\};\
+\
+\cf12 positionChanged\cf9 = \cf8 function\cf0 (id)\{\
+	x\cf9 =\cf5 document\cf0 .getElementById(\cf3 "xcoor["\cf9 +\cf0 id\cf9 +\cf3 "]"\cf0 ).value\
+	y\cf9 =\cf5 document\cf0 .getElementById(\cf3 "ycoor["\cf9 +\cf0 id\cf9 +\cf3 "]"\cf0 ).value\
+	reason\cf9 =\cf0 x\cf9 +\cf3 ", "\cf9 +\cf0 y\
+	y\cf9 =\cf0 y\cf9 -\cf7 8\cf0 \
+\pard\pardeftab720
+\cf7 	\cf0 x\cf9 =\cf0 x\cf9 -\cf7 8\cf0 \
+\cf7 	\cf5 document\cf0 .getElementById(\cf3 "button_"\cf9 +\cf0 id).style.top\cf9 =\cf0 y\cf9 +\cf3 "px"\cf0 ;\
+	\cf5 document\cf0 .getElementById(\cf3 "button_"\cf9 +\cf0 id).style.left\cf9 =\cf0 x\cf9 +\cf3 "px"\cf0 ;\
+	\cf5 document\cf0 .getElementById(\cf3 "button_"\cf9 +\cf0 id).attributes.getNamedItem(\cf3 'data-content'\cf0 ).value\cf9 =\cf0 reason\
+\}\
+\pard\pardeftab720
+\cf12 remove_answer \cf9 = \cf8 function\cf0 (answer,url, quiz) \{\
+    \cf4 //console.debug("time is "+pop.currentTime())\cf0 \
+    $.getJSON(url,\{\cf3 "answer"\cf0 :answer , \cf3 "quiz"\cf0 :quiz\}, \cf8 function\cf0 (resp)\{\
+    \
+    \cf4 // html="<form name='input' action='"+resp['save']+"' method='get'><table class='table table-striped'> <tr><th>X</th><th>Y</th><th>Explanation</th><th>Correct</th><th></th><th></th></tr>"\cf0 \
+    \cf4 // console.debug(resp['a'])\cf0 \
+\pard\pardeftab720
+\cf4 //     \cf0 \
+    \cf4 // for(e in resp['a'])\cf0 \
+    \cf4 // \{\cf0 \
+    	\cf4 // if(resp['a'][e].correct == true)\cf0 \
+    	\cf4 // \{\cf0 \
+    		\cf4 // check='checked'\cf0 \
+    	\cf4 // \}else\{\cf0 \
+    		\cf4 // check=''\cf0 \
+    	\cf4 // \}\cf0 \
+\cf4 //     	\cf0 \
+    	\cf4 // html+="<tr><td><input type='text' style='width:30px' size='5' value='"+resp['a'][e].xcoor+"' name='xcoor["+resp['a'][e].id+"]'</td><td><input type='text' style='width:30px' value='"+resp['a'][e].ycoor+"' name='ycoor["+resp['a'][e].id+"]'</td><td><input type='text' value='"+resp['a'][e].answer+"' name='reason["+resp['a'][e].id+"]'></td><td><input type='radio' name='quiz["+quiz+"]' value='"+resp['a'][e].id+"' "+check+" ></td><td><a data-remote='true' onclick=remove_answer("+resp['a'][e].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td> "\cf0 \
+\cf4 //     	\cf0 \
+\cf4 //     	\cf0 \
+    \cf4 // \}\cf0 \
+\cf4 //     \cf0 \
+    \cf4 // html+="</table><br><center> <input type='submit' value='Save'> </center></form>"\cf0 \
+\cf4 //     \cf0 \
+    \
+    \cf4 //document.getElementById("answer").innerHTML=html;\cf0 \
+    $(\cf3 "tr#row_"\cf9 +\cf0 answer).remove();\
+    $(\cf3 "#button_"\cf9 +\cf0 answer).remove();\
+\});\
+\
+\};\
+\
+\
+\cf4 // create our popcorn instance\cf0 \
+\pard\pardeftab720
+\cf5 document\cf0 .addEventListener( \cf3 "DOMContentLoaded"\cf0 , \cf8 function\cf0 () \{\
+	\
+pop \cf9 = \cf0 Popcorn.youtube( \cf3 "#youtube"\cf0 , \cf3 "\cf0 <%=  \cf10 @lecture\cf0 .url %>\cf3 "\cf0 ,\{ width: \cf7 400\cf0 , controls: \cf7 0\cf0 \}); \cf4 //youtube unlike normal html5 needs to be run from a webserver\cf0 \
+\pard\pardeftab720
+\cf4 //var pop = Popcorn( Popcorn.youtube( '#youtube', 'http://www.youtube.com/watch?v=H9BXF6xJy54', \{ width: 400, controls: 0 \} ) );\cf0 \
+\
+pop.controls( \cf11 false \cf0 ); \
+ \
+pop.on(\cf3 "loadeddata"\cf0 , \cf8 function\cf0 ()\{\
+	\cf10 this\cf0 .currentTime(<%= \cf10 @quiz\cf0 .time %>)\
+	\cf10 this\cf0 .pause;\
+	 console.debug(\cf3 "pop duration isss"\cf9 +\cf10 this\cf0 .currentTime())  \
+	\});                        \
+\
+                          \
+\
+\}, \cf11 false \cf0 );\
+\
+\
+\pard\pardeftab720
+\cf2 </\cf0 script\cf2 >\cf0 \
+\cf2 </\cf0 div\cf2 >\cf0 \
+}

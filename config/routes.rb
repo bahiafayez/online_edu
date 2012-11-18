@@ -54,7 +54,8 @@ OnlineEdu::Application.routes.draw do
         get 'add_answer'
         get 'remove_answer'
         get 'get_answers'
-        get 'save_answers'
+        #get 'save_answers'
+        get 'save_answers2'
         get 'save_online'
         get 'answered'
       end

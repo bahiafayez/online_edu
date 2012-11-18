@@ -18,8 +18,9 @@
 <div class="row">
 <div class="span3">
 <div style="width:100%;height:150px;">
-<center style="margin-top: 30px">Drag the button: <%= image_tag "button3.png", :class=> "component"%>
-<br><input class="btn" value="Save and Exit" />	
+<center style="margin-top: 30px">Drag the button: <%= image_tag "button4.png", :class=> "component"%>
+<br><!-- <input class="btn" value="Save and Exit" onclick="saveAll()"/> -->
+<%= button_to "Save and Exit", course_lecture_path(@course,@lecture), :class => "btn", :onclick => "saveAll()", :method => :get , :remote=> true%>	
 </center>
 </div>
 </div>
@@ -39,31 +40,27 @@
 
 var storedData={}
 
-function callme()
-{
-	console.debug("in call me!!")
-}
-
 function onDoubleClick(elem)
 {
 	console.debug("in this one"+elem);
 	elem.popover('show');
-	
 }
 function callFirst()
 {
 	alert("here");
 }
-
 function remove(elem)
 {
-	// should remove from db too!
-	//document.getElementById(elem).
-	$("#"+elem).remove()	
+	// This method called controller action to remove answer from DB
+	// It also removes it from the screen and the storedData hash
+	$.getJSON('<%= remove_answer_course_lecture_path(@course,@lecture) %>',{"answer":elem , "quiz":<%= @quiz.id %>}, function(resp){
+	});
+	$("#"+elem).remove()
+	delete storedData[elem];	
 }
 function save(elem)
 {
-	// should save to db too
+	// Save the explanation and the correct to storedData
 	storedData[elem]=[document.getElementById("correct_"+elem).checked, document.getElementById("explain_"+elem).value]
 	console.debug("element is "+elem);
 	console.debug("explanation is "+document.getElementById("explain_"+elem).value)
@@ -78,15 +75,39 @@ function save(elem)
 		}
 	}
 }
+function saveAll()
+{
+	// This is called at the very end, to save everything in the storedData and positions to the database.
+	// Then redirect to lecture page.
+	console.debug(storedData)
+	for(key in storedData){
+		console.debug("key:"+storedData[key])
+		storedData[key].push.apply(storedData[key],[$('#'+key).position().top,$('#'+key).position().left]);
+	}
+	console.debug(storedData)
+	
+	$.getJSON('<%= save_answers2_course_lecture_path(@course, @lecture) %>',{"stored":storedData}, function(resp){
+		console.debug(resp)
+		console.debug("calling redirect")
+		redirect()
+	});
+}
+function redirect()
+{
+	console.debug("in redirect")
+	window.location = "<%= course_lecture_path(@course, @lecture)  %>"
+}
 function load(elem)
 {
+	// When call popover, its loaded from here.
 	console.debug("elem is "+elem)
 	document.getElementById("correct_"+elem).checked=storedData[elem][0]
 	document.getElementById("explain_"+elem).value=storedData[elem][1]
 }
 
-	jQuery(function() {
-		var count=0;
+jQuery(function() {
+	var count=0;
+	// This is to make the image draggable, and clone it when dragged.
     jQuery(".component").draggable({
         //  use a helper-clone that is append to 'body' so is not 'contained' by a pane
         helper: function() {
@@ -104,67 +125,59 @@ function load(elem)
        
     });
 	var toadd=""
+	// makes ontop droppable
     jQuery('.ontop').droppable({
         //activeClass: 'ui-state-hover',
         accept: '.component',
         drop: function(event, ui) {
             if (!ui.draggable.hasClass("dropped")){
             	
-            	// first entry into drop area
-            	// I should create the online_answer, with these coordinates. and use these ids in everything.
             	
-            	toadd=jQuery(ui.helper).clone().addClass("dropped").draggable({cursor: 'move',
-        containment: ".ontop"});
-        		toadd.attr("onclick","load('"+toadd.attr('id')+"')")
-        		toadd.attr("rel","popover").attr("data-content","Correct:<input group='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Explanation:<input id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=remove('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
-                toadd.attr("data-original-title","")
-                toadd.clickover({ global_close: false, template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'})//.dblclick(function() {
-                jQuery(this).append(toadd);}
+            	toadd=jQuery(ui.helper).clone().addClass("dropped").draggable({cursor: 'move', containment: ".ontop"});
+        		 jQuery(this).append(toadd);
+                
+                // first drop, then create it in the database, and set all parameters.
+                $.getJSON('<%= add_answer_course_lecture_path(@course, @lecture) %>',{"left":toadd.position().left, "top":toadd.position().top, "quiz": <%=@quiz.id %>, "flag":true}, function(resp){
+                	
+                	storedData[resp['current'].id]=[false,""]
+                	console.debug("current id issss "+ resp['current'].id)
+                	console.debug("to add isss "+toadd.attr("id"))
+                	toadd.attr("id", ""+resp['current'].id) 
+                	console.debug("to add isss "+toadd.attr("id"))
+                	toadd.attr("onclick","load('"+toadd.attr('id')+"')")
+	        		toadd.attr("rel","popover").attr("data-content","Correct:<input group='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Explanation:<input id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=remove('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
+	                toadd.attr("data-original-title","")
+	                toadd.clickover({ global_close: false, template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'})//.dblclick(function() {
+               
+                });
+                }else{
+                	// dragging inside the div
                 
                 toadd=jQuery(ui.helper)  // every time a button is dragged it is here in toadd. could get its position and save it.
                 
                 console.debug("new position is "+toadd.position().top+" and id is "+toadd.id+" explanation is ")//+document.getElementById('explain_'+toadd.id).value() )
-                
-                
-				//if (-1 !== $.inArray(onDoubleClick, toadd.data('events').dblclick)) {
-//				    toadd.unbind('dblclick')//.bind('dblclick', onDoubleClick(this));
-//				    toadd.clickover({ global_close: false, template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'})//.dblclick(function() {
-//        				//$('.component').popover('hide')
-        				//$(this).clickover('toggle');
-    				//});
-				    
-				    // template works.. so make it look better!!
-				    // also see if you can make it double click instead!!
-				    
-				    
-// using clickover (one click) for now
-//				    toadd.popover({trigger: 'manual', html:'true'}).dblclick(function() {
-//        				//$('.component').popover('hide')
-//        				$(this).popover('toggle');
-//    				});
-				    //button.dblclick(onDoubleClick);
-				//}
-                
-        			// toadd.dblclick(function(e) {
-  	// console.debug("in here double click");
-  // });
+                }
+               
             }
         });
     });
 
 
 $(document).ready(function() {
-  $('.ontop').dblclick(function(e) {
-    var offset = $(this).offset();
-  	left= parseInt(e.pageX) - parseInt(offset.left) //not clientX because client depends on window.. so numbers change when scrolling.
-  	top2 = parseInt(e.pageY) - parseInt(offset.top)
-  	
-  	console.debug("offset is "+ left)
-  	console.debug("offset is "+ top2)
-  	add_answer(left, top2, <%=@quiz.id %>, '<%= add_answer_course_lecture_path(@course, @lecture) %>', true)
-     
-  });
-  add_answer(0,0,<%=@quiz.id %>, '<%= add_answer_course_lecture_path(@course, @lecture) %>',false)
+  //first of all, will get the data at the very beginning
+  var old= <%= raw @old %>
+  for(i=0; i<old.length; i++)
+  {               
+  	var toadd = $('<img />').attr({ 'id': old[i].id , 'src': '/assets/button4.png' });
+  	toadd= toadd.addClass("component").addClass("dropped").draggable({cursor: 'move',containment: ".ontop"});
+    storedData[old[i].id]=[old[i].correct,old[i].answer]
+    toadd.css({"top":old[i].ycoor+"px", "left":old[i].xcoor+"px", 'zIndex': 5, 'position':'absolute'})
+    toadd.attr("onclick","load('"+toadd.attr('id')+"')")
+	toadd.attr("rel","popover").attr("data-content","Correct:<input group='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Explanation:<input id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=remove('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
+	toadd.attr("data-original-title","")
+	toadd.clickover({ global_close: false, template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'})//.dblclick(function() {
+     $('#ontop').append(toadd)           
+  }
 });
 
 
@@ -179,98 +192,7 @@ $(document).ready(function() {
 
 var pop
 
-//function add_quiz(lecture){
-	
-//}
-add_answer = function(left,top2,quiz,url,flag) {
-    console.debug("time is "+top)
-    $.getJSON(url,{"left":left, "top":top2, "quiz":quiz, "flag":flag}, function(resp){
-    	
-    if(document.getElementById("answer").innerHTML==""){	
-    html="<form data-validate='yes' name='input' action='"+resp['save']+"' method='get'><table id='table_new' class='table table-striped'> <tr><th>X</th><th>Y</th><th>Explanation</th><th>Correct</th><th></th><th></th></tr>"
-    html2=""
-    console.debug(resp['a'])
-    
-    for(e in resp['a'])
-    {
-    	if(resp['a'][e].correct == true)
-    	{
-    		check='checked'
-    	}else{
-    		check=''
-    	}
-    	
-    	html+="<tr id='row_"+resp['a'][e].id+"'><td><input type='text' onchange='positionChanged("+resp['a'][e].id+")' style='width:30px' size='5' value='"+resp['a'][e].xcoor+"' name='xcoor["+resp['a'][e].id+"]' id='xcoor["+resp['a'][e].id+"]' required='required' pattern='[0-9]*' title='Integers only'></td><td><input type='text' onchange='positionChanged("+resp['a'][e].id+")' pattern='[0-9]*'  title='Integers only' style='width:30px' value='"+resp['a'][e].ycoor+"' name='ycoor["+resp['a'][e].id+"]' id='ycoor["+resp['a'][e].id+"]' required='required'></td><td><input type='text' value='"+resp['a'][e].answer+"' name='reason["+resp['a'][e].id+"]'></td><td><input type='radio' name='quiz["+quiz+"]' value='"+resp['a'][e].id+"' "+check+" ></td><td><a data-remote='true' onclick=remove_answer("+resp['a'][e].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td></tr> "
-    	title="button"
-    	reason=resp['a'][e].xcoor+", "+resp['a'][e].ycoor
-    	top3= parseFloat(resp['a'][e].ycoor)-8;
-    	left3= parseFloat(resp['a'][e].xcoor)-8;
-    	html2+="<input rel='popover' class='pop' data-content=\""+reason+"\" id='button_"+resp['a'][e].id+"' type='radio' name='group1' value="+resp['a'][e].id+" style='position:absolute;top:"+top3+"px; left: "+left3+"px;'>"//could have type=number
-    	
-    }
-    
-    html+="</table><br><center> <input type='submit' value='Save'> </center></form>"
-    document.getElementById("answer").innerHTML=html;
-    document.getElementById("ontop").innerHTML=html2;
-    $("[rel=popover]").popover({trigger: 'hover', template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'});
-    }
-    else{
-    //document.getElementById("table_new").appendChild()
-    top3= parseFloat(top2)-8;
-    left3= parseFloat(left)-8;
-    reason=left+", "+top2
-    $('#ontop').append("<input rel='popover' class='pop' data-content=\""+reason+"\" id='button_"+resp['current'].id+"' type='radio' name='group1' value="+resp['current'].id+" style='position:absolute;top:"+top3+"px; left: "+left3+"px;'>")//could have type=number)
-    $('#table_new').append("<tr id='row_"+resp['current'].id+"'><td><input type='text' onchange='positionChanged("+resp['current'].id+")' style='width:30px' size='5' value='"+left+"' name='xcoor["+resp['current'].id+"]' id='xcoor["+resp['current'].id+"]' required='required' pattern='[0-9]*' title='Integers only'></td><td><input type='text' pattern='[0-9]*' title='Integers only' style='width:30px' onchange='positionChanged("+resp['current'].id+")' value='"+top2+"' name='ycoor["+resp['current'].id+"]' id='ycoor["+resp['current'].id+"]' required='required'></td><td><input type='text' value='"+resp['current'].answer+"' name='reason["+resp['current'].id+"]'></td><td><input type='radio' name='quiz["+quiz+"]' value='"+resp['current'].id+"' ></td><td><a data-remote='true' onclick=remove_answer("+resp['current'].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td></tr>")	
-    $("[rel=popover]").popover({trigger: 'hover', template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'
-});
-    }
-});
 
-};
-
-positionChanged= function(id){
-	x=document.getElementById("xcoor["+id+"]").value
-	y=document.getElementById("ycoor["+id+"]").value
-	reason=x+", "+y
-	y=y-8
-	x=x-8
-	document.getElementById("button_"+id).style.top=y+"px";
-	document.getElementById("button_"+id).style.left=x+"px";
-	document.getElementById("button_"+id).attributes.getNamedItem('data-content').value=reason
-}
-remove_answer = function(answer,url, quiz) {
-    //console.debug("time is "+pop.currentTime())
-    $.getJSON(url,{"answer":answer , "quiz":quiz}, function(resp){
-    
-    // html="<form name='input' action='"+resp['save']+"' method='get'><table class='table table-striped'> <tr><th>X</th><th>Y</th><th>Explanation</th><th>Correct</th><th></th><th></th></tr>"
-    // console.debug(resp['a'])
-//     
-    // for(e in resp['a'])
-    // {
-    	// if(resp['a'][e].correct == true)
-    	// {
-    		// check='checked'
-    	// }else{
-    		// check=''
-    	// }
-//     	
-    	// html+="<tr><td><input type='text' style='width:30px' size='5' value='"+resp['a'][e].xcoor+"' name='xcoor["+resp['a'][e].id+"]'</td><td><input type='text' style='width:30px' value='"+resp['a'][e].ycoor+"' name='ycoor["+resp['a'][e].id+"]'</td><td><input type='text' value='"+resp['a'][e].answer+"' name='reason["+resp['a'][e].id+"]'></td><td><input type='radio' name='quiz["+quiz+"]' value='"+resp['a'][e].id+"' "+check+" ></td><td><a data-remote='true' onclick=remove_answer("+resp['a'][e].id+",'"+resp['loc2']+"',"+quiz+") href='"+resp['loc']+"' >Remove</a></td> "
-//     	
-//     	
-    // }
-//     
-    // html+="</table><br><center> <input type='submit' value='Save'> </center></form>"
-//     
-    
-    //document.getElementById("answer").innerHTML=html;
-    $("tr#row_"+answer).remove();
-    $("#button_"+answer).remove();
-});
-
-};
-
-
-// create our popcorn instance
 document.addEventListener( "DOMContentLoaded", function() {
 	
 pop = Popcorn.youtube( "#youtube", "<%=  @lecture.url %>",{ width: 400, controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
