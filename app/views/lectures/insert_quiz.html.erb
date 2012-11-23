@@ -207,7 +207,7 @@ var slides = {1.2 : [4, 1, "This is my first question"],  //need to change cuepo
 student= <%= @s %>
 //console.debug("student isss "+student)
 
-skip="Skip to <select><option></option>"  ; 
+skip="Skip to:<select onChange=skip_to(this.value) ><option></option>"  ; 
 
 if(student==true){
   // important how to convert rails array of objects to JS array of objects
@@ -216,7 +216,7 @@ data= <%= raw @lecture.online_quizzes.find(:all, :order => 'time').to_json %>;  
    for(element in data) {
       
      // skip+="<button onclick='skip_to("+data[element].time+")'>Q"+element+" - "+formatSecondsAsTime(data[element].time)+"</button>"
-      skip+="<option onclick='skip_to("+data[element].time+")'>Q"+element+" - "+formatSecondsAsTime(data[element].time)+"</option>"
+      skip+="<option value='"+data[element].time+"'>Q"+element+" - "+formatSecondsAsTime(data[element].time)+"</option>"
            }
 skip+="</select>";
 document.getElementById("foo").innerHTML=skip

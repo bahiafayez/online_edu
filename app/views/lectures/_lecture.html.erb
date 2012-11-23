@@ -17,7 +17,7 @@
     color: rgb(0, 0, 0);
     text-shadow: 0px 1px 0px rgb(255, 255, 255);
     opacity: 0.2;
-    
+  }  
     .modal-footer .btn + .btn {
     float:left;
     margin-bottom: 0px;
@@ -33,8 +33,14 @@
     border-radius: 0px 0px 0px 0px;
     box-shadow: 0px 0px 0px ;
 }
+    .modal{
+    width: 1000px;
+    /*must be half of the width, minus scrollbar on the left (30px)*/
+   /* margin: -470px 0 0 -500px;*/
+}
 
-
+.modal.fade.in {
+  /*top: auto; /* fade in to correct spot */
 }
 
 </style>
@@ -52,7 +58,7 @@
 <center><%= link_to "Play", "#myModal2", :class => "btn", "data-toggle"=>"modal", :onclick => "markSeen()" %></center>
     
 <!-- Modal -->    
-<div style="display: none;width:90%;height:90%;left:25%" id="myModal2" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div style="display: none;width:1300px;height:600px;margin-left:-620px;margin-right:-650px;" id="myModal2" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <!-- <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
       <h3 id="myModalLabel"><%= lecture.name %></h3>
@@ -274,8 +280,8 @@ pop.listen( "timeupdate", function() {
     			ordered={}
     			html=""
     			for(answer in resp['answers']) {
-           			top3= parseFloat(resp['answers'][answer].ycoor*470/540)-8;
-           			left= parseFloat(resp['answers'][answer].xcoor*800/740);
+           			top3= parseFloat(resp['answers'][answer].ycoor*470/540)-10;
+           			left= parseFloat(resp['answers'][answer].xcoor*800/740)+3;
            			
            			
            			reason= resp['answers'][answer].answer

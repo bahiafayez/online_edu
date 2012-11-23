@@ -177,7 +177,7 @@ class LecturesController < ApplicationController
     @lecture= Lecture.find(params[:id])
     @loc= coordinates_course_lecture_path(@course,@lecture, :quiz => params[:quiz])
     @loc2=remove_answer_course_lecture_path(@course,@lecture)
-    @save= save_answers_course_lecture_path(@course,@lecture)
+    #@save= save_answers_course_lecture_path(@course,@lecture)
     #@loc3=coordinates_course_lecture_path(@course,@lecture)
     render json: {:a => @answers, :loc => @loc, :loc2=> @loc2, :save => @save, :current => @current}#, :loc3 => @loc3}
   end
