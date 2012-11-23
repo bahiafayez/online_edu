@@ -347,7 +347,7 @@ class CoursesController < ApplicationController
       
       @chart_data={}   #only count those that submitted their answers
       QuizStatus.where(:quiz_id => @quizchart.id, :course_id => params[:id], :status => "Submitted").pluck(:user_id).each do |student|
-        QuizGrade.where(:quiz_id => @quizchart.id, :user_id => student).group(:question_id).each_with_index do |question, index|
+        QuizGrade.where(:quiz_id => @quizchart.id, :user_id => student).select("grade, question_id").group(:question_id, :grade).each_with_index do |question, index|
           @chart_data["#{index}"]=[0,0] if @chart_data["#{index}"].nil?
           if question.grade==0
             @chart_data["#{index}"][1] = (@chart_data["#{index}"][1]||0) + 1 #initialize to 0 if nil #incorrect
