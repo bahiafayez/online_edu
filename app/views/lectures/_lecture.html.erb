@@ -280,7 +280,7 @@ pop.listen( "timeupdate", function() {
     			ordered={}
     			html=""
     			for(answer in resp['answers']) {
-           			top3= parseFloat(resp['answers'][answer].ycoor*470/540)-10;
+           			top3= parseFloat(resp['answers'][answer].ycoor*470/540 + (8.5/100*470));
            			left= parseFloat(resp['answers'][answer].xcoor*800/740)+3;
            			
            			
