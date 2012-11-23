@@ -1,0 +1,22 @@
+<div class="row">
+
+<div class="span4">
+<div class="well">
+<strong>Confusing Points</strong><br>
+<% @confused.each do |c |%>
+	<%= User.find(c.user_id).name %> was confused at time: <b style="color:red"><%= Time.at(c.time).utc.strftime("%H:%M:%S") %></b><br />
+<% end %>
+</div>
+</div>
+
+
+<div class="span5" style="float:right">
+<div class="well">
+<strong>Questions students asked</strong><br>
+<% @confused_questions.each do |c |%>
+	<%= User.find(c.user_id).name %> asked: <b style="color:green"><%= c.question %></b> at time:<b style="color:red"> <%= Time.at(c.time).utc.strftime("%H:%M:%S") %></b><br />
+<% end %>
+</div>
+</div>
+
+</div>

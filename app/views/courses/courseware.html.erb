@@ -1,12 +1,4 @@
-<% content_for :extra do %>
-    <ul class="nav nav-pills">
-    <li class=<%= (current_page?(student_show_course_path(@course)) ? 'active' : nil)  %>>
-    <%= link_to "Course Information", student_show_course_path(@course)%>
-    </li>
-    <li class=<%= (current_page?(courseware_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Courseware", courseware_course_path(@course)%></li>
-    <li class=<%= (current_page?(progress_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Progress", progress_course_path(@course)%></li>
-    </ul>
-<% end %>
+<%= render "shared/head2"%>
 
 
 <div class="row">
@@ -16,26 +8,33 @@
 <div class="accordion" id="accordion2">
 
 <% @course.groups.each do |g| %>	
+
+<% if g.appearance_time <= Time.zone.now %>	
 <div class="accordion-group">
 <div class="accordion-heading">
-	
-<center><%= link_to g.name, "#group_#{g.id}", :class =>"accordion-toggle", "data-toggle"=> "collapse", "data-parent"=>"#accordian2" %></center>
+
+
+<center><%= link_to g.name, "#group_#{g.id}", :class =>"accordion-toggle", "data-toggle"=> "collapse", "data-parent"=>"#accordian2", :style => "text-decoration:none" %></center>
 
 </div>
 <% if @typeGroup == g.id %> <!-- opening the group we're in -->
 <%= div_for(g, :class =>"accordion-body collapse in" ) do %>
 <% flag=1 %>
-<% g.lectures.each do |q| %>	
+<% g.lectures.each do |q| %>
+<% if q.appearance_time <= Time.zone.now %>		
 <% flag=0 %>
 <div class="accordion-inner">
-<%= link_to "Lecture: #{q.name}", courseware_course_path(@course, :l => q) , :class => "quiz"%>
+<%= link_to "Lecture: #{q.name}", courseware_course_path(@course, :l => q) , :class => "quiz", :style => "text-decoration:none"%> <%= image_tag "check7.png" , :style=> "margin-left:10px" if !notseen?(q.id) %>
 </div>
 <% end %>
-<% g.quizzes.each do |q| %>	
+<% end %>
+<% g.quizzes.each do |q| %>
+<% if q.appearance_time <= Time.zone.now %>	
 <% flag=0 %>
 <div class="accordion-inner">
-<%= link_to "Quiz: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz"%>
+<%= link_to "Quiz: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz" , :style => "text-decoration:none"%> <%= image_tag "check7.png" , :style=> "margin-left:10px" if !quiznotseen?(q.id) %>
 </div>
+<% end %>
 <% end %>
 <% if flag==1 %>
 <div class="accordion-inner">
@@ -47,17 +46,21 @@ Empty
 <% else %>
 <%= div_for(g, :class =>"accordion-body collapse" ) do %> <!-- closing the groups we're not in -->
 <% flag=1 %>
-<% g.lectures.each do |q| %>	
+<% g.lectures.each do |q| %>
+<% if q.appearance_time <= Time.zone.now %>		
 <% flag=0 %>
 <div class="accordion-inner">
-<%= link_to "Lecture: #{q.name}", courseware_course_path(@course, :l => q) , :class => "quiz"%>
+<%= link_to "Lecture: #{q.name}", courseware_course_path(@course, :l => q) , :class => "quiz" , :style => "text-decoration:none"%><%= image_tag "check7.png" , :style=> "margin-left:10px" if !notseen?(q.id) %>
 </div>
 <% end %>
-<% g.quizzes.each do |q| %>	
+<% end %>
+<% g.quizzes.each do |q| %>
+<% if q.appearance_time <= Time.zone.now %>		
 <% flag=0 %>
 <div class="accordion-inner">
-<%= link_to "Quiz: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz"%>
+<%= link_to "Quiz: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz" , :style => "text-decoration:none"%> <%= image_tag "check7.png" , :style=> "margin-left:10px" if !quiznotseen?(q.id) %>
 </div>
+<% end %>
 <% end %>
 <% if flag==1 %>
 <div class="accordion-inner">
@@ -69,6 +72,7 @@ Empty
 <% end %>
 
 </div>
+<% end %>
 <% end %>
 </div>
 </div>

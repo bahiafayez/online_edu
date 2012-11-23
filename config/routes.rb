@@ -43,6 +43,7 @@ OnlineEdu::Application.routes.draw do
     get 'progress_teacher_detailed'
     get 'progress'
     post 'student_quiz'
+    get 'student_notifications'
   end
     resources :groups #at first had it over quizzes and lectures, but then a lecture/quiz might not be part of a module! so shouldn't need module to access lecture.. could create lectures and then put them part of a group.
     resources :quizzes
@@ -58,6 +59,10 @@ OnlineEdu::Application.routes.draw do
         get 'save_answers2'
         get 'save_online'
         get 'answered'
+        get 'insert_quiz'
+        get 'confused'
+        get 'confused_question'
+        get 'seen'
       end
     end    
   end

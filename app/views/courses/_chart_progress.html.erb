@@ -1,4 +1,4 @@
-<div id="container2" style="min-width: 400px; height: 400px; margin: 0 auto"></div><br><br />
+<div id="container2" style="min-width: 400px; height: 100%; margin: 0 auto"></div><br><br />
 
 
 
@@ -9,7 +9,8 @@ $(function () {
         chart2 = new Highcharts.Chart({
             chart: {
                 renderTo: 'container2',
-                type: 'bar'
+                type: 'bar',
+                height: <%= @student_progress.length*60 %>
             },
             title: {
                 text: '<%= @p %> '
@@ -32,7 +33,7 @@ $(function () {
                 align: 'right',
                 verticalAlign: 'top',
                 x: 0,
-                y: 0,
+                y: -10,
                 floating: true,
                 borderWidth: 1,
                 backgroundColor: '#FFFFFF',
@@ -79,12 +80,13 @@ $(function () {
 function getSeries()
 {
 	var studentProgress= <%= raw @student_progress_json %>
-        x=[{"name":'Quiz', "data":[]}, {"name":'Lecture', "data":[]}]
+        x=[{"name":'Quiz', "data":[]}, {"name":'Lecture', "data":[]}, {"name":'Lecture Quizzes', "data":[]}]
         for(key in studentProgress)
         {	
         	//console.debug(studentProgress[key][1])
         	x[0].data.push(studentProgress[key][1])
         	x[1].data.push(studentProgress[key][2])
+        	x[2].data.push(studentProgress[key][3])
         }
         
         console.debug(x)

@@ -16,4 +16,15 @@ end
     #end 
 end 
 
+def notseen?(lect)
+  puts "over hereeeeeee #{LectureView.where(:lecture_id => lect, :course_id => params[:id], :user_id => current_user.id).inspect}"
+  puts "lecture id : #{lect}, course_id: #{params[:id]} user_id: #{current_user.id}"
+  return LectureView.where(:lecture_id => lect, :course_id => params[:id], :user_id => current_user.id).empty?
+end
+
+def quiznotseen?(quiz)
+  #return QuizGrade.where(:user_id => current_user.id, :quiz_id => quiz).empty? #later will check if status is submitted
+  return QuizStatus.where(:user_id => current_user.id, :quiz_id => quiz, :course_id => params[:id], :status => "Submitted").empty?
+end
+
 end

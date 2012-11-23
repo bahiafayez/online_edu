@@ -1,0 +1,12 @@
+<%= render "shared/head2"%>
+
+<dl>
+<% @deadlines.each do |k,v| %>
+<div class="well">
+<dt><%= k %></dt> <!-- <span class="label label-important">Important</span>-->
+		<% v.each do |q| %>
+		<dd style="padding:5px 5px 5px 5px">Quiz: <%= link_to Quiz.find(q).name, courseware_course_path(@course, :q => q) %> due date is : <%= Quiz.find(q).due_date %></dd>
+		<% end %>
+</div>
+<% end %>
+</dl>

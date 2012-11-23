@@ -17,6 +17,9 @@
 <div id="collapseOne" class="accordion-body collapse">
 <% end %>
 
+<div class="accordion-inner">
+<%= link_to "All Quizzes", progress_teacher_course_path(@course, :all => "all") , :class => "quiz"%>
+</div>
 <% @course.quizzes.each do |q| %>	
 <div class="accordion-inner">
 <%= link_to q.name, progress_teacher_course_path(@course, :q => q) , :class => "quiz"%>
@@ -70,20 +73,25 @@
 </div>
 
 <div class="span9">
+<% if @quizchart %>
+	<%= render 'chart2' %>
+<% end %>
 <% if @q %>
 	<%= render 'chart1' %>
+	<%= render 'confused' %>
 <% end %>
 <% if @p %>
 	<%= render 'chart_progress' %>
 <% end %>
+<% if @data %>
+	<%= render 'chart_all_quizzes' %>
+<% end %>
+
 </div>
 </div>
 
 
-<div id="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div><br><br />
-
-
-<table class="table table-striped">
+<!-- <table class="table table-striped">
 <thead>
 	<th>
 		Student name 
@@ -102,76 +110,4 @@
 	</td>
 </tr>
 <% end %>
-</table>
-
-<script>
-$(function () {
-    var chart;
-    $(document).ready(function() {
-        chart = new Highcharts.Chart({
-            chart: {
-                renderTo: 'container',
-                type: 'column'
-            },
-            title: {
-                text: 'Student Grades'
-            },
-            xAxis: {
-                categories: <%= raw @student_names %>
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: 'Grade'
-                },
-                stackLabels: {
-                    enabled: true,
-                    style: {
-                        fontWeight: 'bold',
-                        color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
-                    }
-                }
-            },
-            legend: {
-                align: 'right',
-                x: -100,
-                verticalAlign: 'top',
-                y: 20,
-                floating: true,
-                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColorSolid) || 'white',
-                borderColor: '#CCC',
-                borderWidth: 1,
-                shadow: false
-            },
-            tooltip: {
-                formatter: function() {
-                    return '<b>'+ this.x +'</b><br/>'+
-                        this.series.name +': '+ this.y +'<br/>'+
-                        'Total: '+ this.point.stackTotal;
-                }
-            },
-            plotOptions: {
-                column: {
-                    stacking: 'normal',
-                    dataLabels: {
-                        enabled: true,
-                        color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
-                    }
-                }
-            },
-            // series: [{
-                // name: 'John',  //should be quiz 1
-                // data: [5, 3, 4, 7, 2]  // quiz 1 for all students. 5 is quiz 1 for student 1 ... i think will need to reverse loop quiz bara, students gowa.
-            // }, {
-                // name: 'Jane',
-                // data: [2, 2, 3, 2, 1]
-            // }, {
-                // name: 'Joe',
-                // data: [3, 4, 4, 2, 5]
-            // }]
-            series: <%= raw @data %>
-        });
-    });
-    
-});
-</script>
+</table> -->

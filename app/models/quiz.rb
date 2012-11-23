@@ -6,8 +6,8 @@ class Quiz < ActiveRecord::Base
   has_many :questions, :dependent => :destroy
   accepts_nested_attributes_for :questions, :allow_destroy => true
   
-  attr_accessible :course_id, :instructions, :name, :questions_attributes, :group_id
-  validates :name, :presence => true
+  attr_accessible :course_id, :instructions, :name, :questions_attributes, :group_id, :due_date, :appearance_time
+  validates :name, :appearance_time, :presence => true
   #validates_associated :questions
   
 end

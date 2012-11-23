@@ -11,7 +11,17 @@
 </p>
 
 <p>
-  <b>Group:</b>
+  <h4>Due Date:</h4>
+  <%= @quiz.due_date %>
+</p>
+
+<p>
+  <h4>Appearance Time:</h4>
+  <%= @quiz.appearance_time %>
+</p>
+
+<p>
+  <h4>Module:</h4>
   <% if @quiz.group %>
   <%= link_to @quiz.group.name, course_group_path(@course,@quiz.group) %>
   <% end %>

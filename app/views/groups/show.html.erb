@@ -16,6 +16,12 @@
 </p>
 
 <p>
+  <h4>Appearance Time:</h4>
+  <%= @group.appearance_time %>
+</p>
+
+
+<p>
   <b>Lectures:</b>
   <% @group.lectures.each do |l| %>
   	 <%=link_to l.name, course_lecture_path(@course,l) %>

@@ -95,7 +95,7 @@ function saveAll()
 function redirect()
 {
 	console.debug("in redirect")
-	window.location = "<%= course_lecture_path(@course, @lecture)  %>"
+	window.location = "<%= insert_quiz_course_lecture_path(@course, @lecture)  %>"
 }
 function load(elem)
 {
@@ -145,7 +145,7 @@ jQuery(function() {
                 	toadd.attr("id", ""+resp['current'].id) 
                 	console.debug("to add isss "+toadd.attr("id"))
                 	toadd.attr("onclick","load('"+toadd.attr('id')+"')")
-	        		toadd.attr("rel","popover").attr("data-content","Correct:<input group='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Explanation:<input id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=remove('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
+	        		toadd.attr("rel","popover").attr("data-content","Correct:<input name='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Explanation:<input id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=remove('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
 	                toadd.attr("data-original-title","")
 	                toadd.clickover({ global_close: false, template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'})//.dblclick(function() {
                

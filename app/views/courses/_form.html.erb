@@ -8,7 +8,7 @@
     <%= f.input :duration, :label => "Duration (weeks)" %>
     <%= f.input :description, :input_html => {:style => 'width: 210px; height: 100px'} %>
     <%= f.input :prerequisites, :input_html => {:style => 'width: 210px; height: 100px'} %>
-    
+    <%= f.input :time_zone, :collection => ActiveSupport::TimeZone.all.sort{|v1,v2| v1.name <=> v2.name}.map{|v| v.name} %>
     
     <!-- Removed association for demo , could add it later-->
     <!-- <%= f.association :users, :as => :check_boxes %> --> <!-- or leave out checkboxes and will be multiple select -->

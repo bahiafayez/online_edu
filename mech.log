@@ -1,0 +1,151 @@
+# Logfile created on 2012-11-20 21:13:44 +0200 by logger.rb/31641
+I, [2012-11-20T21:13:44.476264 #13922]  INFO -- : Net::HTTP::Get: /
+D, [2012-11-20T21:13:44.476395 #13922] DEBUG -- : request-header: accept => */*
+D, [2012-11-20T21:13:44.476463 #13922] DEBUG -- : request-header: user-agent => Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2) AppleWebKit/534.51.22 (KHTML, like Gecko) Version/5.1.1 Safari/534.51.22
+D, [2012-11-20T21:13:44.476529 #13922] DEBUG -- : request-header: accept-encoding => gzip,deflate,identity
+D, [2012-11-20T21:13:44.476592 #13922] DEBUG -- : request-header: accept-charset => ISO-8859-1,utf-8;q=0.7,*;q=0.7
+D, [2012-11-20T21:13:44.476654 #13922] DEBUG -- : request-header: accept-language => en-us,en;q=0.5
+D, [2012-11-20T21:13:44.476715 #13922] DEBUG -- : request-header: host => piazza.com
+I, [2012-11-20T21:13:48.414990 #13922]  INFO -- : status: Net::HTTPOK 1.1 200 OK
+D, [2012-11-20T21:13:48.415563 #13922] DEBUG -- : response-header: content-type => text/html; charset=utf-8
+D, [2012-11-20T21:13:48.415893 #13922] DEBUG -- : response-header: transfer-encoding => chunked
+D, [2012-11-20T21:13:48.416129 #13922] DEBUG -- : response-header: connection => close
+D, [2012-11-20T21:13:48.416359 #13922] DEBUG -- : response-header: vary => Accept-Encoding
+D, [2012-11-20T21:13:48.416599 #13922] DEBUG -- : response-header: status => 200
+D, [2012-11-20T21:13:48.416840 #13922] DEBUG -- : response-header: x-powered-by => Phusion Passenger (mod_rails/mod_rack) 3.0.7
+D, [2012-11-20T21:13:48.417080 #13922] DEBUG -- : response-header: etag => "64d78b3a2ac2eb351eb3c940d6fbedf8"
+D, [2012-11-20T21:13:48.417320 #13922] DEBUG -- : response-header: p3p => CP='IDC DSP CURa ADMa DEVa OUR ONL UNI COM NAV'
+D, [2012-11-20T21:13:48.417638 #13922] DEBUG -- : response-header: x-runtime => 5
+D, [2012-11-20T21:13:48.417878 #13922] DEBUG -- : response-header: set-cookie => piazza_session=CLKGtyvKKFGCFGGytFGELyELIDDwEtIL.5%26x%26%26%7C%22%21r%7Cw5M5mmtD%29X5%3F5%275MD0; path=/; expires=Mon, 20 May 2013 19:13:47 GMT; HttpOnly
+D, [2012-11-20T21:13:48.418284 #13922] DEBUG -- : response-header: cache-control => private, max-age=0, must-revalidate
+D, [2012-11-20T21:13:48.418444 #13922] DEBUG -- : response-header: server => nginx/1.2.1 + Phusion Passenger 3.0.7 (mod_rails/mod_rack)
+D, [2012-11-20T21:13:48.418681 #13922] DEBUG -- : response-header: content-encoding => gzip
+D, [2012-11-20T21:13:48.421992 #13922] DEBUG -- : Read 3715 bytes (3715 total)
+D, [2012-11-20T21:13:48.758961 #13922] DEBUG -- : Read 1448 bytes (5163 total)
+D, [2012-11-20T21:13:48.807656 #13922] DEBUG -- : Read 2338 bytes (7501 total)
+D, [2012-11-20T21:13:48.810174 #13922] DEBUG -- : gzip response
+D, [2012-11-20T21:13:48.833367 #13922] DEBUG -- : saved cookie: piazza_session=CLKGtyvKKFGCFGGytFGELyELIDDwEtIL.5%26x%26%26%7C%22%21r%7Cw5M5mmtD%29X5%3F5%275MD0
+I, [2012-11-20T21:13:48.855105 #13922]  INFO -- : Net::HTTP::Get: /
+D, [2012-11-20T21:13:48.855312 #13922] DEBUG -- : request-header: accept => */*
+D, [2012-11-20T21:13:48.855475 #13922] DEBUG -- : request-header: user-agent => Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2) AppleWebKit/534.51.22 (KHTML, like Gecko) Version/5.1.1 Safari/534.51.22
+D, [2012-11-20T21:13:48.855546 #13922] DEBUG -- : request-header: accept-encoding => gzip,deflate,identity
+D, [2012-11-20T21:13:48.855610 #13922] DEBUG -- : request-header: accept-charset => ISO-8859-1,utf-8;q=0.7,*;q=0.7
+D, [2012-11-20T21:13:48.855846 #13922] DEBUG -- : request-header: accept-language => en-us,en;q=0.5
+D, [2012-11-20T21:13:48.855996 #13922] DEBUG -- : request-header: cookie => piazza_session=CLKGtyvKKFGCFGGytFGELyELIDDwEtIL.5%26x%26%26%7C%22%21r%7Cw5M5mmtD%29X5%3F5%275MD0
+D, [2012-11-20T21:13:48.856144 #13922] DEBUG -- : request-header: host => piazza.com
+D, [2012-11-20T21:13:48.856215 #13922] DEBUG -- : request-header: referer => https://piazza.com/
+I, [2012-11-20T21:13:50.610669 #13922]  INFO -- : status: Net::HTTPOK 1.1 200 OK
+D, [2012-11-20T21:13:50.610820 #13922] DEBUG -- : response-header: content-type => text/html; charset=utf-8
+D, [2012-11-20T21:13:50.611071 #13922] DEBUG -- : response-header: transfer-encoding => chunked
+D, [2012-11-20T21:13:50.611353 #13922] DEBUG -- : response-header: connection => close
+D, [2012-11-20T21:13:50.611419 #13922] DEBUG -- : response-header: vary => Accept-Encoding
+D, [2012-11-20T21:13:50.611479 #13922] DEBUG -- : response-header: status => 200
+D, [2012-11-20T21:13:50.611715 #13922] DEBUG -- : response-header: x-powered-by => Phusion Passenger (mod_rails/mod_rack) 3.0.7
+D, [2012-11-20T21:13:50.611870 #13922] DEBUG -- : response-header: etag => "64d78b3a2ac2eb351eb3c940d6fbedf8"
+D, [2012-11-20T21:13:50.612022 #13922] DEBUG -- : response-header: p3p => CP='IDC DSP CURa ADMa DEVa OUR ONL UNI COM NAV'
+D, [2012-11-20T21:13:50.612084 #13922] DEBUG -- : response-header: x-runtime => 5
+D, [2012-11-20T21:13:50.612232 #13922] DEBUG -- : response-header: set-cookie => piazza_session=CLKGtyvKKFGCFGGytFGELyELIDDwEtIL.5%26x%26%26%7C%22%21r%7Cw5M5mmtD%29X5%3F5%275MD0; path=/; expires=Mon, 20 May 2013 19:13:50 GMT; HttpOnly
+D, [2012-11-20T21:13:50.612382 #13922] DEBUG -- : response-header: cache-control => private, max-age=0, must-revalidate
+D, [2012-11-20T21:13:50.612530 #13922] DEBUG -- : response-header: server => nginx/1.2.1 + Phusion Passenger 3.0.7 (mod_rails/mod_rack)
+D, [2012-11-20T21:13:50.612678 #13922] DEBUG -- : response-header: content-encoding => gzip
+D, [2012-11-20T21:13:50.612924 #13922] DEBUG -- : Read 3715 bytes (3715 total)
+D, [2012-11-20T21:13:50.997769 #13922] DEBUG -- : Read 3786 bytes (7501 total)
+D, [2012-11-20T21:13:50.998732 #13922] DEBUG -- : gzip response
+D, [2012-11-20T21:13:51.005505 #13922] DEBUG -- : saved cookie: piazza_session=CLKGtyvKKFGCFGGytFGELyELIDDwEtIL.5%26x%26%26%7C%22%21r%7Cw5M5mmtD%29X5%3F5%275MD0
+I, [2012-11-20T21:13:51.007480 #13922]  INFO -- : form encoding: UTF-8
+D, [2012-11-20T21:13:51.008906 #13922] DEBUG -- : query: "email=bahia.sharkawy%40gmail.com&password=trial.123"
+I, [2012-11-20T21:13:51.026203 #13922]  INFO -- : Net::HTTP::Post: /class
+D, [2012-11-20T21:13:51.026319 #13922] DEBUG -- : request-header: accept => */*
+D, [2012-11-20T21:13:51.026467 #13922] DEBUG -- : request-header: user-agent => Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2) AppleWebKit/534.51.22 (KHTML, like Gecko) Version/5.1.1 Safari/534.51.22
+D, [2012-11-20T21:13:51.026533 #13922] DEBUG -- : request-header: accept-encoding => gzip,deflate,identity
+D, [2012-11-20T21:13:51.026594 #13922] DEBUG -- : request-header: accept-charset => ISO-8859-1,utf-8;q=0.7,*;q=0.7
+D, [2012-11-20T21:13:51.026654 #13922] DEBUG -- : request-header: accept-language => en-us,en;q=0.5
+D, [2012-11-20T21:13:51.026715 #13922] DEBUG -- : request-header: cookie => piazza_session=CLKGtyvKKFGCFGGytFGELyELIDDwEtIL.5%26x%26%26%7C%22%21r%7Cw5M5mmtD%29X5%3F5%275MD0
+D, [2012-11-20T21:13:51.026775 #13922] DEBUG -- : request-header: host => piazza.com
+D, [2012-11-20T21:13:51.026841 #13922] DEBUG -- : request-header: referer => https://piazza.com/
+D, [2012-11-20T21:13:51.026987 #13922] DEBUG -- : request-header: content-type => application/x-www-form-urlencoded
+D, [2012-11-20T21:13:51.027047 #13922] DEBUG -- : request-header: content-length => 51
+I, [2012-11-20T21:13:52.748712 #13922]  INFO -- : status: Net::HTTPFound 1.1 302 Found
+D, [2012-11-20T21:13:52.748852 #13922] DEBUG -- : response-header: content-type => text/html; charset=utf-8
+D, [2012-11-20T21:13:52.749003 #13922] DEBUG -- : response-header: content-length => 90
+D, [2012-11-20T21:13:52.749063 #13922] DEBUG -- : response-header: connection => close
+D, [2012-11-20T21:13:52.749124 #13922] DEBUG -- : response-header: status => 302
+D, [2012-11-20T21:13:52.749184 #13922] DEBUG -- : response-header: x-powered-by => Phusion Passenger (mod_rails/mod_rack) 3.0.7
+D, [2012-11-20T21:13:52.749244 #13922] DEBUG -- : response-header: p3p => CP='IDC DSP CURa ADMa DEVa OUR ONL UNI COM NAV'
+D, [2012-11-20T21:13:52.749304 #13922] DEBUG -- : response-header: location => https://piazza.com/class
+D, [2012-11-20T21:13:52.749446 #13922] DEBUG -- : response-header: x-runtime => 12
+D, [2012-11-20T21:13:52.749510 #13922] DEBUG -- : response-header: set-cookie => piazza_session=HICuIKGxwFGyttJICDtELwyCyHFEJKyv.5%26x%26%26%7C%22%21r%7Cw5M5mmtD%29X5%3F5%23x%25+5MC%3F5%21%7Cw%265M5%7BL%25J%2ADJ%21I%22-HuxMDHN5%3F5%2A%7Bx%215MDFHFGFKKFE%3F5%28%26x%255M5%7BL%25KCz%26%7E%2AvHJC%7B5%3F5%29x%25%7Cy%2C5M5KEvtKLtEDDwDGHyDwKuyGvJICFwvFxwI5%3F5+%26z5M55%3F5x+t%7C%7F5M5ut%7B%7CtA%26%7Bt%25%7Et%2A%2CSz+t%7C%7FAv%22+5%3F5%275MD%3F5%27tz5M550; path=/; expires=Mon, 20 May 2013 19:13:52 GMT; HttpOnly
+D, [2012-11-20T21:13:52.749611 #13922] DEBUG -- : response-header: cache-control => no-cache
+D, [2012-11-20T21:13:52.749673 #13922] DEBUG -- : response-header: server => nginx/1.2.1 + Phusion Passenger 3.0.7 (mod_rails/mod_rack)
+D, [2012-11-20T21:13:52.749895 #13922] DEBUG -- : Read 90 bytes (90 total)
+D, [2012-11-20T21:13:52.751313 #13922] DEBUG -- : saved cookie: piazza_session=HICuIKGxwFGyttJICDtELwyCyHFEJKyv.5%26x%26%26%7C%22%21r%7Cw5M5mmtD%29X5%3F5%23x%25+5MC%3F5%21%7Cw%265M5%7BL%25J%2ADJ%21I%22-HuxMDHN5%3F5%2A%7Bx%215MDFHFGFKKFE%3F5%28%26x%255M5%7BL%25KCz%26%7E%2AvHJC%7B5%3F5%29x%25%7Cy%2C5M5KEvtKLtEDDwDGHyDwKuyGvJICFwvFxwI5%3F5+%26z5M55%3F5x+t%7C%7F5M5ut%7B%7CtA%26%7Bt%25%7Et%2A%2CSz+t%7C%7FAv%22+5%3F5%275MD%3F5%27tz5M550
+I, [2012-11-20T21:13:52.751515 #13922]  INFO -- : follow redirect to: https://piazza.com/class
+I, [2012-11-20T21:13:52.753871 #13922]  INFO -- : Net::HTTP::Get: /class
+D, [2012-11-20T21:13:52.753957 #13922] DEBUG -- : request-header: accept => */*
+D, [2012-11-20T21:13:52.754027 #13922] DEBUG -- : request-header: user-agent => Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2) AppleWebKit/534.51.22 (KHTML, like Gecko) Version/5.1.1 Safari/534.51.22
+D, [2012-11-20T21:13:52.754182 #13922] DEBUG -- : request-header: accept-encoding => gzip,deflate,identity
+D, [2012-11-20T21:13:52.754245 #13922] DEBUG -- : request-header: accept-charset => ISO-8859-1,utf-8;q=0.7,*;q=0.7
+D, [2012-11-20T21:13:52.754306 #13922] DEBUG -- : request-header: accept-language => en-us,en;q=0.5
+D, [2012-11-20T21:13:52.754368 #13922] DEBUG -- : request-header: cookie => piazza_session=HICuIKGxwFGyttJICDtELwyCyHFEJKyv.5%26x%26%26%7C%22%21r%7Cw5M5mmtD%29X5%3F5%23x%25+5MC%3F5%21%7Cw%265M5%7BL%25J%2ADJ%21I%22-HuxMDHN5%3F5%2A%7Bx%215MDFHFGFKKFE%3F5%28%26x%255M5%7BL%25KCz%26%7E%2AvHJC%7B5%3F5%29x%25%7Cy%2C5M5KEvtKLtEDDwDGHyDwKuyGvJICFwvFxwI5%3F5+%26z5M55%3F5x+t%7C%7F5M5ut%7B%7CtA%26%7Bt%25%7Et%2A%2CSz+t%7C%7FAv%22+5%3F5%275MD%3F5%27tz5M550
+D, [2012-11-20T21:13:52.754430 #13922] DEBUG -- : request-header: host => piazza.com
+D, [2012-11-20T21:13:52.754496 #13922] DEBUG -- : request-header: referer => https://piazza.com/
+I, [2012-11-20T21:13:54.734318 #13922]  INFO -- : status: Net::HTTPOK 1.1 200 OK
+D, [2012-11-20T21:13:54.734455 #13922] DEBUG -- : response-header: content-type => text/html; charset=utf-8
+D, [2012-11-20T21:13:54.734521 #13922] DEBUG -- : response-header: transfer-encoding => chunked
+D, [2012-11-20T21:13:54.734583 #13922] DEBUG -- : response-header: connection => close
+D, [2012-11-20T21:13:54.734644 #13922] DEBUG -- : response-header: vary => Accept-Encoding
+D, [2012-11-20T21:13:54.734705 #13922] DEBUG -- : response-header: status => 200
+D, [2012-11-20T21:13:54.734766 #13922] DEBUG -- : response-header: x-powered-by => Phusion Passenger (mod_rails/mod_rack) 3.0.7
+D, [2012-11-20T21:13:54.734829 #13922] DEBUG -- : response-header: etag => "c21faca4fb0b883069e23af9bc7f6fee"
+D, [2012-11-20T21:13:54.734891 #13922] DEBUG -- : response-header: p3p => CP='IDC DSP CURa ADMa DEVa OUR ONL UNI COM NAV'
+D, [2012-11-20T21:13:54.735054 #13922] DEBUG -- : response-header: x-runtime => 33
+D, [2012-11-20T21:13:54.735122 #13922] DEBUG -- : response-header: set-cookie => last_piaz_user=h9r80gskwc570h; path=/; expires=Mon, 20-May-2013 19:13:54 GMT, , piazza_session=JwDEJEHKuJHHvHIGFxxKEtwCLDLyutJD.5%23x%25+5MC%3F5%26x%26%26%7C%22%21r%7Cw5M5mmtD%29X5%3F5%21%7Cw%265M5%7BL%25J%2ADJ%21I%22-HuxMDHN5%3F5%2A%7Bx%215MDFHFGFKKFG%3F5%28%26x%255M5%7BL%25KCz%26%7E%2AvHJC%7B5%3F5%29x%25%7Cy%2C5M5KEvtKLtEDDwDGHyDwKuyGvJICFwvFxwI5%3F5x+t%7C%7F5M5ut%7B%7CtA%26%7Bt%25%7Et%2A%2CSz+t%7C%7FAv%22+5%3F5+%26z5M55%3F5%275MD%3F5%27tz5M550; path=/; HttpOnly
+D, [2012-11-20T21:13:54.735237 #13922] DEBUG -- : response-header: cache-control => private, max-age=0, must-revalidate
+D, [2012-11-20T21:13:54.735301 #13922] DEBUG -- : response-header: server => nginx/1.2.1 + Phusion Passenger 3.0.7 (mod_rails/mod_rack)
+D, [2012-11-20T21:13:54.735362 #13922] DEBUG -- : response-header: content-encoding => gzip
+D, [2012-11-20T21:13:54.735606 #13922] DEBUG -- : Read 3375 bytes (3375 total)
+D, [2012-11-20T21:13:55.028234 #13922] DEBUG -- : Read 1448 bytes (4823 total)
+D, [2012-11-20T21:13:55.478724 #13922] DEBUG -- : Read 7240 bytes (12063 total)
+D, [2012-11-20T21:13:55.548590 #13922] DEBUG -- : Read 2896 bytes (14959 total)
+D, [2012-11-20T21:13:55.698504 #13922] DEBUG -- : Read 4344 bytes (19303 total)
+D, [2012-11-20T21:13:56.128749 #13922] DEBUG -- : Read 8688 bytes (27991 total)
+D, [2012-11-20T21:13:56.351585 #13922] DEBUG -- : Read 691 bytes (28682 total)
+D, [2012-11-20T21:13:56.351951 #13922] DEBUG -- : Read 5093 bytes (33775 total)
+D, [2012-11-20T21:13:56.708207 #13922] DEBUG -- : Read 8688 bytes (42463 total)
+D, [2012-11-20T21:13:56.708439 #13922] DEBUG -- : Read 549 bytes (43012 total)
+D, [2012-11-20T21:13:56.708922 #13922] DEBUG -- : gzip response
+D, [2012-11-20T21:13:56.743208 #13922] DEBUG -- : saved cookie: last_piaz_user=h9r80gskwc570h
+D, [2012-11-20T21:13:56.743442 #13922] DEBUG -- : saved cookie: piazza_session=JwDEJEHKuJHHvHIGFxxKEtwCLDLyutJD.5%23x%25+5MC%3F5%26x%26%26%7C%22%21r%7Cw5M5mmtD%29X5%3F5%21%7Cw%265M5%7BL%25J%2ADJ%21I%22-HuxMDHN5%3F5%2A%7Bx%215MDFHFGFKKFG%3F5%28%26x%255M5%7BL%25KCz%26%7E%2AvHJC%7B5%3F5%29x%25%7Cy%2C5M5KEvtKLtEDDwDGHyDwKuyGvJICFwvFxwI5%3F5x+t%7C%7F5M5ut%7B%7CtA%26%7Bt%25%7Et%2A%2CSz+t%7C%7FAv%22+5%3F5+%26z5M55%3F5%275MD%3F5%27tz5M550
+I, [2012-11-20T21:13:56.956975 #13922]  INFO -- : Net::HTTP::Get: /class
+D, [2012-11-20T21:13:56.957128 #13922] DEBUG -- : request-header: accept => */*
+D, [2012-11-20T21:13:56.957197 #13922] DEBUG -- : request-header: user-agent => Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2) AppleWebKit/534.51.22 (KHTML, like Gecko) Version/5.1.1 Safari/534.51.22
+D, [2012-11-20T21:13:56.958805 #13922] DEBUG -- : request-header: accept-encoding => gzip,deflate,identity
+D, [2012-11-20T21:13:56.958882 #13922] DEBUG -- : request-header: accept-charset => ISO-8859-1,utf-8;q=0.7,*;q=0.7
+D, [2012-11-20T21:13:56.958947 #13922] DEBUG -- : request-header: accept-language => en-us,en;q=0.5
+D, [2012-11-20T21:13:56.959011 #13922] DEBUG -- : request-header: cookie => last_piaz_user=h9r80gskwc570h; piazza_session=JwDEJEHKuJHHvHIGFxxKEtwCLDLyutJD.5%23x%25+5MC%3F5%26x%26%26%7C%22%21r%7Cw5M5mmtD%29X5%3F5%21%7Cw%265M5%7BL%25J%2ADJ%21I%22-HuxMDHN5%3F5%2A%7Bx%215MDFHFGFKKFG%3F5%28%26x%255M5%7BL%25KCz%26%7E%2AvHJC%7B5%3F5%29x%25%7Cy%2C5M5KEvtKLtEDDwDGHyDwKuyGvJICFwvFxwI5%3F5x+t%7C%7F5M5ut%7B%7CtA%26%7Bt%25%7Et%2A%2CSz+t%7C%7FAv%22+5%3F5+%26z5M55%3F5%275MD%3F5%27tz5M550
+D, [2012-11-20T21:13:56.959089 #13922] DEBUG -- : request-header: host => piazza.com
+D, [2012-11-20T21:13:56.959170 #13922] DEBUG -- : request-header: referer => https://piazza.com/class
+I, [2012-11-20T21:13:58.919370 #13922]  INFO -- : status: Net::HTTPOK 1.1 200 OK
+D, [2012-11-20T21:13:58.919531 #13922] DEBUG -- : response-header: content-type => text/html; charset=utf-8
+D, [2012-11-20T21:13:58.919609 #13922] DEBUG -- : response-header: transfer-encoding => chunked
+D, [2012-11-20T21:13:58.919681 #13922] DEBUG -- : response-header: connection => close
+D, [2012-11-20T21:13:58.919751 #13922] DEBUG -- : response-header: vary => Accept-Encoding
+D, [2012-11-20T21:13:58.919822 #13922] DEBUG -- : response-header: status => 200
+D, [2012-11-20T21:13:58.919901 #13922] DEBUG -- : response-header: x-powered-by => Phusion Passenger (mod_rails/mod_rack) 3.0.7
+D, [2012-11-20T21:13:58.919984 #13922] DEBUG -- : response-header: etag => "d45d024d34d56c133a2a175f76328f15"
+D, [2012-11-20T21:13:58.920059 #13922] DEBUG -- : response-header: p3p => CP='IDC DSP CURa ADMa DEVa OUR ONL UNI COM NAV'
+D, [2012-11-20T21:13:58.920131 #13922] DEBUG -- : response-header: x-runtime => 117
+D, [2012-11-20T21:13:58.920200 #13922] DEBUG -- : response-header: set-cookie => piazza_session=ILHFKJDKJDuFyLDDICKtHGKFuKuFKIvD.5%23x%25+5MC%3F5%26x%26%26%7C%22%21r%7Cw5M5mmtD%29X5%3F5%21%7Cw%265M5%7BL%25J%2ADJ%21I%22-HuxMDHN5%3F5%2A%7Bx%215MDFHFGFKKFK%3F5%28%26x%255M5%7BL%25KCz%26%7E%2AvHJC%7B5%3F5%29x%25%7Cy%2C5M5KEvtKLtEDDwDGHyDwKuyGvJICFwvFxwI5%3F5x+t%7C%7F5M5ut%7B%7CtA%26%7Bt%25%7Et%2A%2CSz+t%7C%7FAv%22+5%3F5+%26z5M55%3F5%275MD%3F5%27tz5M550; path=/; HttpOnly
+D, [2012-11-20T21:13:58.920316 #13922] DEBUG -- : response-header: cache-control => private, max-age=0, must-revalidate
+D, [2012-11-20T21:13:58.920390 #13922] DEBUG -- : response-header: server => nginx/1.2.1 + Phusion Passenger 3.0.7 (mod_rails/mod_rack)
+D, [2012-11-20T21:13:58.920460 #13922] DEBUG -- : response-header: content-encoding => gzip
+D, [2012-11-20T21:13:58.920651 #13922] DEBUG -- : Read 3478 bytes (3478 total)
+D, [2012-11-20T21:13:59.489986 #13922] DEBUG -- : Read 5792 bytes (9270 total)
+D, [2012-11-20T21:13:59.778521 #13922] DEBUG -- : Read 5792 bytes (15062 total)
+D, [2012-11-20T21:13:59.851526 #13922] DEBUG -- : Read 1448 bytes (16510 total)
+D, [2012-11-20T21:14:00.179989 #13922] DEBUG -- : Read 10136 bytes (26646 total)
+D, [2012-11-20T21:14:00.258500 #13922] DEBUG -- : Read 2036 bytes (28682 total)
+D, [2012-11-20T21:14:00.258701 #13922] DEBUG -- : Read 852 bytes (29534 total)
+D, [2012-11-20T21:14:00.612839 #13922] DEBUG -- : Read 13480 bytes (43014 total)
+D, [2012-11-20T21:14:00.613705 #13922] DEBUG -- : gzip response
+D, [2012-11-20T21:14:00.650279 #13922] DEBUG -- : saved cookie: piazza_session=ILHFKJDKJDuFyLDDICKtHGKFuKuFKIvD.5%23x%25+5MC%3F5%26x%26%26%7C%22%21r%7Cw5M5mmtD%29X5%3F5%21%7Cw%265M5%7BL%25J%2ADJ%21I%22-HuxMDHN5%3F5%2A%7Bx%215MDFHFGFKKFK%3F5%28%26x%255M5%7BL%25KCz%26%7E%2AvHJC%7B5%3F5%29x%25%7Cy%2C5M5KEvtKLtEDDwDGHyDwKuyGvJICFwvFxwI5%3F5x+t%7C%7F5M5ut%7B%7CtA%26%7Bt%25%7Et%2A%2CSz+t%7C%7FAv%22+5%3F5+%26z5M55%3F5%275MD%3F5%27tz5M550

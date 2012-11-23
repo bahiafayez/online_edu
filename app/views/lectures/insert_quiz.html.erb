@@ -1,0 +1,329 @@
+<script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script>
+<style>
+	.ontop{
+		/*background:#fff;  /* invisible div*/
+        position:absolute;
+        min-width:600px;
+        min-height:365px;
+        z-index:99;
+	}
+</style>
+
+<%= render 'shared/head' %>
+<div class="row">
+<div class="span4">
+
+
+<h3><%= @lecture.name %></h3>
+
+<!-- <button rel='popover' class='pop' data-content='And heres some amaz'></button> -->
+
+<% if @s!="true"%>
+<b>Choose place to insert quiz and click button below</b><br />
+<%= link_to "Add Quiz", [@course,@lecture], :remote=> true, :onclick => "add_quiz(#{@lecture.id},'#{add_quiz_course_lecture_path(@course,@lecture)}')" %>
+<br><br>
+<div id="quizzes">
+	
+	<table class="table table-striped">
+	<% i=1 %>
+	<% @quizzes.each do |q|%>
+	<tr>
+		<td><%= i %></td>
+		<td><%= Time.at(q.time).utc.strftime("%H:%M:%S") %></td>
+		<td> <%= link_to "Remove", [@course,@lecture], :remote=> true, :onclick => "remove_quiz(#{q.id},'#{remove_quiz_course_lecture_path(@course,@lecture)}')" %> </td>
+		<td> <%= link_to "Coordinates",  coordinates_course_lecture_path(@course,@lecture, :quiz => q.id) %></td>
+		<% i+=1 %>
+		
+	</tr>
+	<% end %>
+	</table>
+	
+	
+</div>
+
+<div id="pos" style="position:absolute"></div>
+<% end %>
+</div>
+
+
+<div class="span8">
+	
+
+<center>
+<% if @s=="true" %>
+<%= link_to 'Go To Teacher View', insert_quiz_course_lecture_path(@course,@lecture) %><br>
+<% else %>
+<%= link_to 'Go To Student View', insert_quiz_course_lecture_path(@course,@lecture,:s=>true) %><br>
+<% end %>	
+	
+
+<div style="width:600px" >
+<div class="ontop" id="ontop"></div>
+<div id="youtube" style="width:600px;height:400px;"></div><br />
+<div id="foo"></div><br />	
+</div></center>
+</div>
+
+
+
+<script language="JavaScript" type="text/JavaScript">
+
+
+function formatSecondsAsTime(secs, format) {
+  var hr  = Math.floor(secs / 3600);
+  var min = Math.floor((secs - (hr * 3600))/60);
+  var sec = Math.floor(secs - (hr * 3600) -  (min * 60));
+
+  if (hr < 10)   { hr    = "0" + hr; }
+  if (min < 10) { min = "0" + min; }
+  if (sec < 10)  { sec  = "0" + sec; }
+  if (hr)            { hr   = "00"; }
+
+  if (format != null) {
+    var formatted_time = format.replace('hh', hr);
+    formatted_time = formatted_time.replace('h', hr*1+""); // check for single hour formatting
+    formatted_time = formatted_time.replace('mm', min);
+    formatted_time = formatted_time.replace('m', min*1+""); // check for single minute formatting
+    formatted_time = formatted_time.replace('ss', sec);
+    formatted_time = formatted_time.replace('s', sec*1+""); // check for single second formatting
+    return formatted_time;
+  } else {
+    return hr + ':' + min + ':' + sec;
+  }
+}
+
+
+function skip_to(time)
+{
+	if (pop.currentTime()-0.5 < 0)
+	{
+		pop.currentTime(time-0.1);
+	}
+	else
+	{
+		pop.currentTime(time-0.5);
+	}
+	console.debug(pop.currentTime())
+	//pop.play();	
+}
+
+
+
+$(document).ready(function() {
+  $('.ontop').click(function(e) {
+    var offset = $(this).offset();
+  	left= parseFloat(e.pageX) - parseFloat(offset.left) //not clientX because client depends on window.. so numbers change when scrolling.
+  	right = parseFloat(e.pageY) - parseFloat(offset.top)
+  	
+  	console.debug("offset is "+ left)
+  	
+    //document.getElementById('pos').innerHTML = 'Mouse position is: X='+left+' Y='+right;
+	//document.getElementById('pos').style.left = left;
+	//document.getElementById('pos').style.top = right;
+	//document.getElementById('pos').style.display='block';
+  });
+});
+
+
+
+</script>
+ 
+
+
+
+<!-- Should move this somewhere else later -->
+
+<script>
+
+var pop
+
+//function add_quiz(lecture){
+	
+//}
+add_quiz = function(lecture,url) {
+    console.debug("time is "+pop.currentTime())
+    $.getJSON(url,{"lecture":lecture, "time":pop.currentTime()}, function(resp){
+    html="<table class='table table-striped'>"
+    console.debug(resp['q'])
+    
+    for(e in resp['q'])
+    {
+    	count=parseFloat(e)+1
+    	html+="<tr><td>"+count+"</td><td>"+formatSecondsAsTime(resp['q'][e].time)+"</td><td><a data-remote='true' onclick=remove_quiz("+resp['q'][e].id+",'"+resp['loc2']+"') href='"+resp['loc']+"' >Remove</a></td> "
+    	html+="<td><a href='"+resp['loc3']+"?quiz="+resp['q'][e].id+"'>Coordinates</a></td></tr>"
+    	
+    }
+    
+    html+="</table>"
+    document.getElementById("quizzes").innerHTML=html;
+});
+
+};
+
+
+
+remove_quiz = function(quiz,url) {
+    //console.debug("time is "+pop.currentTime())
+    $.getJSON(url,{"quiz":quiz }, function(resp){
+    html="<table class='table table-striped'>"
+    console.debug(resp['q'])
+    
+    for(e in resp['q'])
+    {
+    	count=parseFloat(e)+1
+    	html+="<tr><td>"+count+"</td><td>"+formatSecondsAsTime(resp['q'][e].time)+"</td><td><a data-remote='true' onclick=remove_quiz("+resp['q'][e].id+",'"+resp['loc2']+"') href='"+resp['loc']+"' >Remove</a></td> "
+    	html+="<td><a href='"+resp['loc3']+"?quiz="+resp['q'][e].id+"'>Coordinates</a></td></tr>"
+    }
+    html+="</table>"
+    document.getElementById("quizzes").innerHTML=html;
+});
+
+};
+
+
+// create our popcorn instance
+document.addEventListener( "DOMContentLoaded", function() {
+	
+pop = Popcorn.youtube( "#youtube", "<%=  @lecture.url %>",{ width: 400, controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
+//var pop = Popcorn( Popcorn.youtube( '#youtube', 'http://www.youtube.com/watch?v=H9BXF6xJy54', { width: 400, controls: 0 } ) );
+
+pop.controls( false );                          
+pop.play();
+
+var last=0;
+var flag=0;
+                          
+var slides = {1.2 : [4, 1, "This is my first question"],  //need to change cuepoint to understand this.
+                          30.4 : [5, 3, "Here's another question"] }
+
+                          
+//for (key in slides) {
+//    value = slides[key];
+//    addSlide(key, value); // value is [4,1,"my first question"]
+//    _results.push(this.events.call);
+//}
+ console.debug("pop duration isss"+pop.duration())         
+
+student= <%= @s %>
+//console.debug("student isss "+student)
+
+skip="Skip to <select><option></option>"  ; 
+
+if(student==true){
+  // important how to convert rails array of objects to JS array of objects
+data= <%= raw @lecture.online_quizzes.find(:all, :order => 'time').to_json %>;  //to order by time
+
+   for(element in data) {
+      
+     // skip+="<button onclick='skip_to("+data[element].time+")'>Q"+element+" - "+formatSecondsAsTime(data[element].time)+"</button>"
+      skip+="<option onclick='skip_to("+data[element].time+")'>Q"+element+" - "+formatSecondsAsTime(data[element].time)+"</option>"
+           }
+skip+="</select>";
+document.getElementById("foo").innerHTML=skip
+console.debug("inside student is true")
+}            
+
+
+if(student==true)
+{
+	pop.listen( "timeupdate", function() {
+    //console.log( this.currentTime() );
+    a= <%= raw @lecture.online_quizzes.to_json %>;   // important how to convert rails array of objects to JS array of objects
+    //console.debug(a)
+    //console.debug(a[0])
+           for(key in a) {
+          //console.debug("online quiz time isss "+a[key].time)
+          //console.debug("flag isss "+flag)
+           if(this.currentTime()> parseFloat(a[key].time) && this.currentTime()< parseFloat(a[key].time)+0.5 &&  flag==0 )
+           {
+           //console.debug("more than 4 seconds");
+          // document.getElementById("foo").innerHTML = "<b style='background-color: white;'>HELLO!!!</b>";
+          //  console.debug("pop duration isss"+pop.duration()) 
+           pop.pause();
+           flag=1;
+           last=parseFloat(a[key].time)
+           
+           // now i want to get the answers
+            $.getJSON("<%= @url %>",{"quiz":a[key].id }, function(resp){
+    			//console.debug(resp)
+    			html=""
+    			for(answer in resp['answers']) {
+           			top3= parseFloat(resp['answers'][answer].ycoor *365/540);
+           			left= parseFloat(resp['answers'][answer].xcoor *600/740);
+           			reason= resp['answers'][answer].answer
+           			if(resp['answers'][answer].correct==true)
+           			{
+           				title="<b style='color:green'>Correct</b>"
+           			}else{
+           				title="<b style='color:red'>Incorrect</b>"
+           			}
+           			
+           			console.debug( "x: "+top3+" y:"+left+" reason: "+resp['answers'][answer].answer)
+           			
+           			html+="<button rel='popover' id='"+resp['answers'][answer].id+"' data-original-title=\""+title+"\" class='pop' data-content=\""+reason+"\"  style='position:absolute; width: 3px; height: 5px; border: 1px solid #006; background: #9cf; top:"+top3+"px; left: "+left+"px;'></button>"
+           			//onclick='show_reason(\""+reason+"\")'
+           			//$('.pop').popover()
+           			
+           			//$("[rel=popover]").click(function(event){
+						//$('.pop').popover('hide')
+						//$(this).popover('toggle')
+						//console.debug("in thing popover this is"+$(this))
+					//});
+           			//$("[rel=popover]").click(function(event){
+						//$('.pop').popover('hide')
+						//$(this).popover('toggle')
+					//});
+           			// absolute therefore xpos relative to parent div. i.e. xpos min awel el video.
+    		}
+    		
+    		
+    		document.getElementById("ontop").innerHTML=html;
+           			
+           	$("[rel=popover]").popover({trigger: 'hover'}); //{trigger: 'manual'}
+           			
+           			
+    		});
+           
+           // need timer here so don't pause twice!!
+           
+           }
+           else
+           {
+           //	console.debug("last issss "+last)
+           	if(this.currentTime() > last + 1.0 || (this.currentTime() < last) )   // 1 second from both directions so don't stop after playing.
+           	{
+           		flag=0;
+           	} 
+           	
+           	
+           if (!this.paused()){
+           //document.getElementById("foo").innerHTML=""   
+           document.getElementById("ontop").innerHTML=""
+           }
+           }
+
+           
+           }
+       });
+
+}
+    
+}, false );
+
+
+
+function show_reason(answer)
+{
+	//alert("haha"+ answer)
+	//$('.pop').popover('hide')
+	
+	if(answer=="Correct")
+	{
+		pop.play()
+	}
+}
+
+// $("[rel=popover]").popover();
+
+</script>
+</div>

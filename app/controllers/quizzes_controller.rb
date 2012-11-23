@@ -4,6 +4,7 @@ class QuizzesController < ApplicationController
   def index
     @quizzes = Quiz.where(:course_id => params[:course_id])
     @course = Course.find(params[:course_id])
+    Time.zone=ActiveSupport::TimeZone[@course.time_zone]
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @quizzes }
@@ -16,7 +17,7 @@ class QuizzesController < ApplicationController
     #@quiz = Quiz.find(params[:id])
     @quiz=Quiz.where(:id => params[:id], :course_id => params[:course_id])
     @course = Course.find(params[:course_id])
-    
+    Time.zone=ActiveSupport::TimeZone[@course.time_zone]
     if @quiz.empty?
       redirect_to course_quizzes_path(params[:course_id]), :alert=> "No such quiz"
     else
@@ -34,9 +35,12 @@ class QuizzesController < ApplicationController
   # GET /quizzes/new
   # GET /quizzes/new.json
   def new
-    @quiz = Quiz.new
+    
     @course = Course.find(params[:course_id])
-
+    Time.zone=ActiveSupport::TimeZone[@course.time_zone]  
+    @quiz = Quiz.new
+    
+  
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @quiz }
@@ -47,14 +51,17 @@ class QuizzesController < ApplicationController
   def edit
     #@quiz = Quiz.find(params[:id])
     #@course = Course.find(params[:course_id])
-
-    @quiz=Quiz.where(:id => params[:id], :course_id => params[:course_id])
     @course = Course.find(params[:course_id])
+    Time.zone=ActiveSupport::TimeZone[@course.time_zone]
+    @quiz=Quiz.where(:id => params[:id], :course_id => params[:course_id])
     
     if @quiz.empty?
       redirect_to course_quizzes_path(params[:course_id]), :alert=> "No such quiz"
     else 
       @quiz=@quiz.first
+      #@quiz.appearance_time= ActiveSupport::TimeZone[@course.time_zone].utc_to_local(@quiz.appearance_time)
+      #@quiz.due_date= ActiveSupport::TimeZone[@course.time_zone].utc_to_local(@quiz.due_date)
+    
     end
     
       
@@ -63,10 +70,15 @@ class QuizzesController < ApplicationController
   # POST /quizzes
   # POST /quizzes.json
   def create
-    
-     
-    @quiz = Quiz.new(params[:quiz])
+
     @course = Course.find(params[:course_id])
+    Time.zone=ActiveSupport::TimeZone[@course.time_zone]
+    @quiz = Quiz.new(params[:quiz])
+    #converting from course time zone to UTC
+    
+    #@quiz.appearance_time = ActiveSupport::TimeZone[@course.time_zone].local_to_utc(@quiz.appearance_time)
+    #@quiz.due_date = ActiveSupport::TimeZone[@course.time_zone].local_to_utc(@quiz.due_date)  
+    
     @quiz.course_id = params[:course_id]
 
     respond_to do |format|
@@ -85,7 +97,11 @@ class QuizzesController < ApplicationController
   def update
     @quiz = Quiz.find(params[:id])
      @course = Course.find(params[:course_id])
-
+    Time.zone=ActiveSupport::TimeZone[@course.time_zone]
+    puts "Due date beforeee issssss #{params[:quiz][:due_date]}" 
+    #params[:quiz][:appearance_time] = ActiveSupport::TimeZone[@course.time_zone].local_to_utc(params[:quiz][:appearance_time])
+    #params[:quiz][:due_date] = ActiveSupport::TimeZone[@course.time_zone].local_to_utc(params[:quiz][:due_date])  
+    puts "Due date issssss #{params[:quiz][:due_date]}"
 
     respond_to do |format|
       if @quiz.update_attributes(params[:quiz])

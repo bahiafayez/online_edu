@@ -4,15 +4,15 @@ body { padding-top: 60px; }
 
 
 .nav-pills > .active > a, .nav-pills > .active > a:hover {
-    background-color: #AAAAAA;
-    color: white;
+    background-color: #CCCCCC;
+    color: #444444;
+    font-weight: normal;
 }
 
 .nav-pills > li > a,  {
   color: #444444;
   font-weight: bold;
 }
-
 
 
 .nav-pills > li > a:hover {
@@ -35,3 +35,25 @@ body { padding-top: 60px; }
 body {
   background-color: #EEEEEE;
 }
+
+.accordion-heading {
+  background-color: rgb(242,242,242);
+  color: #000;
+  text-decoration: none;
+  display: block;
+  #margin-bottom: -11px;
+  #border-top: 2px solid #ddd;
+  #line-height: 25px;
+}
+
+.accordion-toggle{
+  color:gray;
+}
+
+
+
+// .accordian-inner > a:hover, a:visited, a:link, a:active{
+  // text-decoration:none;
+  // color:gray;
+  // font-weight:bold;
+// }

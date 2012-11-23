@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121112101526) do
+ActiveRecord::Schema.define(:version => 20121121213446) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -54,6 +54,15 @@ ActiveRecord::Schema.define(:version => 20121112101526) do
     t.datetime "updated_at",  :null => false
   end
 
+  create_table "confuseds", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "course_id"
+    t.integer  "lecture_id"
+    t.float    "time"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "courses", :force => true do |t|
     t.string   "short_name"
     t.string   "name"
@@ -64,6 +73,7 @@ ActiveRecord::Schema.define(:version => 20121112101526) do
     t.integer  "user_id"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.string   "time_zone"
   end
 
   create_table "enrollments", :force => true do |t|
@@ -77,8 +87,27 @@ ActiveRecord::Schema.define(:version => 20121112101526) do
     t.string   "name"
     t.text     "description"
     t.integer  "course_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+    t.datetime "appearance_time"
+  end
+
+  create_table "lecture_questions", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "course_id"
+    t.integer  "lecture_id"
+    t.float    "time"
+    t.text     "question"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "lecture_views", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "lecture_id"
+    t.integer  "course_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "lectures", :force => true do |t|
@@ -86,9 +115,10 @@ ActiveRecord::Schema.define(:version => 20121112101526) do
     t.string   "name"
     t.text     "description"
     t.string   "url"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
     t.integer  "group_id"
+    t.datetime "appearance_time"
   end
 
   create_table "online_answers", :force => true do |t|
@@ -136,13 +166,24 @@ ActiveRecord::Schema.define(:version => 20121112101526) do
     t.datetime "updated_at",  :null => false
   end
 
+  create_table "quiz_statuses", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "quiz_id"
+    t.integer  "course_id"
+    t.string   "status"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "quizzes", :force => true do |t|
     t.integer  "course_id"
     t.string   "name"
-    t.text     "instructions", :limit => 255
-    t.datetime "created_at",                  :null => false
-    t.datetime "updated_at",                  :null => false
+    t.text     "instructions",    :limit => 255
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
     t.integer  "group_id"
+    t.datetime "due_date"
+    t.datetime "appearance_time"
   end
 
   create_table "roles", :force => true do |t|

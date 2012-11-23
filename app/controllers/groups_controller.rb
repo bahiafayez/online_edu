@@ -2,6 +2,12 @@ class GroupsController < ApplicationController
   # GET /online_answers
   # GET /online_answers.json
   before_filter :getCourse
+  before_filter :set_zone
+  
+  def set_zone
+    @course=Course.find(params[:course_id])
+    Time.zone= @course.time_zone
+  end
   
   def getCourse
     @course= Course.find(params[:course_id])  
@@ -76,7 +82,7 @@ class GroupsController < ApplicationController
 
     respond_to do |format|
       if @group.update_attributes(params[:group])
-        format.html { redirect_to @group, notice: 'Group was successfully updated.' }
+        format.html { redirect_to [@course,@group], notice: 'Group was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

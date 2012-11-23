@@ -1,6 +1,13 @@
 class LecturesController < ApplicationController
   # GET /lectures
   # GET /lectures.json
+  before_filter :set_zone
+  
+  def set_zone
+    @course=Course.find(params[:course_id])
+    Time.zone= @course.time_zone
+  end
+    
   def index
     @lectures = Lecture.where(:course_id => params[:course_id])
     @course= Course.find(params[:course_id])
@@ -25,11 +32,7 @@ class LecturesController < ApplicationController
     
     @lecture=@lecture.first
     
-    
-    @quizzes= OnlineQuiz.where(:lecture_id => params[:id])
-    @url= get_answers_course_lecture_path(params[:course_id], params[:id])
-    @s=params[:s] if params[:s]
-    logger.debug("s issssss #{@s}")
+   
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @lecture }
@@ -124,6 +127,28 @@ class LecturesController < ApplicationController
     render json: {:q => @quizzes, :loc => @loc, :loc2=> @loc2, :loc3 => @loc3} 
     
    # render json: {:q => @quizzes} 
+  end
+  
+  def insert_quiz
+    @lecture=Lecture.where(:id => params[:id], :course_id => params[:course_id])
+    @course = Course.find(params[:course_id])
+    
+    if @lecture.empty?
+      redirect_to course_lectures_path(params[:course_id]), :alert=> "No such lecture"
+    else
+    
+    @lecture=@lecture.first
+    
+    
+    @quizzes= OnlineQuiz.where(:lecture_id => params[:id])
+    @url= get_answers_course_lecture_path(params[:course_id], params[:id])
+    @s=params[:s] if params[:s]
+    logger.debug("s issssss #{@s}")
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json { render json: @lecture }
+    end
+    end
   end
   # DELETE /lectures/1
   # DELETE /lectures/1.json
@@ -239,6 +264,11 @@ class LecturesController < ApplicationController
     end
   end
   
+  def seen #lecture was viewed.. will be marked as viewed.
+   LectureView.create(:user_id => current_user.id, :course_id => params[:course_id], :lecture_id => params[:id]) if LectureView.where(:user_id => current_user.id, :course_id => params[:course_id], :lecture_id => params[:id]).empty?
+   render json:"done"
+  end
+  
   def answered
     #@quiz= params[:quiz]
     @lecture = Lecture.find(params[:id])
@@ -249,6 +279,18 @@ class LecturesController < ApplicationController
     end
     
     render json: {:answered => @answered, :qs => @qs}
+  end
+  
+  def confused
+    Confused.create(:lecture_id => params[:id], :course_id => params[:course_id], :user_id => current_user.id, :time => params[:time])
+    #should probably rescue if an exception occurs.
+    render json: {:msg => "Saved"}  
+  end
+  
+  def confused_question
+    LectureQuestion.create(:lecture_id => params[:id], :course_id => params[:course_id], :user_id => current_user.id, :time => params[:time], :question => params[:ques])
+    #should probably rescue if an exception occurs.
+    render json: {:msg => "Saved"}  
   end
   
   def destroy

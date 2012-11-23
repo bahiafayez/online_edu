@@ -9,6 +9,12 @@
 
 <%= hidden_field_tag 'quiz', quiz.id %>
 
+<% if !@alert_messages.empty? %>
+<div class="alert">
+	<%= alert_messages.html_safe %>
+</div>
+<% end %>
+
 <p>
   <h4><%= quiz.name %></h4>
 </p><br />
@@ -29,7 +35,12 @@
 	
 </p>
 
-<center><div><%= submit_tag 'Submit' %></div></center>
+<% if @disable %>
+<center><div><%= submit_tag 'Save' ,:disabled => "disabled" , :class => 'btn' %><%= submit_tag 'Submit' ,:disabled => "disabled",  :class => 'btn btn-primary'%></div></center>
+<% else %>
+<center><div><%= submit_tag 'Save' , :class => 'btn' %><%= submit_tag 'Submit' ,  :class => 'btn btn-primary'%></div></center>
+<% end %>
+
 <% end -%>  
 
 

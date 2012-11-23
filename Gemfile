@@ -36,3 +36,4 @@ gem 'activeadmin'
 gem "highcharts-rails"
 gem 'populator'
 gem 'faker'
+gem 'watir'

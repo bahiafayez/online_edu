@@ -1,6 +1,7 @@
 class CoursesController < ApplicationController
   load_and_authorize_resource   #cancan to check if user is allowed to perform an action. checks from ability.rb
   before_filter :correct_user, :except => [:index, :new, :create]
+  before_filter :set_zone , :except => [:index, :new, :create]
   # GET /courses
   # GET /courses.json
   def correct_user
@@ -9,6 +10,11 @@ class CoursesController < ApplicationController
     if !@c.users.include?(current_user) and !(@c.user == current_user)
       redirect_to courses_path, :alert => "You are not authorized to see requested page"
     end
+  end
+  
+  def set_zone
+    @course=Course.find(params[:id])
+    Time.zone= @course.time_zone
   end
   
   def index
@@ -158,9 +164,12 @@ class CoursesController < ApplicationController
     if params[:q]   #requesting quiz
       #@q= Quiz.find(params[:q]) 
       @q= Quiz.where(:id => params[:q], :course_id => params[:id]).first
-      if @q.nil?
+      if @q.nil? || @q.appearance_time >= Time.zone.now || @q.group.nil?
+        #params[:q]=nil
         redirect_to courseware_course_path(params[:id]), :alert => "No such quiz"
-      end
+        puts "here redirecting to #{courseware_course_path(params[:id])}"
+      else
+      puts "q issssss #{@q.inspect}"
       @type="quiz"
       @typeGroup=@q.group.id
       @answers= QuizGrade.select("question_id, answer_id").where(:user_id=>current_user.id , :quiz_id=> params[:q])
@@ -168,6 +177,14 @@ class CoursesController < ApplicationController
       @out={}
       @correct={}
       
+      status = QuizStatus.where(:user_id => current_user.id, :quiz_id => @q.id, :course_id => params[:id])
+      if @q.due_date <= Time.zone.now or (!status.empty? and status.first.status=="Submitted")
+        @disable=true
+      end
+      
+      @alert_messages=[]
+      @alert_messages<< "Due date has passed -  #{@q.due_date}" if @q.due_date <= Time.zone.now
+      @alert_messages<<"You've already submitted the quiz" if !status.empty? and status.first.status=="Submitted"
       
       @answers.each do |a|
         if @out[a.question_id].nil?
@@ -180,8 +197,8 @@ class CoursesController < ApplicationController
       #puts "correct_answers #{@correct_answers.length}"
       #puts "quiz count #{@q.questions}"
       
-      if @correct_answers.length == @q.questions.length   #Change this condition later, to display correct/incorrect IF and only IF quiz was submitted.
-      
+      #if @correct_answers.length == @q.questions.length   #Change this condition later, to display correct/incorrect IF and only IF quiz was submitted.
+      if !status.empty? and status.first.status=="Submitted"
             @correct_answers.each do |s|
               @correct[s.question_id]= s.grade
               #puts "correct_answers #{s.question_id}"
@@ -192,25 +209,30 @@ class CoursesController < ApplicationController
       
       
       print "out isssss!!!!!!! #{@out}"
+      end
     end
     
     if params[:l]   #requesting lecture
       #@q= Lecture.find(params[:l])
       @q= Lecture.where(:id => params[:l], :course_id => params[:id]).first
-      if @q.nil?
+      if @q.nil? || @q.appearance_time >= Time.zone.now || @q.group.nil?
         redirect_to courseware_course_path(params[:id]), :alert => "No such lecture"
-      end
+      else
       @type="lecture" 
       @typeGroup=@q.group.id
       @url= get_answers_course_lecture_path(params[:id], params[:l])
       @saveOnline= save_online_course_lecture_path(params[:id], params[:l])
       @answered_path= answered_course_lecture_path(params[:id], params[:l])
+      @confused_path=confused_course_lecture_path(params[:id], params[:l])
+      @confused_question_path= confused_question_course_lecture_path(params[:id], params[:l])
+      @seen_path=seen_course_lecture_path(params[:id], params[:l])
       #@an= QuizGrade.select("question_id, answer_id").where(:user_id=>current_user.id , :quiz_id=> params[:q])
       #@out={}
       #@answers.each do |a|
       #  @out[a.question_id]=a.answer_id
       #end
       #print "out isssss!!!!!!! #{@out}"
+      end
     end
     
   end
@@ -274,10 +296,11 @@ class CoursesController < ApplicationController
     @students=@course.users
     @quizzes=@course.quizzes
     @student_names=[]
-    @data=[]
-    @quizScores=[]
+  
     
-      
+   if params[:all]
+     @data=[]
+    @quizScores=[]
       @quizzes.each do |q|
         @students.each do |s|
           @student_names<<s.name
@@ -294,9 +317,32 @@ class CoursesController < ApplicationController
     end
     
     @data = @data.to_json   #json : javascript object!!
+   end
     
-    ############ If lecture #################
-    
+    ############ If quiz #################
+    if params[:q]
+      @quizchart=Quiz.where(:id => params[:q], :course_id => params[:id]).first
+      if @quizchart.nil?
+        redirect_to progress_teacher_course_path(params[:id]), :alert => "No such quiz"
+      end
+      @type="quiz"
+      
+      @chart_data={}   #only count those that submitted their answers
+      QuizStatus.where(:quiz_id => @quizchart.id, :course_id => params[:id], :status => "Submitted").pluck(:user_id).each do |student|
+        QuizGrade.where(:quiz_id => @quizchart.id, :user_id => student).group(:question_id).each_with_index do |question, index|
+          @chart_data["#{index}"]=[0,0] if @chart_data["#{index}"].nil?
+          if question.grade==0
+            @chart_data["#{index}"][1] = (@chart_data["#{index}"][1]||0) + 1 #initialize to 0 if nil #incorrect
+          else
+            @chart_data["#{index}"][0] = (@chart_data["#{index}"][0]||0) + 1 #initialize to 0 if nil #correct
+          end
+        end
+      end
+      @chart_data_old= @chart_data
+      @chart_data=@chart_data.to_json
+      puts "chart data issssss #{@chart_data}"
+    end
+    ################## if lecture ###########
     if params[:l]   #requesting lecture
       #@q= Lecture.find(params[:l])
       @q= Lecture.where(:id => params[:l], :course_id => params[:id]).first
@@ -315,6 +361,14 @@ class CoursesController < ApplicationController
           #must be ordered like this series=[{name => question1, data => [1,2,3,2,1]},{},{}] so first data is the count of question 1 in all quizzes
         end  
       end
+      
+      @correct=@correct.to_json
+      
+      
+      #also I want to get confused and Questions of that lecture
+      @confused= Confused.where(:course_id => params[:id], :lecture_id =>params[:l])
+      @confused_questions= LectureQuestion.where(:course_id => params[:id], :lecture_id => params[:l])
+      
       
       #sort chart_data according to keys.
       
@@ -357,10 +411,18 @@ class CoursesController < ApplicationController
        @students.each do |s|
          #getting number of quizzes student solved in this course (long since course_id not in table.. should consider adding it)
          # now any question solved in the quiz and i consider it, later only consider those with status = submitted
-         @n_solved=s.quiz_grades.select('distinct quiz_id').select{|v| Course.find(@course.id).quizzes.pluck(:id).include?v.quiz_id}.length
+         # % of quizzes solved
+         @n_solved=QuizStatus.where(:user_id => s.id, :course_id => @course.id, :status => "Submitted").length     #s.quiz_grades.select('distinct quiz_id').select{|v| Course.find(@course.id).quizzes.pluck(:id).include?v.quiz_id}.length
          @n_total= Course.find(@course.id).quizzes.count
          #number of lectures where i count a lecture if atleast one online quiz is solved.
-         @nl_solved=s.online_quiz_grades.select('distinct lecture_id').select{|v| Course.find(@course.id).lectures.pluck(:id).include?v.lecture_id}.length
+         #@nl_solved=s.online_quiz_grades.select('distinct lecture_id').select{|v| Course.find(@course.id).lectures.pluck(:id).include?v.lecture_id}.length
+         
+         # % of online quizzes solved.
+         @nonline=s.online_quiz_grades.select{|v| Course.find(@course.id).lectures.pluck(:id).include?v.lecture_id}.length #all onlinequizzes in the course that the student solved
+         @nonline_total = OnlineQuiz.all.select{|v| Course.find(@course.id).lectures.pluck(:id).include?v.lecture_id}.length #all onlinequizzes in the course
+         
+         # % of lectures viewed
+         @nl_solved=LectureView.where(:course_id => @course.id, :user_id => s.id).length
          @nl_total= Course.find(@course.id).lectures.count 
          
          if @n_solved.nil? || @n_total==0
@@ -375,8 +437,15 @@ class CoursesController < ApplicationController
            @result2=@nl_solved.to_f/@nl_total.to_f*100
          end
          
-         @student_progress[s.id]=[s.name, @result1, @result2]
+         if @nonline.nil? || @nonline_total==0
+           @result3=0
+         else
+           @result3=@nonline.to_f/@nonline_total.to_f*100
+         end
+         
+         @student_progress[s.id]=[s.name, @result1, @result2, @result3]
        end
+       puts "student ength issss #{@student_progress.length}"
        @student_progress_json= @student_progress.to_json
        logger.debug("student progress is #{@student_progress_json}")
      end
@@ -411,12 +480,14 @@ class CoursesController < ApplicationController
     @quiz_id=params[:quiz]
     @user_id=current_user.id
     
+   #saving quiz status
    
+    @status=QuizStatus.create(:user_id => current_user.id, :quiz_id => params[:quiz], :course_id => params[:id], :status => "Saved") if QuizStatus.where(:user_id => current_user.id, :quiz_id => params[:quiz], :course_id => params[:id]).empty? 
+    @status||= QuizStatus.where(:user_id => current_user.id, :quiz_id => params[:quiz], :course_id => params[:id])[0] 
+     #delete old ones
+     a=QuizGrade.where(:user_id => @user_id, :quiz_id => @quiz_id)
+     a.destroy_all
     
-    #delete old ones
-    a=QuizGrade.where(:user_id => @user_id, :quiz_id => @quiz_id)
-    a.destroy_all
-
 
     #@answers.each do |a|
       #print "answers are #{@answers}"
@@ -444,13 +515,39 @@ class CoursesController < ApplicationController
       end
       #QuizGrade.create(:user_id => @user_id, :quiz_id => @quiz_id, :question_id => a[0], :answer_id => a[1], :grade => 0  )
     #end
-     if @answers.empty? or @answers.keys.count < Quiz.find(@quiz_id).questions.count  #there qere unanswered questions.
+     if params[:commit]=="Submit" and (@answers.empty? or @answers.keys.count < Quiz.find(@quiz_id).questions.count)  #there qere unanswered questions.
       redirect_to courseware_course_path(params[:id], :q=>@quiz_id), :alert => "There are unanswered questions"
     else 
     
+    
+    if params[:commit]=="Submit"
+      @status.update_attributes(:status => "Submitted")
+    end
+    
+    if params[:commit]=="Submit"
+      msg="Quiz was successfully submitted"
+    else
+      msg="Quiz was successfully saved"
+    end
+    
     respond_to do |format|
-      format.html {redirect_to courseware_course_path(params[:id], :q => @quiz_id), notice: 'Quiz was successfully submitted.'}
+      format.html {redirect_to courseware_course_path(params[:id], :q => @quiz_id), notice: msg}
     end
     end
   end
+  
+  def student_notifications
+    #want to show all quiz deadlines
+    @deadlines={}
+    Quiz.where("course_id = ? and appearance_time < ?", params[:id], Time.zone.now).order("appearance_time desc").each do |q|
+      if !q.group.nil? and q.group.appearance_time < Time.zone.now
+        if @deadlines[q.appearance_time.to_formatted_s(:long_ordinal)].nil?
+          @deadlines[q.appearance_time.to_formatted_s(:long_ordinal)]= [q.id]
+        else
+          @deadlines[q.appearance_time.to_formatted_s(:long_ordinal)]<< q.id
+        end 
+      end
+    end
+  end
+  
 end

@@ -6,7 +6,9 @@
    <!-- <%= f.input :course_id %> -->
     <%= f.input :name %>
     <%= f.input :instructions , :input_html => {:style => 'width: 250px; height: 50px'} %>
-    <%= f.association :group, :collection => Group.where(:course_id => @course.id) %>
+    <%= f.association :group, :label => "Module", :collection => Group.where(:course_id => @course.id) %>
+    <%= f.input :due_date , :input_html => {:style => 'width:100px;'}%>
+    <%= f.input :appearance_time , :input_html => {:style => 'width:100px;'}%>
   </div>
 	
 	<%= f.fields_for :questions do |task_form| %>
