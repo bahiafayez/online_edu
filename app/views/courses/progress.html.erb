@@ -2,9 +2,45 @@
 
 
 <div id="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+<br />
+<hr />
+<br />
 
-You have taken:
+
 <table class="table table-striped">
+
+<% @groups.each do |g| %>	
+<tr>
+<td><%= g.name %></td>	
+<td>
+
+<blockquote>
+<% g.lectures.where("appearance_time<= ?",Time.zone.now).each do |l|  %>
+
+<%= link_to l.name, courseware_course_path(@course, :l =>l.id) %><br />
+<% l.online_quizzes.order(:time).each do |f| %>
+	<span style="padding-right:2em;"><%= @lectureGrades[f.id]||0 %>/1.0</span>
+<% end %><br /><br />
+
+<% end %>
+<% g.quizzes.where("appearance_time<= ?",Time.zone.now).each do |q|  %>
+
+
+<%= link_to q.name, courseware_course_path(@course, :q =>q.id) %><br />
+ <small>Deadline: <%= q.due_date.to_formatted_s(:short) %></small>
+ <%= @quiztable[q.id][0] %>/<%= @quiztable[q.id][1] %><br /><br />
+
+
+<% end %>
+</blockquote> 
+</td>
+</tr>
+<% end %>
+	
+</table>
+
+
+<!-- <table class="table table-striped">
 <thead>
 	<th>
 		Quiz 
@@ -29,7 +65,7 @@ You have taken:
 	</td>
 </tr>
 <% end %>
-</table>
+</table> -->
 
 
 <script>

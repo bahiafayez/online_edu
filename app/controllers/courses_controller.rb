@@ -267,12 +267,16 @@ class CoursesController < ApplicationController
   def progress
     
     #At the moment there are only quizzes.. later assigments, lectures, lecture quizzes,... graphs for grades..
+    @course=Course.find(params[:id])
     @quizzes=Course.find(params[:id]).quizzes
     @quizNames=[]
     @quizzes_taken=[]
     @quizScores=[]
+    @quiztable={}
     @quizzes.each do |q|
-      if !QuizGrade.where(:quiz_id => q.id, :user_id => current_user.id).empty?
+      #if !QuizGrade.where(:quiz_id => q.id, :user_id => current_user.id).empty?
+      # all submitted quizzes
+      if !QuizStatus.where(:quiz_id => q.id, :user_id => current_user.id, :course_id => params[:id], :status => "Submitted").empty?
         @quizzes_taken<<q
         @quizNames<<q.name
         count=q.questions.count
@@ -283,10 +287,24 @@ class CoursesController < ApplicationController
             num+=1.0
           end
         end
+        @quiztable[q.id]= [num,count]
         logger.debug("num isss #{num/count}")
         @quizScores<< num/count * 100
+      else
+        @quiztable[q.id]= [0,q.questions.count]
+        @quizzes_taken<<q
+        @quizNames<<q.name
+        @quizScores<<0
       end
       
+    end
+    
+    #Now loop on weeks
+    @groups=Group.where("course_id = ? and appearance_time<= ?", params[:id], Time.zone.now)
+    #@quizGrades={}
+    @lectureGrades={}
+    current_user.online_quiz_grades.each do |o|
+      @lectureGrades[o.online_quiz_id]=o.grade
     end
     
   end
