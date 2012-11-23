@@ -321,7 +321,7 @@ class CoursesController < ApplicationController
     @quizScores=[]
       @quizzes.each do |q|
         @students.each do |s|
-          @student_names<<s.name
+          @student_names<<s.name if !@student_names.include?(s.name)
           num=0
           QuizGrade.where(:quiz_id => q.id, :user_id => s.id).select("distinct(question_id), grade").each do |ques|
             if ques.grade==1
@@ -333,7 +333,7 @@ class CoursesController < ApplicationController
       @data<<{:name => q.name, :data => @quizScores}
       @quizScores=[]
     end
-    
+    logger.debug("student namesssss #{@student_names.inspect} size is #{@student_names.length}")
     @data = @data.to_json   #json : javascript object!!
    end
     
