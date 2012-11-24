@@ -281,7 +281,7 @@ pop.listen( "timeupdate", function() {
     			html=""
     			for(answer in resp['answers']) {
            			top3= parseFloat((resp['answers'][answer].ycoor + 10));
-           			left= parseFloat(resp['answers'][answer].xcoor*800/740)+3;
+           			left= parseFloat(resp['answers'][answer].xcoor)+3;
            			
            			
            			reason= resp['answers'][answer].answer

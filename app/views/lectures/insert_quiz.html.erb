@@ -249,8 +249,8 @@ if(student==true)
     			//console.debug(resp)
     			html=""
     			for(answer in resp['answers']) {
-           			top3= parseFloat((resp['answers'][answer].ycoor + 10) *400/500);
-           			left= parseFloat(resp['answers'][answer].xcoor *600/740);
+           			top3= parseFloat((resp['answers'][answer].ycoor + 5) *400/500);
+           			left= parseFloat(resp['answers'][answer].xcoor *600/800);
            			reason= resp['answers'][answer].answer
            			if(resp['answers'][answer].correct==true)
            			{
