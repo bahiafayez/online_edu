@@ -18,7 +18,7 @@
 <div class="row">
 <div class="span3">
 <div style="width:100%;height:150px;">
-<center style="margin-top: 30px">Drag the button: <%= image_tag "button4.png", :class=> "component"%>
+<center style="margin-top: 30px">Drag the button: <%= image_tag "button6.png", :class=> "component"%>
 <br><!-- <input class="btn" value="Save and Exit" onclick="saveAll()"/> -->
 <%= button_to "Save and Exit", course_lecture_path(@course,@lecture), :class => "btn", :onclick => "saveAll()", :method => :get , :remote=> true%>	
 </center>
@@ -168,7 +168,7 @@ $(document).ready(function() {
   var old= <%= raw @old %>
   for(i=0; i<old.length; i++)
   {               
-  	var toadd = $('<img />').attr({ 'id': old[i].id , 'src': '/assets/button4.png' });
+  	var toadd = $('<img />').attr({ 'id': old[i].id , 'src': '/assets/button6.png' });
   	toadd= toadd.addClass("component").addClass("dropped").draggable({cursor: 'move',containment: ".ontop"});
     storedData[old[i].id]=[old[i].correct,old[i].answer]
     toadd.css({"top":old[i].ycoor+"px", "left":old[i].xcoor+"px", 'zIndex': 5, 'position':'absolute'})
