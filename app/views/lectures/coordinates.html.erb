@@ -211,5 +211,23 @@ pop.on("loadeddata", function(){
 }, false );
 
 
+
+$(document).ready(function() {
+  $('.ontop').click(function(e) {
+    var offset = $(this).offset();
+  	left= parseFloat(e.pageX) - parseFloat(offset.left) //not clientX because client depends on window.. so numbers change when scrolling.
+  	right = parseFloat(e.pageY) - parseFloat(offset.top)
+  	
+  	console.debug("offset is "+ left)
+  	console.debug("left is "+left + " and top is "+right)
+  	
+    //document.getElementById('pos').innerHTML = 'Mouse position is: X='+left+' Y='+right;
+	//document.getElementById('pos').style.left = left;
+	//document.getElementById('pos').style.top = right;
+	//document.getElementById('pos').style.display='block';
+  });
+});
+
+
 </script>
 </div>
