@@ -4,7 +4,7 @@
 		/*background:#fff;  /* invisible div*/
         position:absolute;
         min-width:600px;
-        min-height:340px;
+        min-height:302px;
         z-index:99;
 	}
 </style>
@@ -59,7 +59,7 @@
 
 <div style="width:600px" >
 <div class="ontop" id="ontop"></div>
-<div id="youtube" style="width:600px;height:375px;"></div><br />
+<div id="youtube" style="width:600px;height:337px;"></div><br />
 <div id="foo"></div><br />	
 </div></center>
 </div>
@@ -249,7 +249,7 @@ if(student==true)
     			//console.debug(resp)
     			html=""
     			for(answer in resp['answers']) {
-           			top3= parseFloat((resp['answers'][answer].ycoor) *375/500);
+           			top3= parseFloat((resp['answers'][answer].ycoor) *337/450);
            			left= parseFloat(resp['answers'][answer].xcoor *600/800);
            			reason= resp['answers'][answer].answer
            			if(resp['answers'][answer].correct==true)
