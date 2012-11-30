@@ -14,7 +14,9 @@
 
 
 <div class="span6" id="videospan" >
-	<% if @lecture %>  
+	<% if @quiz %>
+		<center><%= render "coordinates"%></center>
+	<% elsif @lecture %>  
 		<center><%= render "lecture"%></center>
 	 <% end %> 
 </div>

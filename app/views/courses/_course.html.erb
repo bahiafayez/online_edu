@@ -37,7 +37,7 @@ dataType: 'script',
 complete: function(request){
 $('.item_list').effect('highlight');
 },
-url: '/courses/1/groups/sort'})
+url: '/courses/<%= @course.id %>/groups/sort'})
 }
 });
 });
@@ -120,9 +120,45 @@ function createnewLecture(group)
    // 	setup();
     	
     	updateIDs();
+    	moveElement($('.fields#lecture_'+resp["lecture"]["id"]))
     });
 	
 }
+
+function moveElement(elem)
+{
+	console.log(elem.siblings('a'));
+	//elem.remove().insertBefore(elem.siblings('a'));
+	elem.insertBefore($(elem.siblings('a')[0]))
+}
+
+function createnewQuiz(group)
+{
+	console.debug("group isssssssss "+group.attr("id"))
+	$('#best_in_place_quiz__name').text("New Quiz")
+	//$('#best_in_place_group__appearance_time').text("05 Nov (Tue)")
+    $.getJSON("<%= new_or_edit_course_quiz_path(@course)%>",{"group":group.attr("id")}, function(resp){
+    	
+    	$('#best_in_place_quiz__name').text(resp["quiz"]["name"])
+    	
+   // 	$('#best_in_place_lecture__appearance_time').text(resp["updated"])
+   		$('#best_in_place_quiz__name').siblings('a').attr("href","/courses/"+resp["quiz"]["course_id"]+"/quizzes/"+resp["quiz"]["id"]) // adjusting the remove.
+    	$('#best_in_place_quiz__name').closest('li').attr("id", "quiz_"+resp["quiz"]["id"]) // setting li to correct id
+    	$('#best_in_place_quiz__name').attr("data-url", "/courses/"+resp["quiz"]["course_id"]+"/quizzes/"+resp["quiz"]["id"])
+    	$('#best_in_place_quiz__name').attr("id","best_in_place_quiz_"+resp["quiz"]["id"]+"_name")
+   		
+    	
+   // 	$('#best_in_place_lecture__appearance_time').attr("data-url", "/courses/"+resp["lecture"]["course_id"]+"/lectures/"+resp["lecture"]["id"])
+    //	$('#best_in_place_lecture__appearance_time').attr("id","best_in_place_lecture_"+resp["lecture"]["id"]+"_appearance_time")
+    	
+   // 	$('.list_header_link').unbind();
+   // 	setup();
+    	
+    	updateIDs();
+    });
+	
+}
+
 
 function createnewModule()
 {
@@ -188,7 +224,8 @@ function createnewModule()
   		<li class="item_row unviewed" id=<%= "lecture_#{t.object.id}" %> >
   		<div>
   		<!-- <p style="background-color: #eeffff; margin-left: 40px; width: 400px">  <!-- style this better with css --> 
-  		<%= best_in_place t.object, "name", :path => [@course, t.object] %> <p style="margin-left:50px;display:inline;color:red;font-style:italic">video-url:</p> <%= best_in_place t.object, "url", :path => [@course, t.object] , :classes => 'red'%><%= link_to "X", [@course, t.object ] ,:data => {:confirm => "Are you sure?"}, :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" %>
+  		<%= best_in_place t.object, "name", :path => [@course, t.object] %> <!-- <p style="margin-left:50px;display:inline;color:red;font-style:italic">video-url:</p> <%= best_in_place t.object, "url", :path => [@course, t.object] , :classes => 'red'%> -->
+  		<%= link_to "X", [@course, t.object ] ,:data => {:confirm => "Are you sure?"}, :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" %>
   		<!-- <%= t.input :name ,:label => "Name", :label_html =>{:style => 'margin-left: 40px;' },:input_html => {:style => 'margin-left: 40px'} %> -->
   		<!-- <%= t.input :description ,:label => "Description", :label_html =>{:style => 'margin-left: 40px;' }, :input_html => {:style => 'margin-left: 40px;width: 250px; height: 50px'} %><br> -->
   		<!-- <%= t.input :appearance_time %> -->
@@ -198,8 +235,19 @@ function createnewModule()
   		</li>
   		<% end %>
   		
+  		<%= task_form.fields_for :quizzes do |t| %>
+  			<li class="item_row unviewed" id=<%= "quiz_#{t.object.id}" %> >
+  				<div>
+  					<%= best_in_place t.object, "name", :path => [@course, t.object] %> 
+  					<%= link_to "X", [@course, t.object ] ,:data => {:confirm => "Are you sure?"}, :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" %>
+  				</div>
+  			</li>
+  		<% end %>
   		
-  		<%= task_form.link_to_add "Add a Lecture", :lectures , :onclick => "createnewLecture($(this).closest('li'))",:class =>"btn btn-small btn-primary", :style => "float:right;margin-bottom:10px;margin-right:10px;"%>
+  		
+  		
+  		<%= task_form.link_to_add "Add a Quiz", :quizzes , :onclick => "createnewQuiz($(this).closest('li'))",:class =>"btn btn-small btn-primary", :style => "float:right;margin-bottom:10px;margin-right:10px;display:inline;"%>
+  		<%= task_form.link_to_add "Add a Lecture", :lectures , :onclick => "createnewLecture($(this).closest('li'))",:class =>"btn btn-small btn-primary", :style => "float:right;margin-bottom:10px;margin-right:10px;display:inline;"%>
   		
   		
 	 

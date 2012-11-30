@@ -8,4 +8,5 @@ class Group < ActiveRecord::Base
   has_many :quizzes #no dependent destroy since they are independent
   
   accepts_nested_attributes_for :lectures, :allow_destroy => true
+  accepts_nested_attributes_for :quizzes, :allow_destroy => true
 end

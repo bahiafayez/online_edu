@@ -143,6 +143,8 @@ class GroupsController < ApplicationController
      #  render :partial => "groups/coordinates"
      #end
      
+     logger.debug("in here in coord yayyyy quiz issss #{params[:quiz]}")
+     
     if params[:quiz]
     if @quiz.empty?
       redirect_to group_editor_course_group_path(@course, @group), :alert => "Requested quiz does not exist"
@@ -154,7 +156,15 @@ class GroupsController < ApplicationController
      
      respond_to do |format|
       format.html {}
-      format.js { render "videoquiz", :locals => {:lec => @lecture} if params[:lec] }
+      format.js { 
+        if params[:quiz]
+          render "videocoordinates", :locals => {:lec => @lecture}
+        elsif params[:lec]
+          render "videoquiz", :locals => {:lec => @lecture}
+        end
+         
+        
+        }
       
       end
    end

@@ -55,7 +55,11 @@ OnlineEdu::Application.routes.draw do
         post 'sort'
       end
     end
-    resources :quizzes
+    resources :quizzes do
+      member do
+        get 'new_or_edit'
+      end
+    end
     resources :lectures do
       member do
         get 'add_quiz'

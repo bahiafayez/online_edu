@@ -85,6 +85,7 @@ class OnlineQuizzesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to online_quizzes_url }
       format.json { head :no_content }
+      format.js { render "delete", :locals => {:rem => params[:id]}}
     end
   end
 end

@@ -124,6 +124,24 @@ class QuizzesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to course_quizzes_url(@course) }
       format.json { head :no_content }
+      format.js { render "delete", :locals => {:rem => params[:id]}}
     end
   end
+  
+  def new_or_edit
+    @course = Course.find(params[:course_id])
+    @quiz = @course.quizzes.build(:name => "New Quiz", :appearance_time => Time.zone.now, :due_date => 2.days.from_now , :group_id => params[:group])
+    
+    
+      if @quiz.save
+        @updated = @quiz.appearance_time.strftime('%d %b (%a)')
+        logger.debug("appearance time isssss #{@updated}")
+        render json: {"quiz" => @quiz, "updated"=>@updated}, status: :created 
+      else
+       
+        render json: @quiz.errors, status: :unprocessable_entity 
+      end
+      
+  end
+  
 end
