@@ -2,3 +2,8 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+.best_in_place:hover, #user_account .do_hover {
+  padding-right: 1.5em;
+  background: url("red_pen.png") no-repeat right;
+  //background-color: #CCC;
+}

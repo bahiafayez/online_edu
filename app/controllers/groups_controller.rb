@@ -78,6 +78,9 @@ class GroupsController < ApplicationController
   # PUT /online_answers/1
   # PUT /online_answers/1.json
   def update
+     if params[:id].nil?
+        redirect_to :action => :create
+     end
     @group = @course.groups.find(params[:id])
 
     respond_to do |format|
@@ -98,8 +101,62 @@ class GroupsController < ApplicationController
     @group.destroy
 
     respond_to do |format|
-      format.html { redirect_to course_groups_url(@course) }
+      format.html { redirect_to course_editor_course_url(@course) }
       format.json { head :no_content }
+      format.js { render "delete", :locals => {:rem => params[:id]}}
     end
   end
+  
+  def new_or_edit
+    print "here"
+    #render json: "a" => "b" 
+    @group = @course.groups.build(:name => "New Module", :appearance_time => Time.zone.now)
+    
+    
+      if @group.save
+        @updated = @group.appearance_time.strftime('%d %b (%a)')
+        logger.debug("appearance time isssss #{@updated}")
+        render json: {"group" => @group, "updated"=>@updated}, status: :created 
+      else
+       
+        render json: @group.errors, status: :unprocessable_entity 
+      end
+    
+  end
+  
+  
+   def sort
+   @groups = Group.where(:course_id => @course.id)
+   @groups.each do |f|
+     f.position = params['group'].index(f.id.to_s) + 1
+     f.save
+   end
+   render json: {"done"=>"done"}
+   end
+ 
+   def group_editor
+     @group=Group.find(params[:id])
+     @lecture= Lecture.find(params[:lec]) if params[:lec]
+     #@quiz= OnlineQuiz.find(params[:quiz]) 
+     @quiz=OnlineQuiz.where(:id => params[:quiz], :lecture_id => params[:lec]) if params[:quiz]
+     #if @quiz
+     #  render :partial => "groups/coordinates"
+     #end
+     
+    if params[:quiz]
+    if @quiz.empty?
+      redirect_to group_editor_course_group_path(@course, @group), :alert => "Requested quiz does not exist"
+    else
+      @quiz=@quiz.first
+      @old= OnlineAnswer.where(:online_quiz_id => params[:quiz]).to_json
+    end
+    end
+     
+     respond_to do |format|
+      format.html {}
+      format.js { render "videoquiz", :locals => {:lec => @lecture} if params[:lec] }
+      
+      end
+   end
+ 
 end

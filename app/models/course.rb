@@ -4,7 +4,7 @@ class Course < ActiveRecord::Base
   has_many :enrollments, :dependent => :delete_all
   has_many :users, :through => :enrollments
   has_many :lectures
-  has_many :groups
+  has_many :groups, :order => "position"
   
   attr_accessible :description, :duration, :name, :prerequisites, :short_name, :start_date, :user_ids, :user_id, :time_zone
   
@@ -13,7 +13,8 @@ class Course < ActiveRecord::Base
   validates_date :start_date
   
   accepts_nested_attributes_for :users, :allow_destroy => true
-  attr_accessible :users_attributes
+  accepts_nested_attributes_for :groups, :allow_destroy => true
+  attr_accessible :users_attributes, :groups_attributes, :lectures_attributes
   #attr_accessible :enrollment_attributes
   
 end

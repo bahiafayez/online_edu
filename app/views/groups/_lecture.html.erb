@@ -1,0 +1,119 @@
+<script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script>
+<style>
+	.ontop{
+		/*background:#fff;  /* invisible div*/
+        position:absolute;
+        min-width:500px;
+        min-height:277px;
+        z-index:99;
+	}
+</style>
+
+
+<div style="width:500px" >
+<div class="ontop" id="ontop"></div>
+<div id="youtube" style="width:500px;height:312px;"></div><br />
+<div id="foo"></div><br />
+
+</div></center>
+</div>
+
+
+
+<script language="JavaScript" type="text/JavaScript">
+
+
+function formatSecondsAsTime(secs, format) {
+  var hr  = Math.floor(secs / 3600);
+  var min = Math.floor((secs - (hr * 3600))/60);
+  var sec = Math.floor(secs - (hr * 3600) -  (min * 60));
+
+  if (hr < 10)   { hr    = "0" + hr; }
+  if (min < 10) { min = "0" + min; }
+  if (sec < 10)  { sec  = "0" + sec; }
+  if (hr)            { hr   = "00"; }
+
+  if (format != null) {
+    var formatted_time = format.replace('hh', hr);
+    formatted_time = formatted_time.replace('h', hr*1+""); // check for single hour formatting
+    formatted_time = formatted_time.replace('mm', min);
+    formatted_time = formatted_time.replace('m', min*1+""); // check for single minute formatting
+    formatted_time = formatted_time.replace('ss', sec);
+    formatted_time = formatted_time.replace('s', sec*1+""); // check for single second formatting
+    return formatted_time;
+  } else {
+    return hr + ':' + min + ':' + sec;
+  }
+}
+
+
+function skip_to(time)
+{
+	if (pop.currentTime()-0.5 < 0)
+	{
+		pop.currentTime(time-0.1);
+	}
+	else
+	{
+		pop.currentTime(time-0.5);
+	}
+	console.debug(pop.currentTime())
+	//pop.play();	
+}
+
+
+
+$(document).ready(function() {
+  $('.ontop').click(function(e) {
+    var offset = $(this).offset();
+  	left= parseFloat(e.pageX) - parseFloat(offset.left) //not clientX because client depends on window.. so numbers change when scrolling.
+  	right = parseFloat(e.pageY) - parseFloat(offset.top)
+  	
+  	console.debug("offset is "+ left)
+  	console.debug("left is "+left + " and top is "+right)
+  	
+    //document.getElementById('pos').innerHTML = 'Mouse position is: X='+left+' Y='+right;
+	//document.getElementById('pos').style.left = left;
+	//document.getElementById('pos').style.top = right;
+	//document.getElementById('pos').style.display='block';
+  });
+});
+
+
+
+</script>
+ 
+
+
+
+<!-- Should move this somewhere else later -->
+
+<script>
+
+var pop
+
+//function add_quiz(lecture){
+	
+//}
+add_quiz = function(lecture,url) {
+    console.debug("time is "+pop.currentTime())
+    $.getJSON(url,{"lecture":lecture, "time":pop.currentTime()}, function(resp){
+    //html="<table class='table table-striped'>"
+    //console.debug(resp['q'])
+    
+    //for(e in resp['q'])
+    //{
+    //	count=parseFloat(e)+1
+    //	html+="<tr><td>"+count+"</td><td>"+formatSecondsAsTime(resp['q'][e].time)+"</td><td><a data-remote='true' onclick=remove_quiz("+resp['q'][e].id+",'"+resp['loc2']+"') href='"+resp['loc']+"' >Remove</a></td> "
+    //	html+="<td><a href='"+resp['loc3']+"?quiz="+resp['q'][e].id+"'>Coordinates</a></td></tr>"
+    	
+    //}
+    $('#grouptable').html('<%= escape_javascript(render :partial => 'group') %>')
+    //html+="</table>"
+    //document.getElementById("quizzes").innerHTML=html;
+});
+
+};
+
+</script>
+</div>

@@ -1,0 +1,220 @@
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css" />
+<script>
+
+function updateIDs()
+{
+	$('.item_list').children(".fields").each(function(index) {
+	
+    $(this).attr("id", "group_"+$(this).children("li").attr("id"))
+    });
+    
+    
+    $('.item_section_list').children('.fields').each(function(index)
+    {
+    $(this).attr("id", $(this).children("li").attr("id"))
+    });
+
+}
+
+$(document).ready(function(){
+	
+//$('.fields').children("li").each(if($(this).hasClass("item_row")){console.debug $(this)})
+updateIDs()
+	
+$('.item_list').sortable({
+axis: 'y',
+dropOnEmpty: false,
+handle: '.handle',
+cursor: 'crosshair',
+items: 'div.fields',
+opacity: 0.4,
+scroll: true,
+update: function(){
+$.ajax({
+type: 'post',
+data: $('.item_list').sortable('serialize'),
+dataType: 'script',
+complete: function(request){
+$('.item_list').effect('highlight');
+},
+url: '/courses/1/groups/sort'})
+}
+});
+});
+
+function setup()
+{
+	 $('.contracted').next().hide();
+
+    $('.list_header_link').click(function(event){
+        event.preventDefault();
+        var linkElem = $(this).parent();
+        var sectionElem = $(this).parent().next();
+        console.debug("sectionElem is "+JSON.stringify(sectionElem));
+        if(linkElem.hasClass('expanded')){
+            linkElem.removeClass('expanded');
+            linkElem.addClass('contracted');
+            sectionElem.slideUp();
+            linkElem.find('.list_header_state').html('(collapsed, click to expand)');
+        }
+        else if(linkElem.hasClass('contracted')){
+            linkElem.removeClass('contracted');
+            linkElem.addClass('expanded');
+            sectionElem.slideDown();
+            linkElem.find('.list_header_state').html('(expanded, click to collapse)');
+        }
+    });
+}
+$(document).ready(function(){
+  setup();
+});
+</script>
+
+
+
+<script>
+function update()
+{
+  
+    // we just need to add the key/value pair for the DELETE method
+    // as the second argument to the JQuery $.post() call
+    //$.post(this.href, { _method: 'delete' }, null, "script");
+    //return false;
+    //$('.simple_form').submit();
+    
+	
+    setTimeout(function (){ 
+    $('.simple_form').submit();
+    }, 1000); // in milliseconds
+    
+    
+
+  
+}
+function removeModule()
+{
+	alert("Are you sure?")
+}
+
+
+function createnewLecture(group)
+{
+	console.debug("group isssssssss "+group.attr("id"))
+	$('#best_in_place_lecture__name').text("New Lecture")
+	//$('#best_in_place_group__appearance_time').text("05 Nov (Tue)")
+    $.getJSON("<%= new_or_edit_course_lecture_path(@course)%>",{"group":group.attr("id")}, function(resp){
+    	console.debug("group id is "+resp["lecture"]["id"])
+    	$('#best_in_place_lecture__name').text(resp["lecture"]["name"])
+    	$('#best_in_place_lecture__url').text(resp["lecture"]["url"])
+   // 	$('#best_in_place_lecture__appearance_time').text(resp["updated"])
+   		$('#best_in_place_lecture__name').siblings('a').attr("href","/courses/"+resp["lecture"]["course_id"]+"/lectures/"+resp["lecture"]["id"]) // adjusting the remove.
+    	$('#best_in_place_lecture__name').closest('li').attr("id", "lecture_"+resp["lecture"]["id"]) // setting li to correct id
+    	$('#best_in_place_lecture__name').attr("data-url", "/courses/"+resp["lecture"]["course_id"]+"/lectures/"+resp["lecture"]["id"])
+    	$('#best_in_place_lecture__name').attr("id","best_in_place_lecture_"+resp["lecture"]["id"]+"_name")
+   		$('#best_in_place_lecture__url').attr("data-url", "/courses/"+resp["lecture"]["course_id"]+"/lectures/"+resp["lecture"]["id"])
+    	$('#best_in_place_lecture__url').attr("id","best_in_place_lecture_"+resp["lecture"]["id"]+"_url")
+   // 	$('#best_in_place_lecture__appearance_time').attr("data-url", "/courses/"+resp["lecture"]["course_id"]+"/lectures/"+resp["lecture"]["id"])
+    //	$('#best_in_place_lecture__appearance_time').attr("id","best_in_place_lecture_"+resp["lecture"]["id"]+"_appearance_time")
+    	
+   // 	$('.list_header_link').unbind();
+   // 	setup();
+    	
+    	updateIDs();
+    });
+	
+}
+
+function createnewModule()
+{
+	$('#best_in_place_group__name').text("New Module")
+	//$('#best_in_place_group__appearance_time').text("05 Nov (Tue)")
+    $.getJSON("<%= new_or_edit_course_group_path(@course)%>", function(resp){
+    	console.debug("group id is "+resp["group"]["id"])
+    	$('#best_in_place_group__name').text(resp["group"]["name"])
+    	$('#best_in_place_group__appearance_time').text(resp["updated"])
+    	$('#best_in_place_group__name').closest('li').attr("id", resp["group"]["id"]) // setting li to correct id
+    	$('#best_in_place_group__name').closest('li').attr("style","height=0px;margin-bottom:-10px")
+    	$('#best_in_place_group__name').attr("data-url", "/courses/"+resp["group"]["course_id"]+"/groups/"+resp["group"]["id"])
+    	$('#best_in_place_group__name').siblings('a#removeB').attr("href","/courses/"+resp["group"]["course_id"]+"/groups/"+resp["group"]["id"]) // for remove button
+    	$('#best_in_place_group__name').siblings('a#editB').attr("href","/courses/"+resp["group"]["course_id"]+"/groups/"+resp["group"]["id"]+"/group_editor") // for editor button
+    	$('#best_in_place_group__name').attr("id","best_in_place_group_"+resp["group"]["id"]+"_name")
+    	$('#best_in_place_group__appearance_time').attr("data-url", "/courses/"+resp["group"]["course_id"]+"/groups/"+resp["group"]["id"])
+    	$('#best_in_place_group__appearance_time').attr("id","best_in_place_group_"+resp["group"]["id"]+"_name")
+     	
+    	 $('.list_header_link').unbind();
+    	 setup();
+    	
+    	
+    	updateIDs() // nedd to update li id first.
+    });
+	
+}
+</script>
+<style>
+	.datepicker2{
+		margin-left:2em;
+	}
+	
+	.red{
+		color:red;
+		font-style: italic;
+	}
+</style>
+<%= simple_nested_form_for(@course, :remote => true)  do |f| %>
+  <%= f.error_notification %>
+
+	<div class="item_list">
+		
+		
+    
+	<%= f.fields_for :groups do |task_form| %>
+	
+	<!-- <%= task_form.input :name %> -->
+	<li id=<%= task_form.object.id %> style="height=0px;margin-bottom:-10px">
+    <div class="contracted" style="display:block"><a href="#" class="list_header_link handle" style="background-color:rgb(233,233,233);text-indent: -9999em;display:block;">IMAGE TEXT</a><h3 class="list_header" style="line-height: 50px;"><%= best_in_place task_form.object, "name", :path => [@course, task_form.object]%> <%= best_in_place task_form.object, "appearance_time", :path => [@course, task_form.object],:type => :date, :classes => "datepicker2"%><%= link_to "X", [@course, task_form.object ] ,:confirm => "Are you sure?", :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" , :id => "removeB"%><%= link_to "Editor", group_editor_course_group_path(@course,task_form.object.id||0), :id => "editB", :class => "btn btn-mini", :style => "float:right;margin-top:2px;" %></h3><span class="list_header_state hidden">(expanded, click to collapse)</span></div>
+    <ul class="item_section_list">
+    	
+	
+	
+	
+	
+	
+	<!-- <%= task_form.input :description, :label => "Description", :input_html => {:style => 'width: 250px; height: 50px'} %> -->
+  	<!-- <%= task_form.input :appearance_time %> -->
+  	
+  	
+	<!-- <%= task_form.full_error :content %> -->	
+  		<%= task_form.fields_for :lectures do |t| %>
+  		<li class="item_row unviewed" id=<%= "lecture_#{t.object.id}" %> >
+  		<div>
+  		<!-- <p style="background-color: #eeffff; margin-left: 40px; width: 400px">  <!-- style this better with css --> 
+  		<%= best_in_place t.object, "name", :path => [@course, t.object] %> <p style="margin-left:50px;display:inline;color:red;font-style:italic">video-url:</p> <%= best_in_place t.object, "url", :path => [@course, t.object] , :classes => 'red'%><%= link_to "X", [@course, t.object ] ,:data => {:confirm => "Are you sure?"}, :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" %>
+  		<!-- <%= t.input :name ,:label => "Name", :label_html =>{:style => 'margin-left: 40px;' },:input_html => {:style => 'margin-left: 40px'} %> -->
+  		<!-- <%= t.input :description ,:label => "Description", :label_html =>{:style => 'margin-left: 40px;' }, :input_html => {:style => 'margin-left: 40px;width: 250px; height: 50px'} %><br> -->
+  		<!-- <%= t.input :appearance_time %> -->
+  		
+  		<!-- </p> -->
+  		</div>
+  		</li>
+  		<% end %>
+  		
+  		
+  		<%= task_form.link_to_add "Add a Lecture", :lectures , :onclick => "createnewLecture($(this).closest('li'))",:class =>"btn btn-small btn-primary", :style => "float:right;margin-bottom:10px;margin-right:10px;"%>
+  		
+  		
+	 
+	</ul>
+  	</li>
+	<% end %>
+	
+	<%= f.link_to_add "Add a module", :groups, :onclick => "createnewModule()" ,:class =>"btn btn-primary", :style => "float:right;margin-bottom:20px;margin-top:20px;margin-right:10px;"%>
+
+  </div>
+  
+<% end %>
+
+
+
+
+
+

@@ -44,8 +44,17 @@ OnlineEdu::Application.routes.draw do
     get 'progress'
     post 'student_quiz'
     get 'student_notifications'
+    get 'course_editor'
   end
-    resources :groups #at first had it over quizzes and lectures, but then a lecture/quiz might not be part of a module! so shouldn't need module to access lecture.. could create lectures and then put them part of a group.
+    resources :groups do #at first had it over quizzes and lectures, but then a lecture/quiz might not be part of a module! so shouldn't need module to access lecture.. could create lectures and then put them part of a group.
+      member do
+        get 'new_or_edit'
+        get 'group_editor'
+      end
+      collection do
+        post 'sort'
+      end
+    end
     resources :quizzes
     resources :lectures do
       member do
@@ -63,6 +72,8 @@ OnlineEdu::Application.routes.draw do
         get 'confused'
         get 'confused_question'
         get 'seen'
+        get 'new_or_edit'
+        get 'new_quiz'
       end
     end    
   end

@@ -299,8 +299,38 @@ class LecturesController < ApplicationController
     @lecture.destroy
 
     respond_to do |format|
-      format.html { redirect_to course_lectures_url(@course) }
+      format.html { redirect_to course_editor_course_url(@course) }
       format.json { head :no_content }
+      format.js { render "delete", :locals => {:rem => params[:id]}}
     end
   end
+  
+  def new_or_edit
+    @lecture = @course.lectures.build(:name => "New Lecture", :appearance_time => Time.zone.now, :url => "none", :group_id => params[:group])
+    
+    
+      if @lecture.save
+        @updated = @lecture.appearance_time.strftime('%d %b (%a)')
+        logger.debug("appearance time isssss #{@updated}")
+        render json: {"lecture" => @lecture, "updated"=>@updated}, status: :created 
+      else
+       
+        render json: @lecture.errors, status: :unprocessable_entity 
+      end
+      
+  end
+  
+  def new_quiz
+    @lecture= Lecture.find(params[:id])
+    @quiz = @lecture.online_quizzes.build(:question => "New Quiz", :time => params[:time])
+    
+    
+      if @quiz.save
+        render json: {"quiz" => @quiz}, status: :created 
+      else
+       
+        render json: @quiz.errors, status: :unprocessable_entity 
+      end
+  end
+  
 end

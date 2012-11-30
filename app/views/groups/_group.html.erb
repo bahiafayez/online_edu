@@ -1,0 +1,297 @@
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css" />
+<script>
+var pop="";
+
+function updateIDs()
+{
+	$('.item_list').children(".fields").each(function(index) {
+	
+    $(this).attr("id", $(this).children("li").attr("id"))
+    });
+    
+    
+    $('.item_section_list').children('.fields').each(function(index)
+    {
+    $(this).attr("id", $(this).children("li").attr("id"))
+    });
+
+}
+
+function showQuiz(url, time)
+{
+	pop.currentTime(time);
+	pop.pause();
+		// $.ajax({
+                        // url: url,
+//     
+                        // success: function (data) {
+					    	// console.debug("herhe")
+							// }
+		// });
+}
+function setAuthor(element)
+{
+	id=element.text().split("v=")[1]
+	//text_field=$(caller).parent().parent()
+	
+	if(id!=null && typeof id != 'undefined')
+	{
+		id= id.split("&")[0]
+		var title="";
+		var description;
+		var viewcount;
+		var views;
+		var author;
+		var url="http://gdata.youtube.com/feeds/api/videos/"+id+"?alt=json"
+		console.debug(url)
+		$.ajax({
+                        url: url,
+                        dataType: "jsonp",
+                        success: function (data) {
+					    	console.debug("herhe")
+					        title = data.entry.title.$t;
+					        //description = data.entry.media$group.media$description.$t;
+					        //viewcount = data.entry.yt$statistics.viewCount;
+					        //views = numberFormat (viewcount);
+					        author = data.entry.author[0].name.$t;
+					        //listInfo (title,description,author,views);
+					        //console.debug("title isss "+title+" "+description+" "+viewcount+" "+views+" "+author)
+					        //console.log($(caller).siblings());
+					        console.log(title)
+					        //console.log("i is "+i);
+					        element.siblings(".title").text("Title: "+title);
+					        element.siblings(".author").text("Author: "+author);
+					        }
+	    });
+	}
+}
+
+function formatTime(element)
+{
+	$(element).val(formatSecondsAsTime($(element).val()))
+}
+
+function loadAuthor()
+{
+	elements=[]
+	for(var counter=0; counter< $('.youtube').length; counter++)
+	{
+		elements[counter]=$($('.youtube')[counter])
+	}
+	
+	for(var counter=0; counter< elements.length; counter++)
+		setAuthor(elements[counter])
+	//console.debug(e)
+	//elem=$('.youtube')[i]
+	//console.log(elem)
+	
+	
+}
+
+function dosomething(caller)
+{
+	
+	id=$(caller).val().split("v=")[1]
+	text_field=$(caller).parent().parent()
+	
+	if(id!=null && typeof id != 'undefined')
+	{
+		id= id.split("&")[0]
+		var title="";
+		var description;
+		var viewcount;
+		var views;
+		var author;
+		var url="http://gdata.youtube.com/feeds/api/videos/"+id+"?alt=json"
+		$.ajax({
+                        url: url,
+                        dataType: "jsonp",
+                        success: function (data) {
+					    	console.debug("herhe")
+					        title = data.entry.title.$t;
+					        //description = data.entry.media$group.media$description.$t;
+					        //viewcount = data.entry.yt$statistics.viewCount;
+					        //views = numberFormat (viewcount);
+					        author = data.entry.author[0].name.$t;
+					        //listInfo (title,description,author,views);
+					        //console.debug("title isss "+title+" "+description+" "+viewcount+" "+views+" "+author)
+					        //console.log($(caller).siblings());
+					        text_field.siblings(".title").text("Title: "+title);
+					        text_field.siblings(".author").text("Author: "+author);
+					        }
+	    });
+	}
+}
+
+$(document).ready(function(){
+	
+//$('.fields').children("li").each(if($(this).hasClass("item_row")){console.debug $(this)})
+updateIDs()
+loadAuthor()
+
+});
+
+function setup()
+{
+	 $('.contracted').next().hide();
+
+    $('.list_header_link').click(function(event){
+        event.preventDefault();
+        var linkElem = $(this).parent();
+        var sectionElem = $(this).parent().next();
+        console.debug("sectionElem is "+JSON.stringify(sectionElem));
+        if(linkElem.hasClass('expanded')){
+            linkElem.removeClass('expanded');
+            linkElem.addClass('contracted');
+            sectionElem.slideUp();
+            linkElem.find('.list_header_state').html('(collapsed, click to expand)');
+        }
+        else if(linkElem.hasClass('contracted')){
+            linkElem.removeClass('contracted');
+            linkElem.addClass('expanded');
+            sectionElem.slideDown();
+            linkElem.find('.list_header_state').html('(expanded, click to collapse)');
+            //setupVideo();
+        }
+    });
+}
+
+function setupVideo(lec)
+{
+	console.log($("#youtube"))
+	pop = Popcorn.youtube( "#youtube", lec ,{ width: 400, controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
+	pop.controls( false );                          
+	pop.play();
+}
+function showVideo(elem,url, lec, lec_id)
+{
+	console.debug("here")
+	
+	//var h=1;
+	if(elem.parent().hasClass("contracted"))
+	{
+		 $.ajax({ url: url, type: 'get', dataType:'script' });
+		//setupVideo(lec)
+	}
+}
+
+function createnewQuiz(lecture,course)
+{
+	console.debug("group isssssssss "+lecture.attr("id"))  //with lecture_ so split on _ first.
+	$('#best_in_place_online_quiz__question').text("New Quiz")
+	console.debug("course issss "+course)
+	
+	//$('#best_in_place_group__appearance_time').text("05 Nov (Tue)")
+    $.getJSON("/courses/"+course+"/lectures/"+lecture.attr("id").split("_")[1]+"/new_quiz",{"time":pop.currentTime()}, function(resp){
+    	console.debug("group id is "+resp["quiz"]["id"])
+    	$('#best_in_place_online_quiz__question').text(resp["quiz"]["question"])
+    	$('#best_in_place_online_quiz__time').text(formatSecondsAsTime(resp["quiz"]["time"]))
+   // 	$('#best_in_place_lecture__appearance_time').text(resp["updated"])
+   		$('#best_in_place_online_quiz__question').siblings('a').attr("href","/online_quizzes/"+resp["quiz"]["id"]) // adjusting the remove.
+    	$('#best_in_place_online_quiz__question').closest('li').attr("id", "online_quiz_"+resp["quiz"]["id"]) // setting li to correct id
+    	$('#best_in_place_online_quiz__question').attr("data-url", "/online_quizzes/"+resp["quiz"]["id"])
+    	$('#best_in_place_online_quiz__question').attr("id","best_in_place_online_quiz_"+resp["quiz"]["id"]+"_question")
+   		$('#best_in_place_online_quiz__time').attr("data-url", "/online_quizzes/"+resp["quiz"]["id"])
+    	$('#best_in_place_online_quiz__time').attr("id","best_in_place_online_quiz_"+resp["quiz"]["id"]+"_time")
+   // 	$('#best_in_place_lecture__appearance_time').attr("data-url", "/courses/"+resp["lecture"]["course_id"]+"/lectures/"+resp["lecture"]["id"])
+    //	$('#best_in_place_lecture__appearance_time').attr("id","best_in_place_lecture_"+resp["lecture"]["id"]+"_appearance_time")
+    	
+   // 	$('.list_header_link').unbind();
+   // 	setup();
+    	
+    	updateIDs();
+    });
+	
+}
+
+$(document).ready(function(){
+  setup();
+});
+</script>
+
+<style>
+	.datepicker2{
+		margin-left:2em;
+	}
+	
+	.red{
+		color:red;
+		font-style: italic;
+	}
+	
+	.tabbed{
+		margin-left:30px;
+	}
+	.hidden{
+		visibility: hidden;
+	}
+	
+	.title{
+	position: absolute;
+    line-height: 15px;
+    font-size: 10px;
+    font-weight: normal;
+    #margin-top: -20px;
+    margin-left: 20px;
+    margin-bottom:-20px;
+	}
+	
+	.author{
+		
+    position: absolute;
+    line-height: 15px;
+    font-size: 10px;
+    font-weight: normal;
+    margin-top: -20px;
+    margin-left: 20px;
+
+	}
+</style>
+
+<%= simple_nested_form_for([@course,@group], :remote => true)  do |f| %>
+  <%= f.error_notification %>
+
+	<div class="item_list">
+		
+		
+    
+	<%= f.fields_for :lectures do |task_form| %>
+	
+	<!-- <%= task_form.input :name %> -->
+	<li id=<%= "lecture_#{task_form.object.id}" %> style="height=0px;margin-bottom:-10px">
+    <div class="contracted" style="display:block"><%= link_to "IMAGE TEXT" , "#" ,:onclick => "showVideo($(this),'#{group_editor_course_group_path(@course,@group,:lec =>task_form.object.id)}' , '#{task_form.object.url}', '#{task_form.object.id}')", :class=>"list_header_link" , :style=> "background-color:rgb(233,233,233);text-indent: -9999em;display:block;" %><h3 class="list_header" style="line-height: 50px;"><%= link_to image_tag("play3.png"), group_editor_course_group_path(@course,@group, :lec => task_form.object.id), :style => "margin-right:10px;margin-top=-2px;" %><%= best_in_place task_form.object, "name", :path => [@course, task_form.object] %><%= best_in_place task_form.object, "url", :path => [@course, task_form.object], :classes => "tabbed youtube" , :html_attrs => {:onChange =>"dosomething(this)" }   %><!-- <%= link_to "Edit url", "#", :id => "activate_#{task_form.object.id}" , :class =>"btn btn-mini", :style =>"margin-top:2px;float:right;" %> --><%= link_to "X", [@course, task_form.object ] ,:confirm => "Are you sure?", :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" , :id => "removeB"%><br><b class="title">Title: </b><br><b class="author">Author: </b></h3><span class="list_header_state hidden">(expanded, click to collapse)</span></div>
+    <ul class="item_section_list">
+	 
+	 <%= task_form.fields_for :online_quizzes do |t| %>
+  		<li class="item_row unviewed" id=<%= "quiz_#{t.object.id}"%> >
+  		<div>
+  		 
+  		<%= best_in_place t.object, "question", :path => online_quiz_path(t.object.id||0) %> Time: <%= best_in_place t.object, "time", :path => online_quiz_path(t.object.id||0), :display_as => :formatted_time, :html_attrs => {:onChange => "formatTime(this)"} %>
+  		<%= link_to "Edit", "#", :remote => true, :class=> "btn btn-mini", :style=>"float:right;margin-top:2px;", :onclick => "showQuiz('#{group_editor_course_group_path(@course,@group,:lec => task_form.object.id,:quiz => t.object.id)}', #{t.object.time})" %>
+  		<%= link_to "X", online_quiz_path(t.object.id||0) ,:confirm => "Are you sure?", :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" %>
+  		<!-- </p> -->
+  		</div>
+  		</li>
+  		<% end %>
+  		
+  		
+  		<%= task_form.link_to_add "Add a quiz", :online_quizzes ,:onclick => "createnewQuiz($(this).closest('li'), #{@course.id})",:class =>"btn btn-small btn-primary", :style => "float:right;margin-bottom:10px;margin-right:10px;"%>
+  		
+	 
+	 
+	</ul>
+  	</li>
+  	
+	<% end %>
+	
+	<%= f.link_to_add "Add a Lecture", :lectures, :onclick => "createnewModule()" ,:class =>"btn btn-primary", :style => "float:right;margin-bottom:20px;margin-top:20px;margin-right:10px;"%>
+
+  </div>
+  
+<% end %>
+
+
+
+
+
+

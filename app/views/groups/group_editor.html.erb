@@ -1,0 +1,22 @@
+<script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script>
+<%= render "shared/head" %>
+
+<h2><%= @course.name %>:<%= @group.name %></h2>
+<div class="row">
+<div id="grouptable" class="span6">
+
+
+<%= render "group" %>
+
+<hr />
+<!-- <%= link_to "New Module", new_course_group_path(@course), :style => "float:right"%> -->
+</div>
+
+
+<div class="span6" id="videospan" >
+	<% if @lecture %>  
+		<center><%= render "lecture"%></center>
+	 <% end %> 
+</div>
+
+</div>

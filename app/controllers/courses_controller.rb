@@ -107,6 +107,14 @@ class CoursesController < ApplicationController
     #don't need to add user_id here.. already exists.
     
     @course = Course.find(params[:id])
+    
+    # removing all groups that were removed already!
+    logger.debug("course paramaeters areee #{params[:course]}")
+    params[:course][:groups_attributes].each do |k,v|
+      if Group.where(:id => v["id"]).empty?
+        params[:course][:groups_attributes].delete(k)
+      end
+    end
 
     respond_to do |format|
       if @course.update_attributes(params[:course])
@@ -566,6 +574,12 @@ class CoursesController < ApplicationController
         end 
       end
     end
+  end
+  
+  
+  
+  def course_editor
+    @course= Course.find(params[:id])
   end
   
 end

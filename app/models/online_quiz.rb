@@ -5,4 +5,9 @@ class OnlineQuiz < ActiveRecord::Base
   
   attr_accessible :lecture_id, :question, :time
   validates :time, :presence => true
+  
+  
+  def formatted_time
+    return Time.at(time).utc.strftime("%H:%M:%S")
+  end
 end

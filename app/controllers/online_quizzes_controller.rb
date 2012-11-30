@@ -57,7 +57,14 @@ class OnlineQuizzesController < ApplicationController
   # PUT /online_quizzes/1.json
   def update
     @online_quiz = OnlineQuiz.find(params[:id])
-
+    
+    if params[:online_quiz][:time]
+       params[:online_quiz][:time]=
+       params[:online_quiz][:time].split(":")[0].to_i.send("hours").to_i + 
+       params[:online_quiz][:time].split(":")[1].to_i.send("minutes").to_i +
+       params[:online_quiz][:time].split(":")[2].to_i.send("seconds").to_i
+    end
+    
     respond_to do |format|
       if @online_quiz.update_attributes(params[:online_quiz])
         format.html { redirect_to @online_quiz, notice: 'Online quiz was successfully updated.' }

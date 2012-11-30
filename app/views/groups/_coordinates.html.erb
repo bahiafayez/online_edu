@@ -1,0 +1,225 @@
+<head>
+<script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script>
+<style>
+	.ontop{
+		/*background:#fff;  /* invisible div*/
+        position:absolute;
+        min-width:500px;
+        min-height:312px;
+        z-index:2;
+	}
+	
+	.myclass{
+		width:250px;
+	}
+</style>
+
+<script language="JavaScript" type="text/JavaScript">
+
+var storedData={}
+
+function onDoubleClick(elem)
+{
+	console.debug("in this one"+elem);
+	elem.popover('show');
+}
+function callFirst()
+{
+	alert("here");
+}
+function remove(elem)
+{
+	// This method called controller action to remove answer from DB
+	// It also removes it from the screen and the storedData hash
+	$.getJSON('<%= remove_answer_course_lecture_path(@course,@lecture) %>',{"answer":elem , "quiz":<%= @quiz.id %>}, function(resp){
+	});
+	$("#"+elem).remove()
+	delete storedData[elem];	
+}
+function save(elem)
+{
+	// Save the explanation and the correct to storedData
+	storedData[elem]=[document.getElementById("correct_"+elem).checked, document.getElementById("explain_"+elem).value]
+	console.debug("element is "+elem);
+	console.debug("explanation is "+document.getElementById("explain_"+elem).value)
+	console.debug("correct is "+document.getElementById("correct_"+elem).checked)
+	if(storedData[elem][0]==true)
+	{
+		for(key in storedData)
+		{
+			if(key==elem)
+				continue;
+			storedData[key][0]=false
+		}
+	}
+}
+function saveAll()
+{
+	// This is called at the very end, to save everything in the storedData and positions to the database.
+	// Then redirect to lecture page.
+	console.debug(storedData)
+	for(key in storedData){
+		console.debug("key:"+storedData[key])
+		storedData[key].push.apply(storedData[key],[$('#'+key).position().top,$('#'+key).position().left]);
+	}
+	console.debug(storedData)
+	
+	$.getJSON('<%= save_answers2_course_lecture_path(@course, @lecture) %>',{"stored":storedData}, function(resp){
+		console.debug(resp)
+		console.debug("calling redirect")
+		redirect()
+	});
+}
+function redirect()
+{
+	console.debug("in redirect")
+	window.location = "<%= group_editor_course_group_path(@course,@group,:lec => @lecture.id)  %>"
+}
+function load(elem)
+{
+	// When call popover, its loaded from here.
+	console.debug("elem is "+elem)
+	document.getElementById("correct_"+elem).checked=storedData[elem][0]
+	document.getElementById("explain_"+elem).value=storedData[elem][1]
+}
+
+jQuery(function() {
+	var count=0;
+	// This is to make the image draggable, and clone it when dragged.
+    jQuery(".component").draggable({
+        //  use a helper-clone that is append to 'body' so is not 'contained' by a pane
+        helper: function() {
+        	//callFirst(); // can call function here to save button for example..
+            z=jQuery(this).clone().appendTo('.ontop').css({
+                'zIndex': 5, 'position':'absolute'
+            }).attr("id","circle_"+count)//.attr("ondbclick","callme()");
+            count++;
+            
+            console.debug("z is "+z)
+            return z;
+        },
+        cursor: 'move',
+        containment: ".ontop"
+       
+    });
+	var toadd=""
+	// makes ontop droppable
+    jQuery('.ontop').droppable({
+        //activeClass: 'ui-state-hover',
+        accept: '.component',
+        drop: function(event, ui) {
+            if (!ui.draggable.hasClass("dropped")){
+            	
+            	
+            	toadd=jQuery(ui.helper).clone().addClass("dropped").draggable({cursor: 'move', containment: ".ontop"});
+        		 jQuery(this).append(toadd);
+                
+                // first drop, then create it in the database, and set all parameters.
+                $.getJSON('<%= add_answer_course_lecture_path(@course, @lecture) %>',{"left":toadd.position().left, "top":toadd.position().top, "quiz": <%=@quiz.id %>, "flag":true}, function(resp){
+                	
+                	storedData[resp['current'].id]=[false,""]
+                	console.debug("current id issss "+ resp['current'].id)
+                	console.debug("to add isss "+toadd.attr("id"))
+                	toadd.attr("id", ""+resp['current'].id) 
+                	console.debug("to add isss "+toadd.attr("id"))
+                	toadd.attr("onclick","load('"+toadd.attr('id')+"')")
+	        		toadd.attr("rel","popover").attr("data-content","Correct:<input name='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Explanation:<input id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=remove('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
+	                toadd.attr("data-original-title","")
+	                toadd.clickover({ global_close: false, template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'})//.dblclick(function() {
+               
+                });
+                }else{
+                	// dragging inside the div
+                
+                toadd=jQuery(ui.helper)  // every time a button is dragged it is here in toadd. could get its position and save it.
+                
+                console.debug("new position is "+toadd.position().top+" and id is "+toadd.id+" explanation is ")//+document.getElementById('explain_'+toadd.id).value() )
+                }
+               
+            }
+        });
+    });
+
+
+$(document).ready(function() {
+  //first of all, will get the data at the very beginning
+  var old= <%= raw @old %>
+  for(i=0; i<old.length; i++)
+  {               
+  	var toadd = $('<img />').attr({ 'id': old[i].id , 'src': '/assets/button6.png' });
+  	toadd= toadd.addClass("component").addClass("dropped").draggable({cursor: 'move',containment: ".ontop"});
+    storedData[old[i].id]=[old[i].correct,old[i].answer]
+    toadd.css({"top":old[i].ycoor+"px", "left":old[i].xcoor+"px", 'zIndex': 5, 'position':'absolute'})
+    toadd.attr("onclick","load('"+toadd.attr('id')+"')")
+	toadd.attr("rel","popover").attr("data-content","Correct:<input group='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Explanation:<input id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=remove('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
+	toadd.attr("data-original-title","")
+	toadd.clickover({ global_close: false, template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'})//.dblclick(function() {
+     $('#ontop').append(toadd)           
+  }
+});
+
+
+</script>
+ 
+
+
+
+<!-- Should move this somewhere else later -->
+
+<script>
+
+var pop
+
+
+document.addEventListener( "DOMContentLoaded", function() {
+	
+pop = Popcorn.youtube( "#youtube", "<%=  @lecture.url %>",{ width: 400, controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
+//var pop = Popcorn( Popcorn.youtube( '#youtube', 'http://www.youtube.com/watch?v=H9BXF6xJy54', { width: 400, controls: 0 } ) );
+
+pop.controls( false ); 
+ 
+pop.on("loadeddata", function(){
+	this.currentTime(<%= @quiz.time %>)
+	this.pause;
+	 console.debug("pop duration isss"+this.currentTime())  
+	});                        
+
+                          
+
+}, false );
+
+
+
+$(document).ready(function() {
+  $('.ontop').click(function(e) {
+    var offset = $(this).offset();
+  	left= parseFloat(e.pageX) - parseFloat(offset.left) //not clientX because client depends on window.. so numbers change when scrolling.
+  	right = parseFloat(e.pageY) - parseFloat(offset.top)
+  	
+  	console.debug("offset is "+ left)
+  	console.debug("left is "+left + " and top is "+right)
+  	
+    //document.getElementById('pos').innerHTML = 'Mouse position is: X='+left+' Y='+right;
+	//document.getElementById('pos').style.left = left;
+	//document.getElementById('pos').style.top = right;
+	//document.getElementById('pos').style.display='block';
+  });
+});
+
+
+</script>
+</head>
+
+
+<center><div class="ontop2" style="width:500px;border:8px solid;margin-top:0px;" >
+<div class="ontop" id="ontop"></div>
+<div id="youtube" style="width:500px;height:312px;"></div>
+<div id="foo"></div>
+</div></center>
+
+<div style="width:100%;height:150px;">
+<center style="margin-top: 10px">Drag the button: <%= image_tag "button6.png", :class=> "component"%>
+<br><!-- <input class="btn" value="Save and Exit" onclick="saveAll()"/> -->
+<%= button_to "Save and Exit", course_lecture_path(@course,@lecture), :class => "btn", :onclick => "saveAll()", :method => :get , :remote=> true%>	
+</center>
+</div>

@@ -37,3 +37,6 @@ gem "highcharts-rails"
 gem 'populator'
 gem 'faker'
 gem 'watir'
+gem 'acts_as_list'
+gem 'best_in_place'
+gem 'jquery_datepicker'

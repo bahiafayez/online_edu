@@ -6,4 +6,6 @@ class Lecture < ActiveRecord::Base
   belongs_to :group
   
   attr_accessible :course_id, :description, :name, :url, :group_id, :appearance_time
+  
+  accepts_nested_attributes_for :online_quizzes, :allow_destroy => true
 end
