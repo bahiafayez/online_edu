@@ -58,9 +58,11 @@ function createnewQuiz(group)
 {
 	
 	$('#best_in_place_quiz__name').text("New Quiz")
+	$('#best_in_place_quiz__instructions').text("Please choose the correct answer(s)")
 	//$('#best_in_place_group__appearance_time').text("05 Nov (Tue)")
     $.getJSON("<%= new_or_edit_course_quiz_path(@course)%>",{"group":group}, function(resp){
     	
+    	$('#best_in_place_quiz__name').parent().siblings('.list_header_link').attr("onclick","showQuiz($(this),'/courses/"+resp["quiz"]["course_id"]+"/groups/"+resp["quiz"]["group_id"]+"/group_editor?real_quiz="+resp["quiz"]["id"]+"')");
     	$('#best_in_place_quiz__name').text(resp["quiz"]["name"])
     	
    // 	$('#best_in_place_lecture__appearance_time').text(resp["updated"])
@@ -68,20 +70,30 @@ function createnewQuiz(group)
     	$('#best_in_place_quiz__name').closest('li').attr("id", "quiz_"+resp["quiz"]["id"]) // setting li to correct id
     	$('#best_in_place_quiz__name').attr("data-url", "/courses/"+resp["quiz"]["course_id"]+"/quizzes/"+resp["quiz"]["id"])
     	$('#best_in_place_quiz__name').attr("id","best_in_place_quiz_"+resp["quiz"]["id"]+"_name")
+    	
+    	$('#best_in_place_quiz__instructions').attr("data-url", "/courses/"+resp["quiz"]["course_id"]+"/quizzes/"+resp["quiz"]["id"])
+    	$('#best_in_place_quiz__instructions').attr("id","best_in_place_quiz_"+resp["quiz"]["id"]+"_instructions")
    		
     	
    // 	$('#best_in_place_lecture__appearance_time').attr("data-url", "/courses/"+resp["lecture"]["course_id"]+"/lectures/"+resp["lecture"]["id"])
     //	$('#best_in_place_lecture__appearance_time').attr("id","best_in_place_lecture_"+resp["lecture"]["id"]+"_appearance_time")
     	
-   // 	$('.list_header_link').unbind();
-   // 	setup();
+    	$('.list_header_link').unbind();
+    	setup();
     	
     	updateIDs();
     });
 	
 }
 
-
+function showQuiz(elem, url)
+{
+	if(elem.parent().hasClass("contracted"))
+	{
+		 $.ajax({ url: url, type: 'get', dataType:'script' }); ///// Now do something at that URL!!!
+		//setupVideo(lec)
+	}
+}
 function showOnlineQuiz(elem,q,l)
 {
 	var time=elem.siblings('.time').text()
@@ -378,9 +390,14 @@ $(document).ready(function(){
 	
 	<!-- <%= task_form.input :name %> -->
 	<li id=<%= "quiz_#{task_form.object.id}" %> style="height=0px;margin-bottom:-10px">
-    <div class="contracted" style="display:block"><%= link_to "IMAGE TEXT" , "#" ,:onclick => "showQuiz($(this))", :class=>"list_header_link" , :style=> "background-color:rgb(233,233,233);text-indent: -9999em;display:block;" %><h3 class="list_header" style="line-height: 50px;"><%= best_in_place task_form.object, "name", :path => [@course, task_form.object] %><%= link_to "X", [@course, task_form.object ] ,:confirm => "Are you sure?", :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" , :id => "removeB"%></h3><span class="list_header_state hidden">(expanded, click to collapse)</span></div>
+    <div class="contracted" style="display:block"><%= link_to "IMAGE TEXT" , "#" ,:onclick => "showQuiz($(this), '#{group_editor_course_group_path(@course,@group,:real_quiz =>task_form.object.id)}')", :class=>"list_header_link" , :style=> "background-color:rgb(233,233,233);text-indent: -9999em;display:block;" %><h3 class="list_header" style="line-height: 50px;"><%= best_in_place task_form.object, "name", :path => [@course, task_form.object] %><%= link_to "X", [@course, task_form.object ] ,:confirm => "Are you sure?", :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" , :id => "removeB"%></h3><span class="list_header_state hidden">(expanded, click to collapse)</span></div>
     <ul class="item_section_list">
-	 
+    	<li class="item_row unviewed" id=<%= "quiz_details"%> >
+  		<div>
+    	<!-- <%= best_in_place task_form.object, "instructions", :path => [@course, task_form.object]%> -->
+    	Please enter quiz details on the right.
+    	</div>
+    	</li>
 	</ul>
   	</li>
   	

@@ -6,12 +6,12 @@
     <%= f.input :description , :input_html => {:style => 'width: 210px; height: 100px'} %>
     <%= f.input :appearance_time , :input_html => {:style => 'width:100px;'} %>
     <div class="row">
-    	<div class="span6">
-    		<%= f.association :lectures, :as => :check_boxes, :collection => Lecture.where(:course_id => @course.id) %>  <!-- or better without checkbox.. multiple select? -->
-    	</div>
-    	<div class="span6">
-    		<%= f.association :quizzes, :as => :check_boxes, :collection => Quiz.where(:course_id => @course.id) %>  <!-- or better without checkbox.. multiple select? -->
-    	</div>
+     <div class="span6">
+     <%= f.association :lectures, :as => :check_boxes, :collection => Lecture.where(:course_id => @course.id) %> <!-- or better without checkbox.. multiple select? -->
+     </div>
+     <div class="span6">
+     <%= f.association :quizzes, :as => :check_boxes, :collection => Quiz.where(:course_id => @course.id) %> <!-- or better without checkbox.. multiple select? -->
+     </div>
   </div>
   </div>
 

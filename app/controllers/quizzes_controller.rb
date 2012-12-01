@@ -107,9 +107,11 @@ class QuizzesController < ApplicationController
       if @quiz.update_attributes(params[:quiz])
         format.html { redirect_to course_quiz_path(params[:course_id], params[:id]), notice: 'Quiz was successfully updated.' }
         format.json { head :no_content }
+        format.js {}
       else
         format.html { render action: "edit" }
         format.json { render json: @quiz.errors, status: :unprocessable_entity }
+        format.js {}
       end
     end
   end
@@ -130,7 +132,7 @@ class QuizzesController < ApplicationController
   
   def new_or_edit
     @course = Course.find(params[:course_id])
-    @quiz = @course.quizzes.build(:name => "New Quiz", :appearance_time => Time.zone.now, :due_date => 2.days.from_now , :group_id => params[:group])
+    @quiz = @course.quizzes.build(:name => "New Quiz", :instructions => "Please choose the correct answer(s)", :appearance_time => Time.zone.now, :due_date => 2.days.from_now , :group_id => params[:group])
     
     
       if @quiz.save

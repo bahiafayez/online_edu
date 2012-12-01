@@ -139,6 +139,7 @@ class GroupsController < ApplicationController
      @lecture= Lecture.find(params[:lec]) if params[:lec]
      #@quiz= OnlineQuiz.find(params[:quiz]) 
      @quiz=OnlineQuiz.where(:id => params[:quiz], :lecture_id => params[:lec]) if params[:quiz]
+     @real_quiz=Quiz.where(:id => params[:real_quiz], :group_id => params[:id], :course_id => params[:course_id]) if params[:real_quiz]
      #if @quiz
      #  render :partial => "groups/coordinates"
      #end
@@ -154,6 +155,14 @@ class GroupsController < ApplicationController
     end
     end
      
+    if params[:real_quiz]
+    if @real_quiz.empty?
+      redirect_to group_editor_course_group_path(@course, @group), :alert => "Requested quiz does not exist"
+    else
+      @real_quiz=@real_quiz.first
+    end
+    end
+    
      respond_to do |format|
       format.html {}
       format.js { 
@@ -161,6 +170,8 @@ class GroupsController < ApplicationController
           render "videocoordinates", :locals => {:lec => @lecture}
         elsif params[:lec]
           render "videoquiz", :locals => {:lec => @lecture}
+        elsif params[:real_quiz]
+          render "quiz", :locals => {:q => @real_quiz}
         end
          
         

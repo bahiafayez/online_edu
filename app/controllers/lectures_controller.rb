@@ -238,9 +238,9 @@ class LecturesController < ApplicationController
     @answers= OnlineAnswer.where(:online_quiz_id => params[:quiz])#.pluck(:time)
     @loc= coordinates_course_lecture_path(@course,@lecture, :quiz => params[:quiz])
     @loc2=remove_answer_course_lecture_path(@course,@lecture)
-    @save= save_answers_course_lecture_path(@course,@lecture)
+    #@save= save_answers_course_lecture_path(@course,@lecture)
     #@loc3=coordinates_course_lecture_path(@course,@lecture)
-    render json: {:a => @answers, :loc => @loc, :loc2=> @loc2, :save => @save}#, :loc3 => @loc3} 
+    render json: {:a => @answers, :loc => @loc, :loc2=> @loc2}#, :save => @save}#, :loc3 => @loc3} 
     
   end
   
