@@ -1,0 +1,25 @@
+<!-- Probably move the stylesheet to you layout. Also make sure you include the javascript. -->
+<%= stylesheet_link_tag "event_calendar" %>
+<%= render "shared/head2"%>
+
+<div class="row">
+<div class="span10 offset1">
+
+<%= raw(event_calendar) %>
+<br />
+<table class="table table-striped">
+<thead>
+	<th>Announcements</th><th></th><th></th>
+</thead>
+<% @announcements.each do |a| %>
+<tr>
+	<td><%= a.announcement %></td>
+	<td><%= a.date %></td>
+	<td><%= a.user.name %></td>
+</tr>	
+<% end %>
+
+</table>
+
+</div>
+</div>

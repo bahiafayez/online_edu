@@ -1,0 +1,7 @@
+<% if status=="failed" %>
+$('#error').html("<div id='error_m' class='alert alert-danger'><%= errors %></div>")
+$('#error_m').fadeOut(2000);
+<% else %>
+$('#announce').append("<tr id='announce_<%=@announcementN.id %>' ><td><%= best_in_place @announcementN, 'announcement', :path => [@course, @announcementN]%></td><td><%= best_in_place @announcementN, 'date', :path => [@course, @announcementN] ,:type =>:date %></td><td><a href='<%=course_announcement_path(@course,@announcementN)%>' class='btn btn-mini btn-danger' data-confirm='Are you sure?' data-method='delete' data-remote='true' rel='nofollow' style='float:right;margin-top:2px;'>X</a></td></tr>")
+$('#announcement_announcement').val("")
+<% end %>

@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   has_many :online_quiz_grades
   has_many :enrollments, :dependent => :delete_all
   has_many :courses, :through => :enrollments
-  
+  has_many :announcements
   #has_and_belongs_to_many :roles, :join_table => :users_roles  # i added this
   
   rolify

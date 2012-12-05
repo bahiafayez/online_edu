@@ -168,6 +168,7 @@ function createnewModule()
     	console.debug("group id is "+resp["group"]["id"])
     	$('#best_in_place_group__name').text(resp["group"]["name"])
     	$('#best_in_place_group__appearance_time').text(resp["updated"])
+    	$('#best_in_place_group__due_date').text(resp["updatedDue"])
     	$('#best_in_place_group__name').closest('li').attr("id", resp["group"]["id"]) // setting li to correct id
     	$('#best_in_place_group__name').closest('li').attr("style","height=0px;margin-bottom:-10px")
     	$('#best_in_place_group__name').attr("data-url", "/courses/"+resp["group"]["course_id"]+"/groups/"+resp["group"]["id"])
@@ -175,7 +176,9 @@ function createnewModule()
     	$('#best_in_place_group__name').siblings('a#editB').attr("href","/courses/"+resp["group"]["course_id"]+"/groups/"+resp["group"]["id"]+"/group_editor") // for editor button
     	$('#best_in_place_group__name').attr("id","best_in_place_group_"+resp["group"]["id"]+"_name")
     	$('#best_in_place_group__appearance_time').attr("data-url", "/courses/"+resp["group"]["course_id"]+"/groups/"+resp["group"]["id"])
-    	$('#best_in_place_group__appearance_time').attr("id","best_in_place_group_"+resp["group"]["id"]+"_name")
+    	$('#best_in_place_group__appearance_time').attr("id","best_in_place_group_"+resp["group"]["id"]+"_appearance_time")
+     	$('#best_in_place_group__due_date').attr("data-url", "/courses/"+resp["group"]["course_id"]+"/groups/"+resp["group"]["id"])
+    	$('#best_in_place_group__due_date').attr("id","best_in_place_group_"+resp["group"]["id"]+"_due_date")
      	
     	 $('.list_header_link').unbind();
     	 setup();
@@ -188,7 +191,11 @@ function createnewModule()
 </script>
 <style>
 	.datepicker2{
+		
+	}
+	.left-space{
 		margin-left:2em;
+		display:inline;
 	}
 	
 	.red{
@@ -207,7 +214,7 @@ function createnewModule()
 	
 	<!-- <%= task_form.input :name %> -->
 	<li id=<%= task_form.object.id %> style="height=0px;margin-bottom:-10px">
-    <div class="contracted" style="display:block"><a href="#" class="list_header_link handle" style="background-color:rgb(233,233,233);text-indent: -9999em;display:block;">IMAGE TEXT</a><h3 class="list_header" style="line-height: 50px;"><%= best_in_place task_form.object, "name", :path => [@course, task_form.object]%> <%= best_in_place task_form.object, "appearance_time", :path => [@course, task_form.object],:type => :date, :classes => "datepicker2"%><%= link_to "X", [@course, task_form.object ] ,:confirm => "Are you sure?", :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" , :id => "removeB"%><%= link_to "Editor", group_editor_course_group_path(@course,task_form.object.id||0), :id => "editB", :class => "btn btn-mini", :style => "float:right;margin-top:2px;" %></h3><span class="list_header_state hidden">(expanded, click to collapse)</span></div>
+    <div class="contracted" style="display:block"><a href="#" class="list_header_link handle" style="background-color:rgb(233,233,233);text-indent: -9999em;display:block;">IMAGE TEXT</a><h3 class="list_header" style="line-height: 50px;"><%= best_in_place task_form.object, "name", :path => [@course, task_form.object]%><p class="left-space">Appears: </p><%= best_in_place task_form.object, "appearance_time", :path => [@course, task_form.object],:type => :date, :classes => "datepicker2"%> <p class="left-space">Due: </p><%= best_in_place task_form.object, "due_date", :path => [@course, task_form.object],:type => :date, :classes => "datepicker2"%><%= link_to "X", [@course, task_form.object ] ,:confirm => "Are you sure?", :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" , :id => "removeB"%><%= link_to "Editor", group_editor_course_group_path(@course,task_form.object.id||0), :id => "editB", :class => "btn btn-mini", :style => "float:right;margin-top:2px;" %></h3><span class="list_header_state hidden">(expanded, click to collapse)</span></div>
     <ul class="item_section_list">
     	
 	

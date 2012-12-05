@@ -82,9 +82,13 @@ class GroupsController < ApplicationController
         redirect_to :action => :create
      end
     @group = @course.groups.find(params[:id])
-
+    
+    @group.events.where(:quiz_id => nil, :lecture_id => nil).destroy_all #its ok since I only have the due date.
+    
+    
     respond_to do |format|
       if @group.update_attributes(params[:group])
+        @group.events << Event.new(:name => "#{@group.name} due", :start_at => @group.due_date, :end_at => @group.due_date, :all_day => false, :color => "red", :course_id => @course.id)
         format.html { redirect_to [@course,@group], notice: 'Group was successfully updated.' }
         format.json { head :no_content }
       else
@@ -110,13 +114,14 @@ class GroupsController < ApplicationController
   def new_or_edit
     print "here"
     #render json: "a" => "b" 
-    @group = @course.groups.build(:name => "New Module", :appearance_time => Time.zone.now)
-    
+    @group = @course.groups.build(:name => "New Module", :appearance_time => Time.zone.now, :due_date => 1.week.from_now)
+    @group.events << Event.new(:name => "#{@group.name} due", :start_at => @group.due_date, :end_at => @group.due_date, :all_day => false, :color => "red", :course_id => @course.id)
     
       if @group.save
         @updated = @group.appearance_time.strftime('%d %b (%a)')
+        @updatedDue = @group.due_date.strftime('%d %b (%a)')
         logger.debug("appearance time isssss #{@updated}")
-        render json: {"group" => @group, "updated"=>@updated}, status: :created 
+        render json: {"group" => @group, "updated"=>@updated, "updatedDue"=>@updatedDue}, status: :created 
       else
        
         render json: @group.errors, status: :unprocessable_entity 

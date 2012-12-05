@@ -5,6 +5,8 @@ class Course < ActiveRecord::Base
   has_many :users, :through => :enrollments
   has_many :lectures
   has_many :groups, :order => "position"
+  has_many :events
+  has_many :announcements, :dependent => :destroy
   
   attr_accessible :description, :duration, :name, :prerequisites, :short_name, :start_date, :user_ids, :user_id, :time_zone
   

@@ -14,7 +14,7 @@
 		</ul>
 	</li>
     
-    
+    <li class=<%= (current_page?(course_announcements_path(@course)) ? 'active' : nil)  %>><%= link_to "Announcements", course_announcements_path(@course)%></li>
     <li class=<%= (current_page?(enrolled_students_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Enrolled Students", enrolled_students_course_path(@course)%></li>
     <li class=<%= (current_page?(progress_teacher_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Progress", progress_teacher_course_path(@course)%></li>
     </ul>

@@ -91,8 +91,13 @@ class LecturesController < ApplicationController
     @lecture = Lecture.find(params[:id])
     @course= Course.find(params[:course_id])
     
+    @lecture.events.where(:quiz_id => nil, :group_id => @lecture.group.id).destroy_all
+    
     respond_to do |format|
       if @lecture.update_attributes(params[:lecture])
+        if @lecture.due_date != @lecture.group.due_date or @lecture.appearance_time != @lecture.group.appearance_time
+          @lecture.events << Event.new(:name => "#{@lecture.name} due", :start_at => @lecture.due_date, :end_at => @lecture.due_date, :all_day => false, :color => "red", :course_id => @course.id, :group_id => @lecture.group.id)
+        end
         format.html { redirect_to [@course, @lecture], notice: 'Lecture was successfully updated.' }
         format.json { head :no_content }
       else
@@ -306,7 +311,7 @@ class LecturesController < ApplicationController
   end
   
   def new_or_edit
-    @lecture = @course.lectures.build(:name => "New Lecture", :appearance_time => Time.zone.now, :url => "none", :group_id => params[:group])
+    @lecture = @course.lectures.build(:name => "New Lecture", :appearance_time => Group.find(params[:group]).appearance_time, :due_date => Group.find(params[:group]).due_date, :url => "none", :group_id => params[:group])
     
     
       if @lecture.save

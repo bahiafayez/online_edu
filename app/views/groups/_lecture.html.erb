@@ -5,8 +5,15 @@
         position:absolute;
         min-width:500px;
         min-height:277px;
-        z-index:99;
+        z-index:5;
 	}
+	
+	.hasDatepicker{
+		z-index:1000;
+	}
+	#ui-datepicker-div {
+  z-index: 9999999!important;
+}
 </style>
 
 
@@ -16,6 +23,11 @@
 <div id="foo"></div><br />
 
 </div></center>
+
+<div style="z-index:10">
+	More Details: <br/>
+	Due Date: <%= best_in_place @lecture, :due_date, :type => :date ,:path => [@course, @lecture], :classes => "d2" %><br />
+	Appearance Date:<%= best_in_place @lecture, :appearance_time, :type => :date, :path => [@course, @lecture], :classes => "d2" %> <br />
 </div>
 
 

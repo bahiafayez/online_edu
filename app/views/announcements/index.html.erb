@@ -1,0 +1,36 @@
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css" />
+<style>
+	.small{
+		width:100%;
+	}
+	.down{
+		margin-top:20px;
+	}
+	.purr {
+  position: fixed;
+  top: 50px;
+  right: 100px;
+  width: 250px;
+  padding: 20px;
+  background-color: #FCC;
+  border: solid 2px #C66;
+  &:first-letter { text-transform: uppercase; }
+}
+</style>
+<%= render "shared/head"%>
+<h3><%= @course.name %> Announcements</h3>
+<table id="announce" class="table table-striped down">
+
+<% @announcements.each do |a| %>
+	
+<tr id=<%="announce_#{a.id}" %> >
+	<td><%= best_in_place a, "announcement", :path => [@course, a], :classes => "small", :type => :textarea %></td>
+	<td><%= best_in_place a, "date", :path => [@course, a] ,:type =>:date, :classes => "small" %></td>	
+	<td><%= link_to "X", [@course, a ] ,:data => {:confirm => "Are you sure?"}, :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" %></td>	
+</tr>
+	
+<% end %>
+</table>
+
+<div id="error"></div>
+<%= render "form" %>

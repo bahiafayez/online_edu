@@ -1,0 +1,11 @@
+<%= simple_form_for([@course,@announcement], :remote => true) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :announcement,:value =>"",:label=> false , :input_html => {:style => 'width: 99%; height: 100px'}%>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit, "Post Announcement" %>
+  </div>
+<% end %>

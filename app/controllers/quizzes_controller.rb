@@ -102,9 +102,13 @@ class QuizzesController < ApplicationController
     #params[:quiz][:appearance_time] = ActiveSupport::TimeZone[@course.time_zone].local_to_utc(params[:quiz][:appearance_time])
     #params[:quiz][:due_date] = ActiveSupport::TimeZone[@course.time_zone].local_to_utc(params[:quiz][:due_date])  
     puts "Due date issssss #{params[:quiz][:due_date]}"
-
+    @quiz.events.where(:lecture_id => nil, :group_id => @quiz.group.id).destroy_all
+    
     respond_to do |format|
       if @quiz.update_attributes(params[:quiz])
+        if @quiz.due_date != @quiz.group.due_date or @quiz.appearance_time != @quiz.group.appearance_time
+          @quiz.events << Event.new(:name => "#{@quiz.name} due", :start_at => @quiz.due_date, :end_at => @quiz.due_date, :all_day => false, :color => "red", :course_id => @course.id, :group_id => @quiz.group.id)
+        end
         format.html { redirect_to course_quiz_path(params[:course_id], params[:id]), notice: 'Quiz was successfully updated.' }
         format.json { head :no_content }
         format.js {}
@@ -132,7 +136,7 @@ class QuizzesController < ApplicationController
   
   def new_or_edit
     @course = Course.find(params[:course_id])
-    @quiz = @course.quizzes.build(:name => "New Quiz", :instructions => "Please choose the correct answer(s)", :appearance_time => Time.zone.now, :due_date => 2.days.from_now , :group_id => params[:group])
+    @quiz = @course.quizzes.build(:name => "New Quiz", :instructions => "Please choose the correct answer(s)", :appearance_time => Group.find(params[:group]).appearance_time, :due_date => Group.find(params[:group]).due_date , :group_id => params[:group])
     
     
       if @quiz.save
