@@ -5,6 +5,31 @@
 
 
 <div class="accordion" id="accordion2">
+	
+<div class="accordion-group">
+<div class="accordion-heading">
+<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+<center>Modules</center>
+</a>
+</div>
+<% if @type == "group"%>
+<div id="collapseOne" class="accordion-body collapse in">
+<% else %>
+<div id="collapseOne" class="accordion-body collapse">
+<% end %>
+
+
+<% @course.groups.each do |q| %>	
+<div class="accordion-inner">
+<%= link_to q.name, progress_teacher_course_path(@course, :g => q) , :class => "group"%>
+</div>
+<% end %>
+
+
+</div>
+</div>	
+	
+	
 <div class="accordion-group">
 <div class="accordion-heading">
 <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
@@ -75,6 +100,9 @@
 <div class="span9">
 <% if @quizchart %>
 	<%= render 'chart2' %>
+<% end %>
+<% if @modulechart %>
+	<%= render 'chartModule' %>
 <% end %>
 <% if @q %>
 	<%= render 'chart1' %>

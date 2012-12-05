@@ -4,5 +4,5 @@ class OnlineAnswer < ActiveRecord::Base
   validates :xcoor, :ycoor, :presence => true
   #validates :xcoor, :ycoor, :format => {:with => /^[0-9]*$/ , :message => "Invalid Number"}
   
-  attr_accessible :answer, :online_quiz_id, :xcoor, :ycoor, :correct
+  attr_accessible :answer, :online_quiz_id, :xcoor, :ycoor, :correct, :explanation
 end

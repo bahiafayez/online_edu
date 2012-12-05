@@ -323,7 +323,75 @@ class CoursesController < ApplicationController
     @quizzes=@course.quizzes
     @student_names=[]
   
-    
+   if params[:g]
+      @modulechart=Group.where(:id => params[:g], :course_id => params[:id]).first
+      if @modulechart.nil?
+        redirect_to progress_teacher_course_path(params[:id]), :alert => "No such Module"
+      end
+      @type="group"
+      
+      @chart_data={}   #only count those that submitted their answers
+      #exactly like lecture.. but all lectures on one graph... and make it bar i think.
+      
+      len=0;
+      @correct=[]
+      @size=[]
+      @chart_data={} 
+      @answers={}
+      @qnames={}
+      counter=0
+      @modulechart.lectures.each_with_index do |l,index|
+        l.online_quizzes.order(:time).each_with_index do |online_q, j|   
+          @qnames["#{l.name} #{Time.at(online_q.time).gmtime.strftime('%R:%S')}"]="#{l.name}<br><a href='/courses/#{@course.id}/groups/#{@modulechart.id}/group_editor?lec=#{l.id}&quiz=#{online_q.id}'> #{online_q.question}</a>"
+          @chart_data["#{l.name} #{Time.at(online_q.time).gmtime.strftime('%R:%S')}"] = []  
+          @answers[counter] = []    
+          online_q.online_answers.order('ycoor').each_with_index do |ans, i|
+            @correct[(j + index*len)]=i if ans.correct
+            @chart_data["#{l.name} #{Time.at(online_q.time).gmtime.strftime('%R:%S')}"]<<OnlineQuizGrade.where(:online_quiz_id => online_q.id, :online_answer_id => ans.id).length  
+            @answers[counter]<<ans.answer
+            #must be ordered like this series=[{name => question1, data => [1,2,3,2,1]},{},{}] so first data is the count of question 1 in all quizzes
+          end
+          counter+=1
+          len=l.online_quizzes.length  
+        end
+       end
+      
+      @correct=@correct.to_json
+      @answers=@answers.to_json
+      
+      #also I want to get confused and Questions of that lecture
+      @confused= Confused.where(:course_id => params[:id], :lecture_id =>params[:l])
+      @confused_questions= LectureQuestion.where(:course_id => params[:id], :lecture_id => params[:l])
+      
+      
+      max=0 
+      @chart_data.values.each do |a|
+        max=a.length if a.length>max
+      end
+      
+      @chart_data.each do |k,v|
+        while v.length < max
+          v<<0
+        end
+      end
+      
+      
+      
+      @transposed=@chart_data.values.transpose
+      @otherway=[]
+      i=0;
+      
+      logger.debug("transposed isss")
+      logger.debug("#{@transposed}")
+      
+      @transposed.each do |t|
+        i+=1;
+        @otherway<<{:name => "Answer #{i}", :data => t}
+      end
+      @otherway = @otherway.to_json
+      
+      
+   end 
    if params[:all]
      @data=[]
     @quizScores=[]

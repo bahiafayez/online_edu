@@ -194,7 +194,7 @@ class LecturesController < ApplicationController
     @lecture= Lecture.find(params[:id])
     @data||=[]
     @data.each do |k,v|
-      OnlineAnswer.find(k.to_i).update_attributes(:answer => v[1], :correct => v[0] , :ycoor => v[2], :xcoor => v[3])
+      OnlineAnswer.find(k.to_i).update_attributes(:explanation => v[2],:answer => v[1], :correct => v[0] , :ycoor => v[3], :xcoor => v[4])
     end
     
     #redirect_to course_lecture_path(@course,@lecture)

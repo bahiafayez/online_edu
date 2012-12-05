@@ -39,7 +39,7 @@ function remove(elem)
 function save(elem)
 {
 	// Save the explanation and the correct to storedData
-	storedData[elem]=[document.getElementById("correct_"+elem).checked, document.getElementById("explain_"+elem).value]
+	storedData[elem]=[document.getElementById("correct_"+elem).checked, document.getElementById("answer_"+elem).value, document.getElementById("explain_"+elem).value]
 	console.debug("element is "+elem);
 	console.debug("explanation is "+document.getElementById("explain_"+elem).value)
 	console.debug("correct is "+document.getElementById("correct_"+elem).checked)
@@ -86,7 +86,8 @@ function load(elem)
 	// When call popover, its loaded from here.
 	console.debug("elem is "+elem)
 	document.getElementById("correct_"+elem).checked=storedData[elem][0]
-	document.getElementById("explain_"+elem).value=storedData[elem][1]
+	document.getElementById("explain_"+elem).value=storedData[elem][2]
+	document.getElementById("answer_"+elem).value=storedData[elem][1]
 }
 
 jQuery(function() {
@@ -157,7 +158,7 @@ $(document).ready(function() {
     storedData[old[i].id]=[old[i].correct,old[i].answer]
     toadd.css({"top":old[i].ycoor+"px", "left":old[i].xcoor+"px", 'zIndex': 5, 'position':'absolute'})
     toadd.attr("onclick","load('"+toadd.attr('id')+"')")
-	toadd.attr("rel","popover").attr("data-content","Correct:<input group='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Explanation:<input id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=remove('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
+	toadd.attr("rel","popover").attr("data-content","Correct:<input group='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Answer: <input id='answer_"+toadd.attr('id') +"' type='text' /><br>Explanation:<input id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=remove('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
 	toadd.attr("data-original-title","")
 	toadd.clickover({ global_close: false, template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'})//.dblclick(function() {
      $('#ontop').append(toadd)           
@@ -236,7 +237,7 @@ $(document).ready(function() {
                 	toadd.attr("id", ""+resp['current'].id) 
                 	console.debug("to add isss "+toadd.attr("id"))
                 	toadd.attr("onclick","load('"+toadd.attr('id')+"')")
-	        		toadd.attr("rel","popover").attr("data-content","Correct:<input name='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Explanation:<input id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=remove('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
+	        		toadd.attr("rel","popover").attr("data-content","Correct:<input name='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Answer: <input id='answer_"+toadd.attr('id') +"' type='text' /><br>Explanation:<input id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=remove('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
 	                toadd.attr("data-original-title","")
 	                toadd.clickover({ global_close: false, template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'})//.dblclick(function() {
                
