@@ -50,7 +50,7 @@ function setup()
         event.preventDefault();
         var linkElem = $(this).parent();
         var sectionElem = $(this).parent().next();
-        console.debug("sectionElem is "+JSON.stringify(sectionElem));
+        //console.debug("sectionElem is "+JSON.stringify(sectionElem));
         if(linkElem.hasClass('expanded')){
             linkElem.removeClass('expanded');
             linkElem.addClass('contracted');

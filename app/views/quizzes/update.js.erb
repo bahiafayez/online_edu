@@ -1,2 +1,4 @@
+$('#videospan').html("<%= escape_javascript(render :partial => 'groups/quiz') %>");
 $('#notify').html("<div id='fading' class='alert alert-success'>Quiz Saved.</div>")
 $("#fading").fadeOut(5000);
+

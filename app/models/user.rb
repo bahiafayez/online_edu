@@ -21,4 +21,75 @@ class User < ActiveRecord::Base
   
   accepts_nested_attributes_for :courses
   
+  
+  def grades(course)
+    #calculates for each module where done on time, done not on time, not done # returns an array
+    grades=[]
+    course.groups.each do |g|
+      grades<<self.finished_group?(g)
+    end
+    return grades
+  end
+  
+  def finished_group?(group)
+    lectures= group.lectures
+    quizzes= group.quizzes
+    
+    if self.finished_lectures(lectures) and self.finished_quizzes(quizzes)  #finished all lectures and quizzes
+      if self.finished_lectures_on_time(lectures) and self.finished_quizzes_on_time(quizzes)
+        return "Finished on Time"
+      else
+        return "Finished Not on time"
+      end
+    else
+      return "Not Finished" #either lectures or quizzes or both not solved.
+    end
+  end
+  
+  def finished_quizzes(quizzes)
+    finished=true
+    quizzes.each do |q|
+      if QuizStatus.where(:user_id => self.id, :quiz_id => q.id, :status => "Submitted").empty?
+        return false
+      end
+    end
+    return finished
+  end
+  
+  def finished_quizzes_on_time(quizzes)
+    finished=true
+    quizzes.each do |q|
+      inst=QuizStatus.where(:user_id => self.id, :quiz_id => q.id, :status => "Submitted")[0]
+      if inst.updated_at > q.due_date  #solved after lecture due date
+        return false
+      end
+    end
+    return finished
+  end
+  
+  def finished_lectures(lectures)
+    finished=true
+    lectures.each do |l|
+      l.online_quizzes.each do |q|
+        if self.online_quiz_grades.where(:online_quiz_id => q.id).empty?
+          return false  #if for any lecture, any quiz was not solved, then he has not finished the lectures.
+        end 
+      end
+    end
+    return finished
+  end
+  
+  def finished_lectures_on_time(lectures)
+    finished=true
+    lectures.each do |l|
+      l.online_quizzes.each do |q|
+        g=self.online_quiz_grades.where(:online_quiz_id => q.id)[0]
+        if g.created_at > l.due_date  #solved after lecture due date
+          return false  #if for any lecture, any quiz was not solved, then he has not finished the lectures.
+        end 
+      end
+    end
+    return finished
+  end
+  
 end

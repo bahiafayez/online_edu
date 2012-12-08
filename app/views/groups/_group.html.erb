@@ -221,7 +221,7 @@ function setup()
         //$('.expanded').children('.list_header_link').trigger("click")  // close all open ones first
         var linkElem = $(this).parent();
         var sectionElem = $(this).parent().next();
-        console.debug("sectionElem is "+JSON.stringify(sectionElem));
+        //console.debug("sectionElem is "+JSON.stringify(sectionElem));
         if(linkElem.hasClass('expanded')){
             linkElem.removeClass('expanded');
             linkElem.addClass('contracted');

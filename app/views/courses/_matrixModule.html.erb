@@ -1,0 +1,27 @@
+<h3>Module Progress Chart</h3>
+<table class="table">
+	<% @matrix.each do |k,v| %>
+	<tr>
+		<td><%= k %></td>
+		<% v.each do |n| %>
+			<td><%= image_tag "check5.png", :style =>"width:20px;"  if n == "Finished on Time" %>
+				<%= image_tag "redx.png", :style =>"width:20px;"  if n == "Not Finished" %>
+				<%= image_tag "check5gray.png", :style =>"width:20px;"  if n == "Finished Not on time" %>
+			</td>
+		<% end %>
+	</tr>
+	<% end %>
+	<tr>
+	<td></td>
+	<% @mods.each do |m| %>
+	<td><%= m %></td>	
+	<% end %>
+	</tr>
+</table>
+
+
+<div style="border:1px solid black;width:150px;float:right;padding: 5px;">
+	<%= image_tag "check5.png", :style =>"width:12px;"%><p style="margin-left:10px;font-size:12px;display:inline">Finished, On Time </p><br />
+	<%= image_tag "check5gray.png", :style =>"width:12px;"%><p style="margin-left:10px;font-size:12px;display:inline">Finished, Late</p><br />
+	<%= image_tag "redx.png", :style =>"width:12px;"%><p style="margin-left:10px;font-size:12px;display:inline">Not Finished</p>
+</div>

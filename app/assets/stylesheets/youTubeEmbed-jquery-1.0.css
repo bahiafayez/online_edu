@@ -1,0 +1,144 @@
+.flashContainer{
+
+	/*	Setting the container to relative positioning
+		so we can center the control div */
+
+	position:relative;
+	overflow:hidden;
+}
+
+.progressBar{
+	/*display:none;*/
+	display:block;
+	position:absolute;
+	width:auto;
+	height:8px;
+	left:205px;
+	right:105px;
+	bottom:20px;
+	background-color:#141414;
+	overflow:hidden;
+	cursor:pointer;
+	
+	/* A light CSS3 bottom highlight */
+	
+	-moz-box-shadow:0 1px 0 rgba(255, 255, 255, 0.3);
+	-webkit-box-shadow:0 1px 0 rgba(255, 255, 255, 0.3);
+	box-shadow:0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.progressBar .elapsed{
+	position:absolute;
+	width:0;
+	height:100%;
+	background-color:#1fa2f6;
+	border-right:1px solid #49AFF0;
+}
+
+.controlDiv{
+	/* Centering the control div */
+	position:absolute;
+	width:50px;
+	height:50px;
+	cursor:pointer;
+	/*top:50%;
+	left:50%;*/
+	bottom: 0px;
+	margin:-50px 0 0 0px;
+}
+
+
+.timer {
+    position: absolute;
+    width: 800px;
+    height: 50px;
+    /*cursor: pointer;*/
+    margin: -50px 0px 0px 0px;
+    background-color: white;
+    text-align: right;
+    bottom: 0px;
+}
+
+
+.fullscreenDiv{
+    position:absolute;
+	width:50px;
+	height:50px;
+	cursor:pointer;
+	/*top:50%;
+	left:50%;*/
+	margin:-50px 0 0 50px;
+	bottom: 0px;
+}
+
+.confusedDiv{
+    position:absolute;
+	width:50px;
+	height:50px;
+	cursor:pointer;
+	/*top:50%;
+	left:50%;*/
+	margin:-50px 0 0 100px;
+	bottom: 0px;
+}
+
+.confused_notif{
+	position:absolute;
+	margin:-50px 0 0 100px;
+	bottom: 50px;
+}
+
+.hidden_div{
+    position:absolute;
+	margin:-50px 0 0 150px;
+	bottom: 50px;
+	z-index:3;
+}
+
+.questionDiv{
+    position:absolute;
+	width:50px;
+	height:50px;
+	cursor:pointer;
+	/*top:50%;
+	left:50%;*/
+	margin:-50px 0 0 150px;
+	bottom: 0px;
+}
+
+.confusedDiv{
+    background:url('confused.png') no-repeat center center;
+}
+
+.questionDiv{
+    background:url('question.png') no-repeat center center;
+}
+
+.fullscreenDiv.full{
+    background:url('full2.png') no-repeat center center;
+}
+.fullscreenDiv.small{
+    background:url('fullscreen2_exit.png') no-repeat center center;
+}
+
+.controlDiv.play{
+	background:url('play33.png') no-repeat center center;
+}
+
+.controlDiv.replay{
+	background:url('replay3.png') no-repeat center center;
+}
+
+.controlDiv.pause{
+	background:url('pause3.png') no-repeat -99999px;
+}
+
+.controlDiv.pause {
+	background-position:center center;
+}
+
+/* Only show the progress bar when the video is playing */
+
+.flashContainer.playing .progressBar{
+	display:block;
+}

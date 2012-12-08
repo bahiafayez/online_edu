@@ -1,16 +1,27 @@
 <script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script>
+<script src="/assets/jquery.swfobject.1-1-1.min.js"></script>
+<script src="/assets/youTubeEmbed-jquery-1.0.js"></script>
 
 <style>
+#page{
+	min-height:600px;
+}
 	.ontop{
 		/*background:#fff;  /* invisible div*/
         position:absolute;
         min-width:800px;
-        min-height:470px;
+        
         z-index:2;
+        margin-top:40px;
+        /*margin-left:40px;*/
+	}
+	.player{
+		
 	}
 	
-	.close {
+.close {
     float: right;
+    margin-top:35px;
     font-size: 20px;
     font-weight: bold;
     line-height: 20px;
@@ -18,23 +29,16 @@
     text-shadow: 0px 1px 0px rgb(255, 255, 255);
     opacity: 0.2;
   }  
-    .modal-footer .btn + .btn {
-    float:left;
-    margin-bottom: 0px;
-    margin-left: 5px;
+
+.modal-body{
+	margin-top:-35px;
+	padding-bottom:0px;
+	
 }
-	.modal-footer {
-    padding: 14px 0px 15px;
-    float:left;
-    margin-top: 0px;
-    text-align: right;
-    background-color: rgb(255, 255, 255);
-    border-top: 0px;
-    border-radius: 0px 0px 0px 0px;
-    box-shadow: 0px 0px 0px ;
-}
+
     .modal{
     width: 1000px;
+    
     /*must be half of the width, minus scrollbar on the left (30px)*/
    /* margin: -470px 0 0 -500px;*/
 }
@@ -54,96 +58,70 @@
   <b>Description:</b>
   <%= lecture.description %>
 </p>
+
+
+<div id="page">
+	<div class="ontop" id="ontop_video_youVideo" style="min-height:450px;"></div>
+	<div id="player" style="position:absolute"></div>
+	<!-- <div id="checkButton" style="margin-top:-70px; position:absolute; margin-left:150px"></div> -->
+</div>
+
+<hr style="position:absolute">    
+
 		<!-- Button to trigger modal -->
-<center><%= link_to "Play", "#myModal2", :class => "btn", "data-toggle"=>"modal", :onclick => "markSeen()" %></center>
+
     
 <!-- Modal -->    
-<div style="display: none;width:1200px;height:600px;margin-left:-600px;margin-right:-600px;" id="myModal2" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div style="display: none;width:1200px;max-height:555px;margin-left:-600px;margin-right:-600px;" id="myModal2" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <!-- <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
       <h3 id="myModalLabel"><%= lecture.name %></h3>
   </div> -->
-  <div class="modal-body" style="height:60%">
+  <div class="modal-body" style="max-height:555px;height:100%">
        
-       <div class="row">
-       <div class="span3">
-       <center><div id="foo"></div><center>
-       <div id="checkButton"></div>
-       <div style="margin-top:50px;height:100%">
-       <center><div id ="newhead" style="overflow:auto;max-height:130px;max-width:200px"></div></center>
-       <!-- <div id="expheader"></div>
-       <div id="exp"></div>
-       <div id="exptable"></div>
-       <div id="expfooter"></div> -->
-       </div>
-       </div>
-       <div class="span9">
-       	<button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="pauseFirst()">×</button>
-       <center><div style="width:800px" >
-		<div class="ontop" id="ontop"></div>
-		<div id="youtube" style="width:800px;height:500px;position:absolute"></div>
-		</div></center>
+       	<!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="pauseFirst()">×</button> -->
+        <center>
+        <div id="page" style="min-height:555px;width:832px;">
+		<center>
+		<div class="ontop" id="ontop_video_bigVideo" style="min-width:832px;min-height:468px"></div>
+		<div id="player2" style="position:absolute"></div>
+		</center>
 		</div>
-		</div>
+		</center>
 		
-		<!-- <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		<h3 id="myModalLabel">Modal header</h3>
-		</div>
-		<div class="modal-body">
-		<p id="bookid"></p>
-		<div id='others'></div>
-		</div>
 		
-		<div class="modal-footer">
-		<div id='message'></div>
-		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-		<!-- <button class="btn btn-primary">Save changes</button> 
-		</div>
-		</div> -->
-       
-       
   </div>
-   <div class="modal-footer" style="border:0px;margin-top:0px;background-color:rgb(255,255,255)">
-       <!-- <button class="btn" data-dismiss="modal">Close</button> -->
-       
-       <div class="span3">
-       	<hr />
-       	<center>
-        <div style="margin-bottom:8px;">
-       <button class="btn" onclick="confused()">Confused</button>
-       <button class="btn" id="toask" onclick="fading()">Question</button>
-       </div>
-       <div id="conf" style="display: none; background-color: rgb(243,243,243);"><form><input type='text' id='confusedQues' placeholder='enter question' style='margin-top:8px;width:150px;' name='confusedQues' required=true /><input type="button" onclick='confusedQuestion()' class='btn btn-primary' value="Save" /></form> </div>
-       </center></div>
-       
-  </div>
+ 
 </div>
 
 
 <script>
-var pop;
+var pop, last,flag;
+var currentID=""
+//var player=document.getElementById("video_youVideo");
 
 //$(document).ready(function() {
 //$('#toask').clickover({ global_close: true, html:true })//, template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'})//.dblclick(function() {
 //});
-function fading()
+function fading(hid)
 {
-	$('#conf').fadeToggle();
+	$('#conf_'+hid).fadeToggle();
 	if($('#conf').css('display')!="none")
-		pop.pause();
+		//pop.pause();
+		pauseVideo(hid);
 }
 
 function markSeen()  // marks that lecture was viewed
 {
-	pop.play();
+	//pop.play();
+	playVideo();
 	$.getJSON('<%= @seen_path %>', {"seen":true}, function(response){
 	});
 
 }
 function pauseFirst(){
-	pop.pause();
+	//pop.pause();
+	pauseVideo();
 }
 function formatSecondsAsTime(secs, format) {
   var hr  = Math.floor(secs / 3600);
@@ -169,104 +147,99 @@ function formatSecondsAsTime(secs, format) {
 }
 
 
-function confused()
+
+function confused(hid)
 {
-	$.getJSON('<%= @confused_path %>', {"time":pop.currentTime()}, function(response){
+	$('#confused_notify_'+hid).html("<div id='fading_"+hid+"' style='width:100px;' class='alert alert-success'>Thanks!</div>")
+	$("#fading_"+hid).fadeOut(5000);
+
+	
+	var player=document.getElementById(hid);
+	$.getJSON('<%= @confused_path %>', {"time":player.getCurrentTime()}, function(response){
 	});
 }
 
-function confusedQuestion()
+function confusedQuestion(hid)
 {
-	
-	ques=document.getElementById("confusedQues").value
-	$.getJSON('<%= @confused_question_path %>', {"time":pop.currentTime(), "ques":ques}, function(response){
-		$('#conf').fadeToggle();
-		document.getElementById("confusedQues").value=""
+	var player=document.getElementById(hid);
+	ques=document.getElementById("confusedQues_"+hid).value
+	$.getJSON('<%= @confused_question_path %>', {"time":player.getCurrentTime(), "ques":ques}, function(response){
+		$('#conf_'+hid).fadeToggle();
+		document.getElementById("confusedQues_"+hid).value=""
 		//pop.pause();
 	});	
 	// pause video aswell
 }
 
-function skip_to(time)
-{
-	if (pop.currentTime()-0.5 < 0)
-	{
-		pop.currentTime(time-0.1);
-	}
-	else
-	{
-		pop.currentTime(time-0.5);
-	}
+function save(elem)
+    		{
+    			var answer_id= elem.attr("id")
+				// here call the controller function to save to database!!
+    			$.getJSON("<%= @saveOnline %>",{"quiz":currentID, "answer":answer_id }, function(resp){
+    				
+    			});
+    		}
+
+function checkTime(hid) {
 	
-	console.debug("skipping to "+pop.currentTime());
-	//pop.play();	
-}
-
-document.addEventListener( "DOMContentLoaded", function() {
-
-var last=0;
-var flag=0;
-pop = Popcorn.youtube( "#youtube", "<%=  lecture.url %>",{ width: 400, controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
-
-pop.controls( false );                          
-//pop.play();  // play only when click play.
-
-// I want to add the skip buttons
-skip="<center>Skip to: <br> <select onChange=skip_to(this.value) ><option></option>"  ;
-
-
-
-//data= <%= raw lecture.online_quizzes.find(:all, :order => 'time').to_json %>;   // important how to convert rails array of objects to JS array of objects
-   
-   // getting which quizzes were answered to put that in the skip to menu
-//   for(element in data) {
-   		$.getJSON("<%= @answered_path %>", function(resp){
-      answered2= resp['answered']
-      qs=resp['qs']
-      for(element in qs){
-      	console.debug("element is "+element+" and qs[element] is "+qs[element].time+" answered is "+answered2[element])
-      //skip+="<button onclick='skip_to("+data[element].time+")'>Q"+element+" - "+formatSecondsAsTime(data[element].time)+"</button>"
-      if(answered2[element]){
-      	answered="Answered"
-      }else{
-      	answered="Not Answered"
-      }
-      skip+="<option value='"+qs[element].time+"'>Q"+element+" - "+formatSecondsAsTime(qs[element].time)+" - "+answered+"</option>"
-       console.debug("skip isss "+skip)
-      }
-		skip+="</select></center>";
-		document.getElementById("foo").innerHTML=skip
-        });
-           
-
-
-
-
-// pop.listen("play", function(){
-	// console.debug("in play")
-	// if (flag==1)
-	// {
-		// flag=0;
-// 		
-	// }
-// });
-
-
-currentID=""
-pop.listen( "timeupdate", function() {
-    //console.log( this.currentTime() );
-    a= <%= raw lecture.online_quizzes.to_json %>;   // important how to convert rails array of objects to JS array of objects
+	
+	
+	// DONE change all syntax to new one  done
+	// DONE want to change id to something constant!!! done
+	// DONE make full screen disappear except when hover. done
+	// DONE do fullscreen stuff
+	// DONE put confused and question button next to play and full screen
+	// DONE make answers display like with teacher.. 3al video like popovers.
+	// DONE to display the current time 3al video.. do zay el 3ady just update a div bil current time el gdeed..
+	// DONE of click play min youtube, el play el tanya doesn't change.. need to change that.
+	// now last/flag work.. but when scroll to 248 sec and then pause, then play again.. hangs why??
+	// try maybe to do old method, in .js zay onclick but fo2eeha.. abl el !initialize..
+	// seeking mish byzabat el time!!
+	// second quiz mazaharsh
+	// zabaty coordinates
+	// DONE check  rates
+	// show explnation instead of answer!!
+	// play video as soon as page loads.
+	// markSeen() when click on the lecture (instead of clicking play) wala when solve all lecture quizzes?
+	// when close modal, pause video..
+	// make sure it works right ..
+	// TEST!!
+	// probably when enlarge or make smaller, should continue playing from where I was on other screen.. like it's one..
+	// make teacher video like this.. so that 16:9 w mish yetakhaba..
+	// DONE adjust coordinates of small student video.
+	
+	                //console.log('checkTime', ytplayer.getCurrentTime());
+                //document.getElementById('time').innerHTML = ytplayer.getCurrentTime();
+                //console.log(elements.container)
+                //if(elements.container.hasClass('playing')){
+                var player=document.getElementById(hid);
+                
+                
+               
+                if(document.getElementById(hid).getPlayerState()==1) // when it's playing.
+                    //console.log();
+                {    console.log("TIME: "+ player.getCurrentTime())
+                	
+                	//console.log("player width isss "+player.width);
+                	console.log("quality"+ player.getPlaybackQuality())
+                	console.log(player.getAvailableQualityLevels())
+                
+                
+                	$('#timer_'+hid).html("<p style='float:right;margin-right:30px;line-height:50px;'>"+formatSecondsAsTime(player.getCurrentTime())+"</p>");
+                	
+                	a= <%= raw lecture.online_quizzes.to_json %>;   // important how to convert rails array of objects to JS array of objects
     //console.debug(a)
     //console.debug(a[0])
            for(key in a) {
           //console.debug("online quiz time isss "+a[key].time)
           //console.debug("flag isss "+flag)
-           if(this.currentTime()> parseFloat(a[key].time) && this.currentTime()< parseFloat(a[key].time)+0.5 &&  flag==0 )
+           if(player.getCurrentTime()> parseFloat(a[key].time) && player.getCurrentTime()< parseFloat(a[key].time)+0.5 &&  flag==0 )
            {
            //console.debug("more than 4 seconds");
           // document.getElementById("foo").innerHTML = "<b style='background-color: white;'>HELLO!!!</b>";
           //  console.debug("pop duration isss"+pop.duration()) 
-           pop.pause();
+           //pop.pause();
+           pauseVideo(hid);
            flag=1;
            last=parseFloat(a[key].time)
            currentID = a[key].id
@@ -275,16 +248,16 @@ pop.listen( "timeupdate", function() {
           
             $.getJSON("<%= @url %>",{"quiz":a[key].id }, function(resp){
     			console.debug("after "+a[key].id) // changes for some reason so stick to currentID
-    			//console.debug(resp)
+    			console.log(resp)
     			everything={}
     			ordered={}
     			html=""
     			for(answer in resp['answers']) {
-           			top3= parseFloat((resp['answers'][answer].ycoor));
-           			left= parseFloat(resp['answers'][answer].xcoor)+1;
+           			top3= parseFloat((resp['answers'][answer].ycoor)*(player.width*9/16)/281);
+           			left= parseFloat(resp['answers'][answer].xcoor*(player.width)/500)+1;
            			
            			
-           			reason= resp['answers'][answer].answer
+           			reason= resp['answers'][answer].explanation
            			if(resp['answers'][answer].correct==true)
            			{
            				title="<b style='color:green'>Correct</b>"
@@ -294,12 +267,12 @@ pop.listen( "timeupdate", function() {
            				t2="Incorrect"
            			}
            			
-           			console.debug( "x: "+top3+" y:"+left+" reason: "+resp['answers'][answer].answer)
+           			console.debug( "x: "+top3+" y:"+left+" reason: "+resp['answers'][answer].explanation)
            			everything[resp['answers'][answer].id]=[t2, reason]
            			ordered[parseInt(resp['answers'][answer].ycoor)]=[resp['answers'][answer].id,title, reason]
            			console.debug("current ID is "+currentID)
            			console.debug("a[key].id iss "+a[key].id)
-           			html+="<input name='button_"+currentID+"'type='radio' rel='popover' id='"+resp['answers'][answer].id+"' data-original-title=\""+title+"\" class='pop' data-content=\""+reason+"\" style='position:absolute; border: 1px solid #006; background: #9cf; top:"+top3+"px; left: "+left+"px;'>"
+           			html+="<input name='button_"+currentID+"'type='radio' onclick='save($(this))' rel='clickover' id='"+resp['answers'][answer].id+"' data-original-title=\""+title+"\" class='pop' data-content=\""+reason+"\" style='position:absolute; border: 1px solid #006; background: #9cf; top:"+top3+"px; left: "+left+"px;'>"
            			//onclick='show_reason(\""+reason+"\")'
            			//$('.pop').popover()
            			
@@ -313,119 +286,15 @@ pop.listen( "timeupdate", function() {
            			// absolute therefore xpos relative to parent div. i.e. xpos min awel el video.
     		}
     		console.debug("answereddd? "+resp['ans'])
-    		document.getElementById("checkButton").innerHTML= "<center><input class='check btn' type='button' value='Check My Answer'></button></center>"
+    		//document.getElementById("checkButton").innerHTML= "<input class='check btn' type='button' value='Check My Answer'></button>"
     		// this creates the red answered ontop of video
     		//html+="<p id='tochange' style='color:red; background-color:white;position:relative;'>"+resp['ans']+"</p>"
-    		document.getElementById("ontop").innerHTML=html;
+    		document.getElementById("ontop_"+hid).innerHTML=html;
+    		$("[rel=clickover]").clickover();
     		
-    		$(document).on("click", ".check", function () {
-    			
-    			$('#newhead').addClass("well");
-    			
-    			var selected= checkedRadioBtn('button_'+currentID)
-    			
-    			if(selected==null)
-    			{
-    				$("#expheader").text("Please Choose an Answer")
-    				$("#newhead").html("Please Choose an Answer")
-    				$("#expheader").css('color','red')
-    				$("#newhead").css('color','red')
-    				$("#exp").text("")
-    				$("#exptable").text("")
-    				$("#expfooter").text("")
-    				
-    				$(".modal-body #bookid").text("")
-    				$('div#others').html(" ");
-    				$('div#message').html(" ");
-    				$("#myModalLabel").text("Please Choose an Answer")
-    				$("#myModalLabel").css('color','red');
-    				//explanation="Please Choose an Answer";
-    				return
-    			}
-    			
-    			var message=""
-    			
-			     //var myBookId = $(this).data('id');
-			     console.debug("selected is"+selected)
-			     //console.debug("message outside isss"+message)
-			     // Display chosen answer first
-			     $(".modal-body #bookid").text( everything[selected][1] );
-			     $("#exp").text( everything[selected][1] );
-			     $("#newhead").html( everything[selected][1] );
-			     //explanation+=everything[selected][1]+"<br>"
-			     //$("#myModalLabel").text(everything[selected][0])
-			     if(everything[selected][0]=="Correct"){
-			     	$("#myModalLabel").css('color','green');
-			     	$("#expheader").css('color','green');
-			     	
-			     	$("#newhead").css('color','green');
-			     }else{
-			     	$("#myModalLabel").css('color','red');
-			     	$("#expheader").css('color','red');
-			     	$("#newhead").css('color','red');
-			     	
-			     }
-			     // Display other answers
-			     var f=0;
-			     others="<table class='table table-striped'>"
+    		//$(document).on("click", ".check", function () {
+    		
 			     
-			     arr1=Object.keys(ordered)
-			     var result = arr1.map(function (x) { 
-				    return parseInt(x); 
-				});
-				sorted= result.sort(function(a,b){return a-b}) // needed to add function to sort numeric, otherwise sorts alphabetic
-				
-				onceflag=0
-				// here call the controller function to save to database!!
-    			$.getJSON("<%= @saveOnline %>",{"quiz":currentID, "answer":selected , "correct":everything[selected][0]}, function(resp){
-    				message=resp["msg"]
-    				console.debug("message issssss"+message)
-    				//console.debug("quiz time is "+a[key].time)
-    				var f2=0
-    				if(resp['ans'])
-    				{
-    					for (var k in sorted) {
-					     	f2++;
-					     	console.debug("k is "+k)
-					     	if(ordered[sorted[k]][0]==resp['ans']){
-					     		break;
-		    				}
-		    			}
-		    			message+= " Your Answer: "+f2;
-		    		}
-		    		// return to display answered red on top on video
-		    		//document.getElementById('tochange').textContent="Answered"  // kda kda either not and now answered, or answered both ways
-    				//document.getElementById('skipper'+currentID).textContent="Answered"
-    				$('div#message').html("<b style='color:red;float:left'>"+message+"</b>");
-    				$('#expfooter').html("<b style='color:red;float:left'>"+message+"</b>");
-    				if(onceflag==0){
-    				$("#newhead").html($("#newhead").html() + " <br> <b style='color:red;float:left'>"+message+"</b>")
-    				onceflag=1;
-    				}
-    			});
-			     
-			     // displaying the answers on modal
-			     for (var k in sorted) {
-			     	f++;
-			     	console.debug("k is "+k)
-			     	if(ordered[sorted[k]][0]==selected){
-			     		$("#myModalLabel").text(f+"-"+everything[selected][0])
-			     		$("#expheader").text(f+"-"+everything[selected][0])
-			     		$("#newhead").html(f+"-"+everything[selected][0]+"<br>" + $("#newhead").html())
-			     		//explanation+=f+"-"+everything[selected][0]
-			     		}
-			     	else{
-			     		others+="<tr><td>"+f+"</td><td>"+ordered[""+sorted[k]][1]+"</td><td>"+ordered[""+sorted[k]][2]+"</td></tr>"
-			     	}
-			     		
-			     }
-			     console.debug(sorted)
-			     others+="</table>"
-			     $('div#others').html(others);
-			     //document.getElementById("exp").innerHTML=explanation
-			     $('#exptable').html(others);
-			    //$('#myModal').modal('show');
-			});
 			    		
     		
     		});
@@ -436,32 +305,23 @@ pop.listen( "timeupdate", function() {
            else
            {
            //	console.debug("last issss "+last)
-           	if(this.currentTime() > last + 1.0 || (this.currentTime() < last) )   // 1 second from both directions so don't stop after playing.
+           	if(player.getCurrentTime() > last + 1.0 || (player.getCurrentTime() < last) )   // 1 second from both directions so don't stop after playing.
            	{
            		flag=0;
            	} 
            	
            	
-           if (!this.paused()){
+           if (player.getPlayerState()!=2){
            //document.getElementById("foo").innerHTML=""   
-           document.getElementById("ontop").innerHTML=""
-           $('#exp').text("")
-           $('#expheader').text("")
-           $('#exptable').text("")
-           $('#expfooter').text("")
-           $('#newhead').removeClass("well")
-           $('#newhead').html("")
-           document.getElementById("checkButton").innerHTML=""
-           
+           document.getElementById("ontop_"+hid).innerHTML=""
+          
            }
            }
 
            
            }
-       });
-
-
-});
+         }
+		}
 
 
 function checkedRadioBtn(sGroupName)
@@ -480,20 +340,33 @@ function checkedRadioBtn(sGroupName)
     }
     
     
-  $(document).ready(function() {
-  $('.ontop').click(function(e) {
-    var offset = $(this).offset();
-  	left= parseFloat(e.pageX) - parseFloat(offset.left) //not clientX because client depends on window.. so numbers change when scrolling.
-  	right = parseFloat(e.pageY) - parseFloat(offset.top)
-  	
-  	console.debug("offset is "+ left)
-  	console.debug("left is "+left + " and top is "+right)
-  	
-    //document.getElementById('pos').innerHTML = 'Mouse position is: X='+left+' Y='+right;
-	//document.getElementById('pos').style.left = left;
-	//document.getElementById('pos').style.top = right;
-	//document.getElementById('pos').style.display='block';
-  });
+$(document).ready(function(){
+
+	last=0;
+	flag=0;
+	
+	$('#player').youTubeEmbed("<%= lecture.url %>",800,500,'small', 'youVideo');
+	
+//.youTubeEmbed('http://www.youtube.com/watch?v=quwebVjAEJA');				
+	console.log("<%= lecture.url %>")
+
+
+	
+
 });
+
+function pauseVideo(hid)
+{
+	//$(document.getElementById("player")).children().children(".controlDiv.pause").click();
+	var player=document.getElementById(hid);
+	player.pauseVideo();
+}
+
+function playVideo(hid)
+{
+	//$(document.getElementById("player")).children().children(".controlDiv.play").click();
+	var player=document.getElementById(hid);
+	player.playVideo();
+}
 
 </script>

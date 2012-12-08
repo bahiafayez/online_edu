@@ -186,7 +186,7 @@ class CoursesController < ApplicationController
       @correct={}
       
       status = QuizStatus.where(:user_id => current_user.id, :quiz_id => @q.id, :course_id => params[:id])
-      if @q.due_date <= Time.zone.now or (!status.empty? and status.first.status=="Submitted")
+      if (!status.empty? and status.first.status=="Submitted") #@q.due_date <= Time.zone.now or #won't disable if due date passed, but will know that submitted late.
         @disable=true
       end
       
@@ -322,7 +322,17 @@ class CoursesController < ApplicationController
     @students=@course.users
     @quizzes=@course.quizzes
     @student_names=[]
-  
+   
+   
+   if params[:all_modules]
+     @matrix={}
+     @type="group"
+     @students.each do |s|
+       @matrix[s.name]=s.grades(@course)  #returns for each module in the course, whether student finished r not and on time or not.
+       puts @matrix
+     end
+     @mods=@course.groups.map{|m| m.name}
+   end
    if params[:g]
       @modulechart=Group.where(:id => params[:g], :course_id => params[:id]).first
       if @modulechart.nil?
@@ -393,6 +403,7 @@ class CoursesController < ApplicationController
       
    end 
    if params[:all]
+     @type="quiz"
      @data=[]
     @quizScores=[]
       @quizzes.each do |q|

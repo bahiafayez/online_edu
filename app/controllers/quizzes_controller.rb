@@ -96,6 +96,7 @@ class QuizzesController < ApplicationController
   # PUT /quizzes/1.json
   def update
     @quiz = Quiz.find(params[:id])
+    @real_quiz=@quiz
      @course = Course.find(params[:course_id])
     Time.zone=ActiveSupport::TimeZone[@course.time_zone]
     puts "Due date beforeee issssss #{params[:quiz][:due_date]}" 

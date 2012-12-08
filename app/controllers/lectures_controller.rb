@@ -259,7 +259,12 @@ class LecturesController < ApplicationController
     @answer= params[:answer]
     @quiz= params[:quiz]
     @lecture= Lecture.find(params[:id])
-    @grade = params[:correct]=="Correct" ? 1 : 0
+    #@grade = params[:correct]=="Correct" ? 1 : 0
+   
+   @grade= OnlineAnswer.find(@answer).correct ? 1:0
+   
+   
+    logger.debug("grade is #{@grade}")
     a= OnlineQuizGrade.where(:user_id => current_user.id, :online_quiz_id => @quiz)
     if a.empty?
       OnlineQuizGrade.create(:lecture_id => params[:id], :user_id => current_user.id, :online_quiz_id => @quiz, :online_answer_id => @answer, :grade => @grade)

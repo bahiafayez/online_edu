@@ -1,0 +1,13 @@
+/*
+	This stylesheet is only used to style the demo page.
+	You can see the CSS that styles the player controls
+	in youTubeEmbed/youTubeEmbed-jquery-1.0.css
+*/
+
+
+.flashContainer{
+	border:1px solid #fff;
+	margin:40px auto;
+	outline:1px solid #aaa;
+}
+
