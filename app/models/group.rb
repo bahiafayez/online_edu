@@ -16,6 +16,22 @@ class Group < ActiveRecord::Base
     appearance_time >= Time.zone.now
   end
   
+  def total_questions
+    count=0;
+    lectures.each do |l|
+      count+= (l.online_quizzes.count)
+    end
+    return count
+  end
+  
+  def total_time
+    count=0;
+    lectures.each do |l|
+      count+=l.duration if !l.duration.nil?
+    end
+    return (Time.at(count).utc.strftime("%H:%M:%S"))
+  end
+  
   private
   def clean_up
     self.events.where(:lecture_id => nil, :quiz_id => nil).destroy_all

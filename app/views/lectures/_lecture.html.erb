@@ -59,6 +59,15 @@
   <%= lecture.description %>
 </p>
 
+<p style="display:inline">
+  <b style="display:inline">Duration:</b>
+  <p style="display:inline" id='dur' ></p>
+</p>
+
+<p>
+	<b>Number of Questions:</b>
+	<%= lecture.online_quizzes.count %>
+</p>
 
 <div id="page">
 	<div class="ontop" id="ontop_video_youVideo" style="min-height:450px;"></div>
@@ -180,7 +189,7 @@ function save(elem)
     			});
     		}
 
-function checkTime(hid) {
+function checkTime(hid, duration) {
 	
 	
 	
@@ -219,10 +228,13 @@ function checkTime(hid) {
                 if(document.getElementById(hid).getPlayerState()==1) // when it's playing.
                     //console.log();
                 {    console.log("TIME: "+ player.getCurrentTime())
-                	
+                	console.log("duration "+ duration)
                 	//console.log("player width isss "+player.width);
                 	console.log("quality"+ player.getPlaybackQuality())
                 	console.log(player.getAvailableQualityLevels())
+                
+                	
+                	logStudent(player.getCurrentTime(), duration)
                 
                 
                 	$('#timer_'+hid).html("<p style='float:right;margin-right:30px;line-height:50px;'>"+formatSecondsAsTime(player.getCurrentTime())+"</p>");
@@ -367,6 +379,28 @@ function playVideo(hid)
 	//$(document.getElementById("player")).children().children(".controlDiv.play").click();
 	var player=document.getElementById(hid);
 	player.playVideo();
+}
+function logStudent(time,duration)
+{
+	quarter=duration/4
+	half=duration/2
+	three_quarters=duration*3/4
+	
+	
+	if(time>quarter && time<quarter+1){ // within 1 second
+		$.getJSON('<%= @seen_path %>',{"portion":25}, function(resp){
+		});
+	}
+	
+	if(time>half && time<half+1){
+		$.getJSON('<%= @seen_path %>',{"portion":50}, function(resp){
+		});
+	}
+	
+	if(time>three_quarters && time<three_quarters+1){
+		$.getJSON('<%= @seen_path %>',{"portion":75}, function(resp){
+		});
+	}
 }
 
 </script>

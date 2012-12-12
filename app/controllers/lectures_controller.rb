@@ -275,7 +275,22 @@ class LecturesController < ApplicationController
   end
   
   def seen #lecture was viewed.. will be marked as viewed.
-   LectureView.create(:user_id => current_user.id, :course_id => params[:course_id], :lecture_id => params[:id]) if LectureView.where(:user_id => current_user.id, :course_id => params[:course_id], :lecture_id => params[:id]).empty?
+   #LectureView.create(:user_id => current_user.id, :course_id => params[:course_id], :lecture_id => params[:id]) if LectureView.where(:user_id => current_user.id, :course_id => params[:course_id], :lecture_id => params[:id]).empty?
+   portion=params[:portion].to_i
+   a=LectureView.where(:user_id => current_user.id, :course_id => params[:course_id], :lecture_id =>  params[:id])
+   if a.empty?
+     #create new one
+     LectureView.create(:user_id => current_user.id, :course_id => params[:course_id], :lecture_id => params[:id], :percent => portion) if portion==25
+   else
+     a=a[0]
+     #update this one
+     if portion==50 and a.percent == 25
+        a.update_attributes(:percent => 50) 
+      elsif  portion==75 and a.percent == 50
+        a.update_attributes(:percent => 75) 
+     end
+   end
+   
    render json:"done"
   end
   
@@ -316,7 +331,7 @@ class LecturesController < ApplicationController
   end
   
   def new_or_edit
-    @lecture = @course.lectures.build(:name => "New Lecture", :appearance_time => Group.find(params[:group]).appearance_time, :due_date => Group.find(params[:group]).due_date, :url => "none", :group_id => params[:group])
+    @lecture = @course.lectures.build(:name => "New Lecture", :appearance_time => Group.find(params[:group]).appearance_time, :due_date => Group.find(params[:group]).due_date, :url => "none", :group_id => params[:group], :slides => "none")
     
     
       if @lecture.save
@@ -341,6 +356,13 @@ class LecturesController < ApplicationController
        
         render json: @quiz.errors, status: :unprocessable_entity 
       end
+  end
+  
+  def save_duration
+    @lecture= Lecture.find(params[:id])
+    duration=params[:duration]
+    @lecture.update_attributes(:duration => duration)
+    render json: "done"
   end
   
 end

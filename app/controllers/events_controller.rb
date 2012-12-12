@@ -1,3 +1,6 @@
+#require 'EventsHelper'
+require "event_calendar"
+ 
 class EventsController < ApplicationController
   
   before_filter :get_course

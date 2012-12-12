@@ -26,6 +26,7 @@
 
 <div style="z-index:10">
 	More Details: <br/>
+	Link to Slides: <%= best_in_place @lecture, :slides ,:path => [@course, @lecture] %><br />
 	Due Date: <%= best_in_place @lecture, :due_date, :type => :date ,:path => [@course, @lecture], :classes => "d2" %><br />
 	Appearance Date:<%= best_in_place @lecture, :appearance_time, :type => :date, :path => [@course, @lecture], :classes => "d2" %> <br />
 </div>

@@ -5,6 +5,7 @@ class Event < ActiveRecord::Base
   belongs_to :group
   belongs_to :lecture
   
+  
   def self.appeared?(course)
     #returns all the events that have appeared.. since these are the ones we'll add to the calendar (the due dates)
     @m=Group.where("course_id = ? and appearance_time <= ?",course.id,Time.zone.now)

@@ -138,6 +138,11 @@ function setAuthor(element)
 					        //console.debug("title isss "+title+" "+description+" "+viewcount+" "+views+" "+author)
 					        //console.log($(caller).siblings());
 					        console.log(title)
+					        
+					       
+					        console.log(data.entry.media$group.yt$duration.seconds)
+					       
+					        
 					        //console.log("i is "+i);
 					        element.siblings(".title").text("Title: "+title);
 					        element.siblings(".author").text("Author: "+author);
@@ -173,6 +178,8 @@ function dosomething(caller)
 	
 	id=$(caller).val().split("v=")[1]
 	text_field=$(caller).parent().parent()
+	elem_id= $(caller).closest("li").attr("id").split("_")[1]
+	console.log(elem_id)
 	
 	if(id!=null && typeof id != 'undefined')
 	{
@@ -182,6 +189,7 @@ function dosomething(caller)
 		var viewcount;
 		var views;
 		var author;
+		var duration;
 		var url="http://gdata.youtube.com/feeds/api/videos/"+id+"?alt=json"
 		$.ajax({
                         url: url,
@@ -198,6 +206,14 @@ function dosomething(caller)
 					        //console.log($(caller).siblings());
 					        text_field.siblings(".title").text("Title: "+title);
 					        text_field.siblings(".author").text("Author: "+author);
+					        
+					        // also save duration!
+					        duration=data.entry.media$group.yt$duration.seconds
+					        console.log(data.entry)
+					        console.log(duration)
+					        $.getJSON("/courses/"+<%=@course.id %>+"/lectures/"+elem_id+"/save_duration",{"duration":duration}, function(resp){
+					        
+					        });
 					        }
 	    });
 	}

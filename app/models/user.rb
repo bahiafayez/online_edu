@@ -25,11 +25,62 @@ class User < ActiveRecord::Base
   def grades(course)
     #calculates for each module where done on time, done not on time, not done # returns an array
     grades=[]
+    if course.is_a?(Course)
     course.groups.each do |g|
       grades<<self.finished_group?(g)
     end
+    else  #its a module
+      grades={}
+      course.lectures.each do |l|
+        grades[l.id]=self.finished_lecture_group?(l)
+      end
+    end
     return grades
   end
+  
+  
+  def late_days(group)
+    late_days={}
+    group.lectures.each do |l|
+      if self.finished_lecture(l) and !self.finished_lecture_on_time(l) #finished lecture but late
+        late_days[l.id]=calculate_late_days(l)
+        #print("late dayssss #{l.name} #{calculate_late_days(l)}") 
+      end
+    end
+    #print late_days
+    return late_days
+  end
+  
+  def calculate_late_days(lecture)
+    
+    max_late=lecture.due_date
+      lecture.online_quizzes.each do |q|
+        g=self.online_quiz_grades.where(:online_quiz_id => q.id)[0]
+        if g.created_at > lecture.due_date  #solved after lecture due date
+           max_late=g.created_at if g.created_at>max_late  #if for any lecture, any quiz was not solved, then he has not finished the lectures.
+        end 
+      end
+      viewed=LectureView.where(:user_id => id, :lecture_id => lecture.id, :percent => 75)[0]
+      if viewed.updated_at > lecture.due_date
+        max_late=viewed.updated_at if viewed.updated_at>max_late
+      end
+    
+    return ((max_late - lecture.due_date)/60/60/24).round(1)  #from seconds to days
+  end
+  
+  def finished_lecture_group?(lecture)
+    
+    if self.finished_lecture(lecture) 
+      if self.finished_lecture_on_time(lecture)
+        return "Finished on Time"
+      else
+        return "Finished Not on time"
+      end
+    else
+      return "Not Finished" 
+    end
+  end
+  
   
   def finished_group?(group)
     lectures= group.lectures
@@ -75,6 +126,8 @@ class User < ActiveRecord::Base
           return false  #if for any lecture, any quiz was not solved, then he has not finished the lectures.
         end 
       end
+      viewed=LectureView.where(:user_id => id, :lecture_id => l.id, :percent => 75)
+      return false if viewed.empty?
     end
     return finished
   end
@@ -88,7 +141,36 @@ class User < ActiveRecord::Base
           return false  #if for any lecture, any quiz was not solved, then he has not finished the lectures.
         end 
       end
+      viewed=LectureView.where(:user_id => id, :lecture_id => l.id, :percent => 75)[0]
+      return false if viewed.updated_at > l.due_date
     end
+    return finished
+  end
+  
+  def finished_lecture(lecture)
+    finished=true
+      lecture.online_quizzes.each do |q|
+        if self.online_quiz_grades.where(:online_quiz_id => q.id).empty?
+          return false  #if for any lecture, any quiz was not solved, then he has not finished the lectures.
+        end 
+      end
+      viewed=LectureView.where(:user_id => id, :lecture_id => lecture.id, :percent => 75)
+      return false if viewed.empty?
+    
+    return finished
+  end
+  
+  def finished_lecture_on_time(lecture)
+    finished=true
+      lecture.online_quizzes.each do |q|
+        g=self.online_quiz_grades.where(:online_quiz_id => q.id)[0]
+        if g.created_at > lecture.due_date  #solved after lecture due date
+          return false  #if for any lecture, any quiz was not solved, then he has not finished the lectures.
+        end 
+      end
+      viewed=LectureView.where(:user_id => id, :lecture_id => lecture.id, :percent => 75)[0]
+      return false if viewed.updated_at > lecture.due_date
+    
     return finished
   end
   

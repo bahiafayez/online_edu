@@ -1,0 +1,98 @@
+<script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script>
+<div class="row">
+
+<div class="span9">
+
+
+<div id="container3" style="min-width: 400px; height: 400px; margin: 0 auto"></div><br />
+<center><div id="youtube" style="width:800px;height:450px;"></div></center>
+
+</div>
+</div>
+
+<script>
+var pop;
+	function skipTo(time)
+	{
+		pop.currentTime(time);
+	}
+	$(function () {
+    var chart;
+    $(document).ready(function() {
+    	
+    	getData();
+    	putVideo();
+    	
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'container3',
+                type: 'spline'
+            },
+            title: {
+                text: 'Confusing Points'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                type: 'datetime',
+                dateTimeLabelFormats: { // don't display the dummy year
+                    minute: '%H:%M'
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Number of students'
+                },
+                min: 0
+            },
+            tooltip: {
+                formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                        Highcharts.dateFormat('%H:%M:%S', this.x) +' = '+ this.y +' students';
+                }
+            },
+            plotOptions: {
+                series: {
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function() {
+                            	console.log(this.x)
+                            	var d= new Date()
+                            	var date=new Date(this.x + d.getTimezoneOffset()*60*1000);
+                            	var seek=date.getHours()*60*60 + date.getMinutes()*60 + date.getSeconds();
+                            	pop.currentTime(seek);
+                            }
+                           }
+                          }
+                         }
+                       },
+            
+            series: [{
+                name: 'Confusing points',
+                // Define the data points. All series have a dummy year
+                // of 1970/71 in order to be compared on the same x axis. Note
+                // that in JavaScript, months start at 0 for January, 1 for February etc.
+                data: getData()
+            }, ]
+        });
+    });
+    
+})
+
+getData = function(){
+	var confused= <%= raw @confused_chart %>
+	for(e in confused){
+		console.log(confused[e])
+		confused[e][0]= confused[e][0] *1000
+	}
+	return confused
+}
+
+putVideo = function(){
+	pop = Popcorn.youtube( "#youtube", "<%= @q.url %>" ,{ width: 400, controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
+	pop.controls( false );                          
+	//pop.play();
+}
+</script>

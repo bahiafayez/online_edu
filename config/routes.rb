@@ -81,6 +81,7 @@ OnlineEdu::Application.routes.draw do
         get 'seen'
         get 'new_or_edit'
         get 'new_quiz'
+        get 'save_duration'
       end
     end    
   end

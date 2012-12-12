@@ -3,8 +3,8 @@
 <div class="span4">
 <div class="well">
 <strong>Confusing Points</strong><br>
-<% @confused.each do |c |%>
-	<%= User.find(c.user_id).name %> was confused at time: <b style="color:red"><%= Time.at(c.time).utc.strftime("%H:%M:%S") %></b><br />
+<% @confused.order(:time).each do |c |%>
+	<%= User.find(c.user_id).name %> was confused at time: <b style="color:red"><%= link_to Time.at(c.time).utc.strftime("%H:%M:%S"),"",:remote=> true, :onclick => "skipTo(#{c.time})", :style => "color:red;" %></b><br />
 <% end %>
 </div>
 </div>
@@ -14,7 +14,7 @@
 <div class="well">
 <strong>Questions students asked</strong><br>
 <% @confused_questions.each do |c |%>
-	<%= User.find(c.user_id).name %> asked: <b style="color:green"><%= c.question %></b> at time:<b style="color:red"> <%= Time.at(c.time).utc.strftime("%H:%M:%S") %></b><br />
+	<!-- <%= User.find(c.user_id).name %> asked:  --><b style="color:green"><%= c.question %></b> at time:<b style="color:red"> <%= Time.at(c.time).utc.strftime("%H:%M:%S") %></b><br />
 <% end %>
 </div>
 </div>

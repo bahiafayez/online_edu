@@ -1,3 +1,9 @@
+<style>
+	.accordion-heading{
+		height:120px;
+	}
+</style>
+
 <%= render "shared/head2"%>
 
 
@@ -13,8 +19,17 @@
 <div class="accordion-group">
 <div class="accordion-heading">
 
+<table class="table" height="120px;">
+	<tr>
+		<td rowspan="2"><%= link_to g.name, "#group_#{g.id}", :class =>"accordion-toggle", "data-toggle"=> "collapse", "data-parent"=>"#accordian2", :style => "text-decoration:none;display:inline;vertical-align:center" %></td>
+		<td style="color:gray;vertical-align:middle;background-color:rgb(223,240,216);font-size:12px">Total Time:<%= g.total_time %></td>
+	</tr>
+	<tr>
+		
+		<td style="color:gray;vertical-align:middle;background-color:rgb(223,240,216);font-size: 12px;">Number of Questions:<%= g.total_questions%></td>
+	</tr>
+</table>
 
-<center><%= link_to g.name, "#group_#{g.id}", :class =>"accordion-toggle", "data-toggle"=> "collapse", "data-parent"=>"#accordian2", :style => "text-decoration:none" %></center>
 
 </div>
 <% if @typeGroup == g.id %> <!-- opening the group we're in -->
@@ -24,7 +39,13 @@
 <% if q.appearance_time <= Time.zone.now %>		
 <% flag=0 %>
 <div class="accordion-inner">
-<%= link_to "Lecture: #{q.name}", courseware_course_path(@course, :l => q) , :class => "quiz", :style => "text-decoration:none"%> <%= image_tag "check7.png" , :style=> "margin-left:10px" if !notseen?(q.id) %>
+<% if !notseen?(q.id) %>
+<%= image_tag "check7.png" , :style=> "margin-left:10px;margin-right:10px"%> 
+<% else %>
+<%= image_tag "empty7.png" , :style=> "margin-left:10px;margin-right:10px"%>
+<% end %>
+<%= link_to "Lecture: #{q.name}", courseware_course_path(@course, :l => q) , :class => "quiz", :style => "text-decoration:none"%> 
+<%= link_to "slides", q.slides, :style =>"font-size:10px;float:right;"  if q.slides!="none" and !q.slides.nil? %>
 </div>
 <% end %>
 <% end %>
@@ -32,7 +53,13 @@
 <% if q.appearance_time <= Time.zone.now %>	
 <% flag=0 %>
 <div class="accordion-inner">
-<%= link_to "Quiz: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz" , :style => "text-decoration:none"%> <%= image_tag "check7.png" , :style=> "margin-left:10px" if !quiznotseen?(q.id) %>
+<% if !quiznotseen?(q.id) %>
+<%= image_tag "check7.png" , :style=> "margin-left:10px;margin-right:10px"%> 
+<% else %>
+<%= image_tag "empty7.png" , :style=> "margin-left:10px;margin-right:10px"%>
+<% end %>
+
+<%= link_to "Quiz: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz" , :style => "text-decoration:none"%>
 </div>
 <% end %>
 <% end %>
@@ -50,7 +77,13 @@ Empty
 <% if q.appearance_time <= Time.zone.now %>		
 <% flag=0 %>
 <div class="accordion-inner">
-<%= link_to "Lecture: #{q.name}", courseware_course_path(@course, :l => q) , :class => "quiz" , :style => "text-decoration:none"%><%= image_tag "check7.png" , :style=> "margin-left:10px" if !notseen?(q.id) %>
+<% if !notseen?(q.id) %>
+<%= image_tag "check7.png" , :style=> "margin-left:10px;margin-right:10px"%> 
+<% else %>
+<%= image_tag "empty7.png" , :style=> "margin-left:10px;margin-right:10px"%>
+<% end %>
+<%= link_to "Lecture: #{q.name}", courseware_course_path(@course, :l => q) , :class => "quiz" , :style => "text-decoration:none"%>
+<%= link_to "slides", q.slides, :style =>"font-size:10px;float:right;" if q.slides!="none" and !q.slides.nil? %>
 </div>
 <% end %>
 <% end %>
@@ -58,7 +91,12 @@ Empty
 <% if q.appearance_time <= Time.zone.now %>		
 <% flag=0 %>
 <div class="accordion-inner">
-<%= link_to "Quiz: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz" , :style => "text-decoration:none"%> <%= image_tag "check7.png" , :style=> "margin-left:10px" if !quiznotseen?(q.id) %>
+<% if !quiznotseen?(q.id) %>
+<%= image_tag "check7.png" , :style=> "margin-left:10px;margin-right:10px"%> 
+<% else %>
+<%= image_tag "empty7.png" , :style=> "margin-left:10px;margin-right:10px"%>
+<% end %>
+<%= link_to "Quiz: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz" , :style => "text-decoration:none"%> 
 </div>
 <% end %>
 <% end %>

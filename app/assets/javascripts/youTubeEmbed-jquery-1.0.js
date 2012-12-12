@@ -93,6 +93,7 @@
 				id			: 'video_'+settings.safeID,
 				height		: correct_height,
 				width		: settings.width,
+				duration	: data.duration,
 				allowScriptAccess:'always',
 				wmode		: 'transparent',
 				flashvars	: {
@@ -105,7 +106,7 @@
 			// itself, and not a jquery object:
 			
 			elements.player = elements.container.flash().get(0);
-
+			console.log(elements.player)
 			// Creating the control Div. It will act as a ply/pause button
 
 			var timer=  $('<div>',{"class":'timer',"style":"width:"+width+"px","id":"timer_video_"+haveid}).appendTo(elements.container);
@@ -128,6 +129,8 @@
              // for confused notification
              var confused_notif = $('<div>',{"id":"confused_notify_video_"+haveid, "class":"confused_notif"}).appendTo(elements.container);
              
+             // change duration:
+             $('#dur').html(formatSecondsAsTime(data.duration))
              
              
              $('.fullscreenDiv.full').click(function(){
@@ -293,7 +296,7 @@
 					
                     //var interval = window.setInterval(function() { checkTime(); }, 1000);
                     //console.log(interval);
-                     var interval = window.setInterval(function() { checkTime('video_'+playerID); }, 100);
+                     var interval = window.setInterval(function() { checkTime('video_'+playerID, $(document.getElementById('video_'+playerID)).children("param[name='duration']:first").val()); }, 100);
                     console.log(interval);
                     
                     //set quality

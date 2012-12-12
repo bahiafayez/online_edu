@@ -17,19 +17,19 @@
 <% @courses.each do |course| %>
   <tr>
     <td><%= course.short_name %></td>
-    <td><%= course.name %></td>
+
     <!--<td><%= course.start_date %></td>
     <td><%= course.duration %></td>
     <td><%= course.description %></td>
     <td><%= course.prerequisites %></td>
     <td><%= course.user_id %></td> -->
     <% if can? :create, Course %>
- 
-    	<td><%= link_to 'Show', course %></td>
+		<td><%= course.name %></td> 
+    	<td><%= link_to 'Show', course_editor_course_path(course) %></td>
     	<td><%= link_to 'Edit', edit_course_path(course) %></td>
     	<td><%= link_to 'Destroy', course, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-    <% else %>
-    	<td><%= link_to 'Show', student_show_course_path(course) %></td>
+    <% else %> 
+    	<td><%= link_to course.name, course_event_path(course) %></td>
    <% end %>
   </tr>
 <% end %>

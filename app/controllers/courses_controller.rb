@@ -234,6 +234,12 @@ class CoursesController < ApplicationController
       @confused_path=confused_course_lecture_path(params[:id], params[:l])
       @confused_question_path= confused_question_course_lecture_path(params[:id], params[:l])
       @seen_path=seen_course_lecture_path(params[:id], params[:l])
+      #viewed= LectureView.where(:user_id => current_user.id, :lecture_id => @q.id, :course_id => params[:id])
+      #if !viewed.empty?
+      #  @seen=viewed[0].percent
+      #else
+      #  @seen=0
+      #end
       #@an= QuizGrade.select("question_id, answer_id").where(:user_id=>current_user.id , :quiz_id=> params[:q])
       #@out={}
       #@answers.each do |a|
@@ -400,6 +406,19 @@ class CoursesController < ApplicationController
       end
       @otherway = @otherway.to_json
       
+      ###### also want to add a matrix ##
+      
+       @matrixLecture={}
+       @late={}
+       @students.each do |s|
+         @matrixLecture[s]=s.grades(@modulechart)  #returns for each module in the course, whether student finished r not and on time or not.
+         @late[s]=s.late_days(@modulechart)
+         #puts @late
+       end
+       print @late.inspect
+       
+       @mods=@modulechart.lectures.map{|m| m.name}
+      
       
    end 
    if params[:all]
@@ -473,7 +492,10 @@ class CoursesController < ApplicationController
       #also I want to get confused and Questions of that lecture
       @confused= Confused.where(:course_id => params[:id], :lecture_id =>params[:l])
       @confused_questions= LectureQuestion.where(:course_id => params[:id], :lecture_id => params[:l])
-      
+     
+      @confused_chart= Confused.get_rounded_time(@confused.order(:time)) #right now I round up.
+      @confused_chart=@confused_chart.to_json
+      print @confused_chart
       
       #sort chart_data according to keys.
       
@@ -526,8 +548,8 @@ class CoursesController < ApplicationController
          @nonline=s.online_quiz_grades.select{|v| Course.find(@course.id).lectures.pluck(:id).include?v.lecture_id}.length #all onlinequizzes in the course that the student solved
          @nonline_total = OnlineQuiz.all.select{|v| Course.find(@course.id).lectures.pluck(:id).include?v.lecture_id}.length #all onlinequizzes in the course
          
-         # % of lectures viewed
-         @nl_solved=LectureView.where(:course_id => @course.id, :user_id => s.id).length
+         # % of lectures viewed (75%) solved if finished 75%
+         @nl_solved=LectureView.where(:course_id => @course.id, :user_id => s.id, :percent =>75).length
          @nl_total= Course.find(@course.id).lectures.count 
          
          if @n_solved.nil? || @n_total==0
