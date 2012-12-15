@@ -362,7 +362,8 @@ class CoursesController < ApplicationController
           @chart_data["#{l.name} #{Time.at(online_q.time).gmtime.strftime('%R:%S')}"] = []  
           @answers[counter] = []    
           online_q.online_answers.order('ycoor').each_with_index do |ans, i|
-            @correct[(j + index*len)]=i if ans.correct
+            @correct<<i if ans.correct
+            # [(j + index*len)]= don;t need counter, just append wara ba3d..
             @chart_data["#{l.name} #{Time.at(online_q.time).gmtime.strftime('%R:%S')}"]<<OnlineQuizGrade.where(:online_quiz_id => online_q.id, :online_answer_id => ans.id).length  
             @answers[counter]<<ans.answer
             #must be ordered like this series=[{name => question1, data => [1,2,3,2,1]},{},{}] so first data is the count of question 1 in all quizzes

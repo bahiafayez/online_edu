@@ -174,4 +174,36 @@ class User < ActiveRecord::Base
     return finished
   end
   
+  
+  
+  def self.dummy_lecture_data
+    #will create onlinequizgrades for each of the 20 students AND lecture_views with different answers and dates! and maybe 2 students did not complete the quizzes and 2 didnt do 75%.. 10 did and on time 4 did but not one time.
+    OnlineQuiz.all.each do |o|
+      answers= o.online_answers
+      grade=[1,0]
+      dates=[Time.now, 3.weeks.from_now, 1.week.from_now]
+      2.upto(21).each do |index|
+        User.find(index).online_quiz_grades << OnlineQuizGrade.new(:online_quiz_id => o.id, :lecture_id => o.lecture_id, :online_answer_id => answers.sample.id ,:grade => grade.sample, :created_at => dates.sample)
+      end
+    end
+    
+    Lecture.all.each do |lecture|
+      percent = [25,50,75]
+      dates=[Time.now, 3.weeks.from_now, 1.week.from_now]
+      2.upto(21).each do |index|
+        LectureView.create(:user_id => index, :lecture_id => lecture.id, :course_id => lecture.course_id, :percent => percent.sample, :updated_at => dates.sample)
+      end
+    end
+  end
+  
+  def self.dummy_confused_and_questions
+    question=["I don't understand this part", "What do you mean by that?", "I'm not sure I follow"]
+    Lecture.all.each do |lecture|
+      2.upto(21).each do |index|
+        LectureQuestion.create(:user_id => index, :lecture_id => lecture.id, :course_id => lecture.course_id, :time => rand(1..300) , :question => question.sample )
+        Confused.create(:user_id => index, :lecture_id => lecture.id, :course_id => lecture.course_id, :time => rand(1..300))
+      end
+    end
+  end
+  
 end
