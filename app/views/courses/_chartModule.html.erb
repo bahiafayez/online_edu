@@ -89,7 +89,9 @@ $(function () {
         	{
         		console.debug("over here")
         		chart2.series[i].data[j].update({
-        		color:'gray'
+        		color:'gray',
+        		y : chart2.series[i].data[j].y
+        		
         	});
         	}
         }
@@ -101,7 +103,8 @@ $(function () {
         	//check if nil first.
         	if(ans!=null){
         	chart2.series[ans].data[element].update({
-        		color:'green'
+        		color:'green',
+        		y : chart2.series[ans].data[element].y
         	});
         	}
         }

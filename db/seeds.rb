@@ -18,3 +18,8 @@ Role.create([
 #puts 'New user created: ' << user2.name
 #user.add_role :admin
 #user2.add_role :VIP
+
+
+#populate here.. say 1 teacher, 1 course, 2 modules, each with 5 lectures, 20 students taking the course, 
+#solve some lecture quizzes, enough data for charts..
+

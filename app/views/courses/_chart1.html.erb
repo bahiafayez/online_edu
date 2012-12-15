@@ -3,10 +3,11 @@
 
 
 <script>
-$(function () {
-    var chart2;
+//var chart2
+//$(function () {
+    //var chart2;
     $(document).ready(function() {
-        chart2 = new Highcharts.Chart({
+        var chart2 = new Highcharts.Chart({
             chart: {
                 renderTo: 'container2',
                 type: 'column'
@@ -67,11 +68,32 @@ $(function () {
                 // data: [42.4, 33.2, 34.5, 39.7, 52.6, 75.5, 57.4, 60.4, 47.6, 39.1, 46.8, 51.1]
 //     
             // }]
-            series: <%= raw @otherway %>
+            series: getSeries()
         });
-        
-        var cor = <%= raw @correct %>
+ 
+ 
+ setColors()    
+function getSeries()
+{
+	console.debug("over hereeeee")
+	var x =<%= raw @otherway %>
+	var z=[]
+	for(elem in x)
+	{
+		z[elem]=[]
+		z[elem]=x[elem]
+	}
+	console.log(z)
+	return z
+
+//return x;
+}
+
+function setColors()
+{
+	var cor = <%= raw @correct %>
         console.debug("correct isssss"+cor)
+        console.log(chart2.series[0])
       //  console.debug(chart2.series[4].data)
        // chart2.series[4].data[0].update({
        // 	color:'green'
@@ -85,7 +107,8 @@ $(function () {
         	{
         		console.debug("over here")
         		chart2.series[i].data[j].update({
-        		color:'gray'
+        		color:'gray',
+        		y : chart2.series[i].data[j].y
         	});
         	}
         }
@@ -97,16 +120,17 @@ $(function () {
         	//check if nil first.
         	if(ans!=null){
         	chart2.series[ans].data[element].update({
-        		color:'green'
+        		color:'green',
+        		y : chart2.series[ans].data[element].y
         	});
         	}
         }
-        
+}
         
     });
 
     
-});
+//});
            
 
 
