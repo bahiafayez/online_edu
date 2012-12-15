@@ -34,7 +34,7 @@ gem 'validates_timeliness', '~> 3.0' #to validate date
 gem "nested_form"
 gem 'activeadmin'
 gem "highcharts-rails"
-gem 'populator'
+gem 'populator' 
 gem 'faker'
 gem 'watir'
 gem 'acts_as_list'
