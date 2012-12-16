@@ -33,7 +33,7 @@ gem "quiet_assets", ">= 1.0.1", :group => :development
 gem 'validates_timeliness', '~> 3.0' #to validate date
 gem "nested_form"
 gem 'activeadmin'
-gem "highcharts-rails"
+#gem "highcharts-rails"
 gem 'populator' 
 gem 'faker'
 gem 'watir'
