@@ -23,8 +23,6 @@
 
 
 
-
-
 add = function(student, url) {
    $.getJSON(url,{"student":student}, function(resp){
     
