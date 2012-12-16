@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121211163728) do
+ActiveRecord::Schema.define(:version => 20121216175343) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -158,7 +158,7 @@ ActiveRecord::Schema.define(:version => 20121211163728) do
     t.datetime "created_at",                     :null => false
     t.datetime "updated_at",                     :null => false
     t.boolean  "correct"
-    t.text     "explanation"
+    t.text     "explanation",    :default => ""
   end
 
   create_table "online_quiz_grades", :force => true do |t|

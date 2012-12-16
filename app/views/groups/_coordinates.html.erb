@@ -231,7 +231,7 @@ $(document).ready(function() {
      
   	 $.getJSON('<%= add_answer_course_lecture_path(@course, @lecture) %>',{"left":toadd.position().left, "top":toadd.position().top, "quiz": <%=@quiz.id %>, "flag":true}, function(resp){
                 	
-                	storedData[resp['current'].id]=[false,""]
+                	storedData[resp['current'].id]=[false,"", ""]
                 	console.debug("current id issss "+ resp['current'].id)
                 	console.debug("to add isss "+toadd.attr("id"))
                 	toadd.attr("id", ""+resp['current'].id) 
