@@ -86,7 +86,7 @@ getData = function(){
 	var d= new Date()
 	for(e in confused){
 		console.log(confused[e])
-		confused[e][0]= confused[e][0] *1000 + d.getTimezoneOffset()*60*1000
+		confused[e][0]= confused[e][0] *1000 //+ d.getTimezoneOffset()*60*1000
 		console.log("confused is "+confused[e][0]+ "and offset is"+ d.getTimezoneOffset()*60*1000);
 	}
 	return confused

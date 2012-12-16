@@ -10,7 +10,7 @@ class Confused < ActiveRecord::Base
         puts "parsed time issssss #{parsed_time}"
         puts "time zone isssss #{Time.zone}"
         puts "ceil #{Time.seconds_to_time(c.time+1)}"
-        puts "parsed #{Time.zone.parse(Time.seconds_to_time(c.time+1))}"
+        print "parsed #{Time.zone.parse(Time.seconds_to_time(c.time+1))}"
         return_hash[parsed_time] = (return_hash[parsed_time]||0) + 1
     end
     return return_hash.to_a    
