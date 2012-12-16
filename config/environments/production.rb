@@ -81,7 +81,7 @@ OnlineEdu::Application.configure do
     password: ENV["GMAIL_PASSWORD"]
   }
 
-
+  config.assets.precompile += ['highcharts.js'] 
 
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
