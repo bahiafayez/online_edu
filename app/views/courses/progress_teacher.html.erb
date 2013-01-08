@@ -69,9 +69,9 @@
 <% else %>
 <div id="collapseTwo" class="accordion-body collapse">
 <% end %>
-<% @course.lectures.each do |q| %>
+<% @course.lectures.order(:appearance_time).each do |q| %>
 <div class="accordion-inner">
-<%= link_to q.name, progress_teacher_course_path(@course, :l => q)  , :class => "lecture"%>
+<%= link_to "#{q.group.name} : #{q.name}", progress_teacher_course_path(@course, :l => q)  , :class => "lecture"%>
 </div>
 <% end %>
 </div>
