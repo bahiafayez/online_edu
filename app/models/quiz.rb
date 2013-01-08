@@ -3,12 +3,14 @@ class Quiz < ActiveRecord::Base
   belongs_to :course
   belongs_to :group
   has_many :events
+  has_many :quiz_grades , :dependent => :destroy
+  has_many :quiz_statuses, :dependent => :destroy
   
   has_many :questions, :dependent => :destroy
   accepts_nested_attributes_for :questions, :allow_destroy => true
   
   attr_accessible :course_id, :instructions, :name, :questions_attributes, :group_id, :due_date, :appearance_time
-  validates :name, :appearance_time,:due_date, :presence => true
+  validates :name, :appearance_time,:due_date,:course_id, :group_id, :presence => true
   #validates_associated :questions
   after_destroy :clean_up
   
@@ -18,7 +20,7 @@ class Quiz < ActiveRecord::Base
   
   private
   def clean_up
-    self.events.where(:quiz_id => nil).destroy_all
+    self.events.where(:lecture_id => nil).destroy_all
   end
   
 end

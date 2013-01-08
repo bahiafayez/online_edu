@@ -1,35 +1,18 @@
-<h1>My Courses</h1>
+<% #This is the course index page for both teachers and students, each see a different view depending on their role %>
+
+
+<h4>My Courses</h3>
 
 <table class="table table-striped">
-  <!--<tr>
-    <th>Short name</th>
-    <th>Name</th>
-    <th>Start date</th>
-    <th>Duration</th>
-    <th>Description</th>
-    <th>Prerequisites</th>
-    <th>User</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>-->
 
 <% @courses.each do |course| %>
   <tr>
-    <td><%= course.short_name %></td>
-
-    <!--<td><%= course.start_date %></td>
-    <td><%= course.duration %></td>
-    <td><%= course.description %></td>
-    <td><%= course.prerequisites %></td>
-    <td><%= course.user_id %></td> -->
     <% if can? :create, Course %>
-		<td><%= course.name %></td> 
-    	<td><%= link_to 'Show', course_editor_course_path(course) %></td>
+    	<td><%= link_to "#{course.short_name} #{course.name}", course_editor_course_path(course) %></td>
     	<td><%= link_to 'Edit', edit_course_path(course) %></td>
     	<td><%= link_to 'Destroy', course, method: :delete, data: { confirm: 'Are you sure?' } %></td>
     <% else %> 
-    	<td><%= link_to course.name, course_event_path(course) %></td>
+    	<td><%= link_to "#{course.short_name} #{course.name}", course_event_path(course) %></td>
    <% end %>
   </tr>
 <% end %>

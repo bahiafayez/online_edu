@@ -52,6 +52,9 @@ function save(elem)
 			storedData[key][0]=false
 		}
 	}
+	
+	// when update text save all
+	saveAll();
 }
 function saveAll()
 {
@@ -71,7 +74,7 @@ function saveAll()
 	$.getJSON('<%= save_answers2_course_lecture_path(@course, @lecture) %>',{"stored":storedData2}, function(resp){
 		console.debug(resp)
 		console.debug("calling redirect")
-		$('#notify').html("<div class='alert alert-success'>Saved</div>")
+	//	$('#notify').html("<div class='alert alert-success'>Saved</div>")
 		//redirect()
 		
 	});
@@ -141,6 +144,7 @@ jQuery(function() {
                 toadd=jQuery(ui.helper)  // every time a button is dragged it is here in toadd. could get its position and save it.
                 
                 console.debug("new position is "+toadd.position().top+" and id is "+toadd.id+" explanation is ")//+document.getElementById('explain_'+toadd.id).value() )
+               	saveAll(); // save all when change position.
                 }
                
             }
@@ -158,7 +162,7 @@ $(document).ready(function() {
     storedData[old[i].id]=[old[i].correct,old[i].answer, old[i].explanation]
     toadd.css({"top":old[i].ycoor+"px", "left":old[i].xcoor+"px", 'zIndex': 5, 'position':'absolute'})
     toadd.attr("onclick","load('"+toadd.attr('id')+"')")
-	toadd.attr("rel","popover").attr("data-content","Correct:<input group='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Answer: <input id='answer_"+toadd.attr('id') +"' type='text' /><br>Explanation:<input id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=remove('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
+	toadd.attr("rel","popover").attr("data-content","Correct:<input group='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Answer: <textarea rows=3 id='answer_"+toadd.attr('id') +"' type='text' /><br>Explanation:<textarea rows=3 id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=remove('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
 	toadd.attr("data-original-title","")
 	toadd.clickover({ global_close: false, template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'})//.dblclick(function() {
      $('#ontop').append(toadd)           
@@ -237,7 +241,7 @@ $(document).ready(function() {
                 	toadd.attr("id", ""+resp['current'].id) 
                 	console.debug("to add isss "+toadd.attr("id"))
                 	toadd.attr("onclick","load('"+toadd.attr('id')+"')")
-	        		toadd.attr("rel","popover").attr("data-content","Correct:<input name='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Answer: <input id='answer_"+toadd.attr('id') +"' type='text' /><br>Explanation:<input id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=remove('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
+	        		toadd.attr("rel","popover").attr("data-content","Correct:<input name='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Answer: <textarea rows=3 id='answer_"+toadd.attr('id') +"' type='text' /><br>Explanation:<textarea rows=3 id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=remove('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
 	                toadd.attr("data-original-title","")
 	                toadd.clickover({ global_close: false, template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'})//.dblclick(function() {
                
@@ -262,6 +266,6 @@ $(document).ready(function() {
 <div style="width:100%;height:150px;">
 <center style="margin-top: 10px"><!-- Drag the button: <%= image_tag "button6.png", :class=> "component"%> -->
 <br><!-- <input class="btn" value="Save and Exit" onclick="saveAll()"/> -->
-<%= button_to "Save", course_lecture_path(@course,@lecture), :class => "btn", :onclick => "saveAll()", :method => :get , :remote=> true%>	
+<!-- <%= button_to "Save", course_lecture_path(@course,@lecture), :class => "btn", :onclick => "saveAll()", :method => :get , :remote=> true%> -->	
 </center>
 </div>

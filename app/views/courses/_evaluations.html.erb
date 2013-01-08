@@ -1,0 +1,8 @@
+<div class="well">
+<strong>Lecture Evaluations:</strong><br>
+<% @evaluations.each_with_index do |c, index|%>
+	<%= index+1 %>: <b> <%= c.evaluation %></b><br />
+<% end %>
+</div>
+
+

@@ -1,10 +1,17 @@
 class QuizzesController < ApplicationController
   # GET /quizzes
   # GET /quizzes.json
+  before_filter :set_zone
+  
+  def set_zone
+    @course=Course.find(params[:course_id])
+    Time.zone= @course.time_zone
+  end
+  
   def index
     @quizzes = Quiz.where(:course_id => params[:course_id])
     @course = Course.find(params[:course_id])
-    Time.zone=ActiveSupport::TimeZone[@course.time_zone]
+    #Time.zone=ActiveSupport::TimeZone[@course.time_zone]
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @quizzes }
@@ -17,7 +24,7 @@ class QuizzesController < ApplicationController
     #@quiz = Quiz.find(params[:id])
     @quiz=Quiz.where(:id => params[:id], :course_id => params[:course_id])
     @course = Course.find(params[:course_id])
-    Time.zone=ActiveSupport::TimeZone[@course.time_zone]
+    #Time.zone=ActiveSupport::TimeZone[@course.time_zone]
     if @quiz.empty?
       redirect_to course_quizzes_path(params[:course_id]), :alert=> "No such quiz"
     else
@@ -37,7 +44,7 @@ class QuizzesController < ApplicationController
   def new
     
     @course = Course.find(params[:course_id])
-    Time.zone=ActiveSupport::TimeZone[@course.time_zone]  
+    #Time.zone=ActiveSupport::TimeZone[@course.time_zone]  
     @quiz = Quiz.new
     
   
@@ -52,7 +59,7 @@ class QuizzesController < ApplicationController
     #@quiz = Quiz.find(params[:id])
     #@course = Course.find(params[:course_id])
     @course = Course.find(params[:course_id])
-    Time.zone=ActiveSupport::TimeZone[@course.time_zone]
+    #Time.zone=ActiveSupport::TimeZone[@course.time_zone]
     @quiz=Quiz.where(:id => params[:id], :course_id => params[:course_id])
     
     if @quiz.empty?
@@ -72,7 +79,7 @@ class QuizzesController < ApplicationController
   def create
 
     @course = Course.find(params[:course_id])
-    Time.zone=ActiveSupport::TimeZone[@course.time_zone]
+    #Time.zone=ActiveSupport::TimeZone[@course.time_zone]
     @quiz = Quiz.new(params[:quiz])
     #converting from course time zone to UTC
     
@@ -98,7 +105,7 @@ class QuizzesController < ApplicationController
     @quiz = Quiz.find(params[:id])
     @real_quiz=@quiz
      @course = Course.find(params[:course_id])
-    Time.zone=ActiveSupport::TimeZone[@course.time_zone]
+    #Time.zone=ActiveSupport::TimeZone[@course.time_zone]
     puts "Due date beforeee issssss #{params[:quiz][:due_date]}" 
     #params[:quiz][:appearance_time] = ActiveSupport::TimeZone[@course.time_zone].local_to_utc(params[:quiz][:appearance_time])
     #params[:quiz][:due_date] = ActiveSupport::TimeZone[@course.time_zone].local_to_utc(params[:quiz][:due_date])  
@@ -107,6 +114,9 @@ class QuizzesController < ApplicationController
     
     respond_to do |format|
       if @quiz.update_attributes(params[:quiz])
+        #@quiz.due_date = @quiz.due_date.end_of_day
+        #@quiz.save
+        
         if @quiz.due_date != @quiz.group.due_date or @quiz.appearance_time != @quiz.group.appearance_time
           @quiz.events << Event.new(:name => "#{@quiz.name} due", :start_at => @quiz.due_date, :end_at => @quiz.due_date, :all_day => false, :color => "red", :course_id => @course.id, :group_id => @quiz.group.id)
         end
@@ -135,7 +145,7 @@ class QuizzesController < ApplicationController
     end
   end
   
-  def new_or_edit
+  def new_or_edit   #called from course_editor / module editor to add a new quiz
     @course = Course.find(params[:course_id])
     @quiz = @course.quizzes.build(:name => "New Quiz", :instructions => "Please choose the correct answer(s)", :appearance_time => Group.find(params[:group]).appearance_time, :due_date => Group.find(params[:group]).due_date , :group_id => params[:group])
     

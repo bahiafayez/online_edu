@@ -5,7 +5,14 @@ class Event < ActiveRecord::Base
   belongs_to :group
   belongs_to :lecture
   
+  validates :course_id, :name, :presence => true #can't have group_id because it is added after saving the group! so validation fails.
   
+  after_validation :message
+  
+  def message
+    print "error #{self.errors.full_messages}"
+  end
+ 
   def self.appeared?(course)
     #returns all the events that have appeared.. since these are the ones we'll add to the calendar (the due dates)
     @m=Group.where("course_id = ? and appearance_time <= ?",course.id,Time.zone.now)

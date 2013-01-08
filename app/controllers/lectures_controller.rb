@@ -95,6 +95,10 @@ class LecturesController < ApplicationController
     
     respond_to do |format|
       if @lecture.update_attributes(params[:lecture])
+        
+         @lecture.due_date = @lecture.due_date.end_of_day
+        @lecture.save
+        
         if @lecture.due_date != @lecture.group.due_date or @lecture.appearance_time != @lecture.group.appearance_time
           @lecture.events << Event.new(:name => "#{@lecture.name} due", :start_at => @lecture.due_date, :end_at => @lecture.due_date, :all_day => false, :color => "red", :course_id => @course.id, :group_id => @lecture.group.id)
         end
@@ -107,7 +111,7 @@ class LecturesController < ApplicationController
     end
   end
 
-  def add_quiz
+  def add_quiz #creating an online quiz and add in to this lecture at specified time.
     logger.debug("in add quiz!!!!!!")
     OnlineQuiz.create(:lecture_id => params[:id], :time => params[:time])
     @quizzes= OnlineQuiz.where(:lecture_id => params[:id])#.pluck(:time)
@@ -119,7 +123,7 @@ class LecturesController < ApplicationController
     render json: {:q => @quizzes, :loc => @loc, :loc2=> @loc2, :loc3 => @loc3} 
   end
   
-  def remove_quiz
+  def remove_quiz  #destroy an online quiz
     logger.debug("in remove quiz!!!!!!")
     @a=OnlineQuiz.find(params[:quiz])
     @a.destroy
@@ -157,7 +161,7 @@ class LecturesController < ApplicationController
   end
   # DELETE /lectures/1
   # DELETE /lectures/1.json
-  def coordinates
+  def coordinates # getting the answers of a specific online quiz
     #@quiz=OnlineQuiz.find(params[:quiz])
     @quiz=OnlineQuiz.where(:id => params[:quiz], :lecture_id => params[:id])
     @course= Course.find(params[:course_id])
@@ -172,7 +176,7 @@ class LecturesController < ApplicationController
     
   end
   
-  def add_answer
+  def add_answer #creating an online answer, and associating it with an online quiz.
     logger.debug("in add answer!!!#{params[:flag]}")
     if params[:flag]!="false"
       @current=OnlineAnswer.create(:online_quiz_id => params[:quiz], :xcoor => params[:left], :ycoor => params[:top])
@@ -188,8 +192,8 @@ class LecturesController < ApplicationController
   end
   
   def save_answers2
+    
     @data=params[:stored]
-    puts @data
     @course= Course.find(params[:course_id])
     @lecture= Lecture.find(params[:id])
     @data||=[]
@@ -234,7 +238,7 @@ class LecturesController < ApplicationController
     # redirect_to course_lecture_path(@course,@lecture)
   # end
   
-  def remove_answer
+  def remove_answer  #remove online answer from an online_quiz
     logger.debug("in remove answer!!!!!!")
     @a=OnlineAnswer.find(params[:answer])
     @a.destroy
@@ -249,7 +253,7 @@ class LecturesController < ApplicationController
     
   end
   
-  def get_answers
+  def get_answers #get answers and whether or not they were answered by the current user
     @a= OnlineQuiz.find(params[:quiz]).online_answers
     @answered= !OnlineQuizGrade.where(:user_id => current_user.id, :online_quiz_id => params[:quiz]).empty? ? "Answered" : "Not Answered"
     render json: {:answers => @a, :ans => @answered}
@@ -274,7 +278,7 @@ class LecturesController < ApplicationController
     end
   end
   
-  def seen #lecture was viewed.. will be marked as viewed.
+  def seen #lecture was viewed.. will be marked as viewed. when passed 25 50 and 75
    #LectureView.create(:user_id => current_user.id, :course_id => params[:course_id], :lecture_id => params[:id]) if LectureView.where(:user_id => current_user.id, :course_id => params[:course_id], :lecture_id => params[:id]).empty?
    portion=params[:portion].to_i
    a=LectureView.where(:user_id => current_user.id, :course_id => params[:course_id], :lecture_id =>  params[:id])
@@ -312,6 +316,18 @@ class LecturesController < ApplicationController
     render json: {:msg => "Saved"}  
   end
   
+  def pause
+    Pause.create(:lecture_id => params[:id], :course_id => params[:course_id], :user_id => current_user.id, :time => params[:time])
+    #should probably rescue if an exception occurs.
+    render json: {:msg => "Saved"}  
+  end
+  
+  def back
+    Back.create(:lecture_id => params[:id], :course_id => params[:course_id], :user_id => current_user.id, :time => params[:time])
+    #should probably rescue if an exception occurs.
+    render json: {:msg => "Saved"}  
+  end
+  
   def confused_question
     LectureQuestion.create(:lecture_id => params[:id], :course_id => params[:course_id], :user_id => current_user.id, :time => params[:time], :question => params[:ques])
     #should probably rescue if an exception occurs.
@@ -330,7 +346,7 @@ class LecturesController < ApplicationController
     end
   end
   
-  def new_or_edit
+  def new_or_edit #called from course_editor / module editor to add a new quiz
     @lecture = @course.lectures.build(:name => "New Lecture", :appearance_time => Group.find(params[:group]).appearance_time, :due_date => Group.find(params[:group]).due_date, :url => "none", :group_id => params[:group], :slides => "none")
     
     

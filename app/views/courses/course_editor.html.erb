@@ -1,17 +1,13 @@
+<%# This view renders the course editor%>
+
 <%= render "shared/head" %>
-<h2><%= @course.name %></h2>
+<h4><%= "#{@course.short_name} - #{@course.name}" %></h4>
 <div class="row">
 <div class="span12">
 
 <%= render "course" %>
 
 <hr />
-<!-- <%= link_to "New Module", new_course_group_path(@course), :style => "float:right"%> -->
 </div>
-
-
-<!-- <div class="span6">
-	
-</div> -->
 
 </div>

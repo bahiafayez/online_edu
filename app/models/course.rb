@@ -1,10 +1,10 @@
 class Course < ActiveRecord::Base
   belongs_to :user
-  has_many :quizzes
+  has_many :quizzes, :dependent => :destroy
   has_many :enrollments, :dependent => :delete_all
   has_many :users, :through => :enrollments
-  has_many :lectures
-  has_many :groups, :order => "position"
+  has_many :lectures, :dependent => :destroy
+  has_many :groups, :order => "position", :dependent => :destroy
   has_many :events
   has_many :announcements, :dependent => :destroy
   
@@ -19,4 +19,12 @@ class Course < ActiveRecord::Base
   attr_accessible :users_attributes, :groups_attributes, :lectures_attributes
   #attr_accessible :enrollment_attributes
   
+  def enrolled_students
+    return users
+  end
+  
+  def not_enrolled_students
+    u=User.all - User.joins(:courses).where("course_id = ?", id)
+    u=u.find_all{|u| u.has_role?('user')}
+  end
 end

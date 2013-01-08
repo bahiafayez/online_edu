@@ -5,6 +5,6 @@ class Question < ActiveRecord::Base
   accepts_nested_attributes_for :answers, :allow_destroy => true
   
   attr_accessible :content, :quiz_id, :answers_attributes
-  validates :content, :presence => true
+  validates :content,:quiz_id, :presence => true
   
 end

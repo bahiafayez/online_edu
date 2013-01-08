@@ -1,7 +1,14 @@
 class Lecture < ActiveRecord::Base
   
-  validates :name, :url,:appearance_time , :presence => true
+  validates :name, :url,:appearance_time, :due_date,:course_id, :group_id, :due_date, :presence => true
   has_many :online_quizzes, :dependent => :destroy
+  has_many :backs, :dependent => :destroy
+  has_many :confuseds, :dependent => :destroy
+  has_many :pauses, :dependent => :destroy
+  has_many :evaluations, :dependent => :destroy
+  has_many :lecture_questions, :dependent => :destroy
+  has_many :lecture_views, :dependent => :destroy
+  has_many :online_quiz_grades, :dependent => :destroy
   belongs_to :course
   belongs_to :group
   has_many :events
@@ -25,6 +32,10 @@ class Lecture < ActiveRecord::Base
     
     
     
+  end
+  
+  def edit_url
+    return "Edit URL"
   end
   
   private

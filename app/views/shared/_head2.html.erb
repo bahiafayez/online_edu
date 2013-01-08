@@ -7,6 +7,7 @@
     </li>
     <li class=<%= (current_page?(courseware_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Courseware", courseware_course_path(@course)%></li>
     <li class=<%= (current_page?(progress_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Progress", progress_course_path(@course)%></li>
+    <li style="float:right"><b><%="#{@course.short_name} - #{@course.name}"%></b></li>
     </ul>
 <% end %>
 

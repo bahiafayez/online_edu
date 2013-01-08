@@ -114,8 +114,10 @@
 <% end %>
 <% if @q %>
 	<%= render 'chart1' %>
-	<%= render 'confused' %>
+	<%= #render 'confused' #don't think we need this anymore
+	%>
 	<%= render 'confused_chart' %>
+	<%= render 'evaluations' %>
 <% end %>
 <% if @p %>
 	<%= render 'chart_progress' %>

@@ -5,22 +5,24 @@ class CoursesController < ApplicationController
   # GET /courses
   # GET /courses.json
   def correct_user
+    # Checking to see if the current user is taking the course OR teaching the course, otherwise he is not authorised.
     @c=Course.find(params[:id])
-    puts "!!!!!!!!!!!!!!!!!!!!! course is #{@c.users.include?(current_user)} and other is #{@c.user == current_user} together #{ (!@c.users.include?(current_user))  and !(@c.user == current_user)}"
     if !@c.users.include?(current_user) and !(@c.user == current_user)
       redirect_to courses_path, :alert => "You are not authorized to see requested page"
     end
   end
   
   def set_zone
+    #Setting the time zone to the zone of the course, to be used throughout.
     @course=Course.find(params[:id])
     Time.zone= @course.time_zone
   end
   
   def index
-  
-    if can? :update, @course #instructor   
-        @courses = current_user.subjects #Course.where(:user_id => current_user.id)  #courses that person teaches
+    # The course index page, with all the courses the teacher is giving OR the student is taking.
+    # If this is an <tt> instructor </tt> I show the courses he's giving, else, the courses he's taking.
+    if can? :update, @course    
+        @courses = current_user.subjects 
     else
         @courses = current_user.courses 
     end
@@ -42,23 +44,19 @@ class CoursesController < ApplicationController
     
   end
   def show
+    
     @course = Course.find(params[:id])
-    
-    all_users= User.all #- User.joins(:courses).where("course_id == 3")
-    #User.joins(:courses).where("course_id == ?",params[:id])
-    @students = all_users.find_all{|u| u.has_role?('user')}  #returns students only.. later instead of User make Student
-    
+    @students= User.students
     
     # enrolled students
-    @students2 = @course.users  # students enrolled in the course.
+    @students2 = @course.enrolled_students  
     @student_ids= @students2.map{|a| a.id}
     
     #students not enrolled
-    all_users2= User.all - User.joins(:courses).where("course_id = ?", params[:id].to_i)
-
-    @student_ids2=all_users2.find_all{|u| u.has_role?('user')}.map{|a| a.id}
+    all_users2= @course.not_enrolled_students
+    @student_ids2=all_users2.map{|a| a.id}
     
-    logger.debug("students areeeee #{@students}")
+    #logger.debug("students areeeee #{@students}")
 
     respond_to do |format|
       format.html # show.html.erb
@@ -110,11 +108,11 @@ class CoursesController < ApplicationController
     
     # removing all groups that were removed already!
     logger.debug("course paramaeters areee #{params[:course]}")
-    params[:course][:groups_attributes].each do |k,v|
-      if Group.where(:id => v["id"]).empty?
-        params[:course][:groups_attributes].delete(k)
-      end
-    end
+    #params[:course][:groups_attributes].each do |k,v|
+    #  if Group.where(:id => v["id"]).empty?
+    #    params[:course][:groups_attributes].delete(k)
+    #  end
+    #end
 
     respond_to do |format|
       if @course.update_attributes(params[:course])
@@ -139,17 +137,16 @@ class CoursesController < ApplicationController
     end
   end
   
+  ##### stopped here .. test ely ta7t and refactor.
+  
   def remove_student
     @course = params[:id]
     @student=User.find(params[:student])
-    @student.enrollments.where(:course_id => @course).destroy_all
+    @student.remove_student(@course)
     
     logger.debug @course
-    text="hey there"
-    
+    text="Done"
     render json: text
-
-
   end
   
   def add_student
@@ -167,6 +164,8 @@ class CoursesController < ApplicationController
       render json: "failed"
     end
   end
+  
+  # NEED TO DIVIDE THIS!!
   
   def courseware
     if params[:q]   #requesting quiz
@@ -232,8 +231,17 @@ class CoursesController < ApplicationController
       @saveOnline= save_online_course_lecture_path(params[:id], params[:l])
       @answered_path= answered_course_lecture_path(params[:id], params[:l])
       @confused_path=confused_course_lecture_path(params[:id], params[:l])
+      @back_path=back_course_lecture_path(params[:id], params[:l])
+      @pause_path=pause_course_lecture_path(params[:id], params[:l])
       @confused_question_path= confused_question_course_lecture_path(params[:id], params[:l])
       @seen_path=seen_course_lecture_path(params[:id], params[:l])
+      @evaluation_path=evaluations_path()
+      @get_evaluation_path=get_evaluations_path()
+      
+      @first_evaluation= Evaluation.where(:course_id => params[:id], :lecture_id => params[:l], :user_id => current_user.id).empty?
+      if !@first_evaluation
+        @eval= Evaluation.where(:course_id => params[:id], :lecture_id => params[:l], :user_id => current_user.id).first
+      end
       #viewed= LectureView.where(:user_id => current_user.id, :lecture_id => @q.id, :course_id => params[:id])
       #if !viewed.empty?
       #  @seen=viewed[0].percent
@@ -257,19 +265,15 @@ class CoursesController < ApplicationController
   def enrolled_students
      @course = Course.find(params[:id])
     
-    all_users= User.all #- User.joins(:courses).where("course_id == 3")
-    #User.joins(:courses).where("course_id == ?",params[:id])
-    @students = all_users.find_all{|u| u.has_role?('user')}  #returns students only.. later instead of User make Student
-    
+    @students= User.students
     
     # enrolled students
-    @students2 = @course.users  # students enrolled in the course.
+    @students2 = @course.enrolled_students  
     @student_ids= @students2.map{|a| a.id}
     
     #students not enrolled
-    all_users2= User.all - User.joins(:courses).where("course_id = ?", params[:id].to_i)
-
-    @student_ids2=all_users2.find_all{|u| u.has_role?('user')}.map{|a| a.id}
+    all_users2= @course.not_enrolled_students
+    @student_ids2=all_users2.map{|a| a.id}
     
     logger.debug("students areeeee #{@students}")
 
@@ -330,7 +334,7 @@ class CoursesController < ApplicationController
     @student_names=[]
    
    
-   if params[:all_modules]
+   if params[:all_modules]  #when click on the modules - all modules, progress of each student in each module (done/not done/done but not on time)
      @matrix={}
      @type="group"
      @students.each do |s|
@@ -339,7 +343,7 @@ class CoursesController < ApplicationController
      end
      @mods=@course.groups.map{|m| m.name}
    end
-   if params[:g]
+   if params[:g] #shows all lectures in a module, and the quizzes in each lecture # also show a matrix with all the lectures inside the module and how each student performed (on time/late/not done)
       @modulechart=Group.where(:id => params[:g], :course_id => params[:id]).first
       if @modulechart.nil?
         redirect_to progress_teacher_course_path(params[:id]), :alert => "No such Module"
@@ -422,7 +426,7 @@ class CoursesController < ApplicationController
       
       
    end 
-   if params[:all]
+   if params[:all]  #show all the quizzes
      @type="quiz"
      @data=[]
     @quizScores=[]
@@ -445,7 +449,7 @@ class CoursesController < ApplicationController
    end
     
     ############ If quiz #################
-    if params[:q]
+    if params[:q]  #show a specific quiz
       @quizchart=Quiz.where(:id => params[:q], :course_id => params[:id]).first
       if @quizchart.nil?
         redirect_to progress_teacher_course_path(params[:id]), :alert => "No such quiz"
@@ -493,10 +497,30 @@ class CoursesController < ApplicationController
       #also I want to get confused and Questions of that lecture
       @confused= Confused.where(:course_id => params[:id], :lecture_id =>params[:l])
       @confused_questions= LectureQuestion.where(:course_id => params[:id], :lecture_id => params[:l])
+      @back = Back.where(:course_id => params[:id], :lecture_id => params[:l])
+      @pause = Pause.where(:course_id => params[:id], :lecture_id => params[:l])
      
       @confused_chart= Confused.get_rounded_time(@confused.order(:time)) #right now I round up.
       @confused_chart=@confused_chart.to_json
       print @confused_chart
+      
+      @questions_chart2= LectureQuestion.get_rounded_time(@confused_questions.order(:time))
+      @questions_chart = @questions_chart2.to_a.map{|v| v=[v[0],v[1][0]] } #getting the time [time,count]
+      @questions =  @questions_chart2.to_a.map{|v| v=[v[0],v[1][1]] } #getting the questions [time,questions]
+      print "questions are #{@questions_chart2}"
+      @questions= Hash[@questions].to_json
+      @questions_chart=@questions_chart.to_json
+      
+      @back_chart = Back.get_rounded_time(@back.order(:time))
+      @back_chart=@back_chart.to_json
+      
+      @pause_chart = Pause.get_rounded_time(@pause.order(:time))
+      @pause_chart=@pause_chart.to_json
+      
+      @evaluations=Evaluation.where(:course_id => params[:id], :lecture_id => @q.id)
+      
+      @min= Time.zone.parse(Time.seconds_to_time(0)).to_i*1000
+      @max= Time.zone.parse(Time.seconds_to_time(@q.duration)).floor(15.seconds).to_i*1000
       
       #sort chart_data according to keys.
       
@@ -532,7 +556,7 @@ class CoursesController < ApplicationController
      end 
      
      #if progress chart
-     if params[:p]
+     if params[:p]  #progress chart, shows each students progress in quizzes/lectures and online quizzes
        @type="Progress"
        @p="Progress Chart"
        @student_progress={}

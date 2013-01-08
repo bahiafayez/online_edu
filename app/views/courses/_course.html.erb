@@ -15,8 +15,9 @@ function updateIDs()
     });
 
 }
-
+//for dragging
 $(document).ready(function(){
+
 	
 //$('.fields').children("li").each(if($(this).hasClass("item_row")){console.debug $(this)})
 updateIDs()
@@ -97,7 +98,7 @@ function removeModule()
 }
 
 
-function createnewLecture(group)
+function createnewLecture(group) // when add a lecture, I save it with a controller method then change the existing fields
 {
 	console.debug("group isssssssss "+group.attr("id"))
 	$('#best_in_place_lecture__name').text("New Lecture")
@@ -132,7 +133,7 @@ function moveElement(elem)
 	elem.insertBefore($(elem.siblings('a')[0]))
 }
 
-function createnewQuiz(group)
+function createnewQuiz(group) // when add a quiz, I save it with a controller method then change the existing fields
 {
 	console.debug("group isssssssss "+group.attr("id"))
 	$('#best_in_place_quiz__name').text("New Quiz")
@@ -160,7 +161,7 @@ function createnewQuiz(group)
 }
 
 
-function createnewModule()
+function createnewModule() // when add a module, I save it with a controller method then change the existing fields
 {
 	$('#best_in_place_group__name').text("New Module")
 	//$('#best_in_place_group__appearance_time').text("05 Nov (Tue)")
@@ -180,6 +181,7 @@ function createnewModule()
      	$('#best_in_place_group__due_date').attr("data-url", "/courses/"+resp["group"]["course_id"]+"/groups/"+resp["group"]["id"])
     	$('#best_in_place_group__due_date').attr("id","best_in_place_group_"+resp["group"]["id"]+"_due_date")
      	
+     	// unbind event and bind again (so new elements are included)
     	 $('.list_header_link').unbind();
     	 setup();
     	
@@ -218,26 +220,11 @@ function createnewModule()
     <ul class="item_section_list">
     	
 	
-	
-	
-	
-	
-	<!-- <%= task_form.input :description, :label => "Description", :input_html => {:style => 'width: 250px; height: 50px'} %> -->
-  	<!-- <%= task_form.input :appearance_time %> -->
-  	
-  	
-	<!-- <%= task_form.full_error :content %> -->	
   		<%= task_form.fields_for :lectures do |t| %>
   		<li class="item_row unviewed" id=<%= "lecture_#{t.object.id}" %> >
-  		<div>
-  		<!-- <p style="background-color: #eeffff; margin-left: 40px; width: 400px">  <!-- style this better with css --> 
+  		<div> 
   		<%= best_in_place t.object, "name", :path => [@course, t.object] %> <!-- <p style="margin-left:50px;display:inline;color:red;font-style:italic">video-url:</p> <%= best_in_place t.object, "url", :path => [@course, t.object] , :classes => 'red'%> -->
   		<%= link_to "X", [@course, t.object ] ,:data => {:confirm => "Are you sure?"}, :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" %>
-  		<!-- <%= t.input :name ,:label => "Name", :label_html =>{:style => 'margin-left: 40px;' },:input_html => {:style => 'margin-left: 40px'} %> -->
-  		<!-- <%= t.input :description ,:label => "Description", :label_html =>{:style => 'margin-left: 40px;' }, :input_html => {:style => 'margin-left: 40px;width: 250px; height: 50px'} %><br> -->
-  		<!-- <%= t.input :appearance_time %> -->
-  		
-  		<!-- </p> -->
   		</div>
   		</li>
   		<% end %>
@@ -251,25 +238,15 @@ function createnewModule()
   			</li>
   		<% end %>
   		
-  		
-  		
   		<%= task_form.link_to_add "Add a Quiz", :quizzes , :onclick => "createnewQuiz($(this).closest('li'))",:class =>"btn btn-small btn-primary", :style => "float:right;margin-bottom:10px;margin-right:10px;display:inline;"%>
   		<%= task_form.link_to_add "Add a Lecture", :lectures , :onclick => "createnewLecture($(this).closest('li'))",:class =>"btn btn-small btn-primary", :style => "float:right;margin-bottom:10px;margin-right:10px;display:inline;"%>
-  		
-  		
 	 
 	</ul>
   	</li>
-	<% end %>
-	
+	<% end %>	
 	<%= f.link_to_add "Add a module", :groups, :onclick => "createnewModule()" ,:class =>"btn btn-primary", :style => "float:right;margin-bottom:20px;margin-top:20px;margin-right:10px;"%>
 
   </div>
   
 <% end %>
-
-
-
-
-
 

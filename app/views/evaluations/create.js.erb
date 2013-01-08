@@ -1,0 +1,6 @@
+<% if status=="failed" %>
+$('#error').html("<div id='error_m' class='alert alert-danger'><%= errors %></div>")
+$('#error_m').fadeOut(2000);
+<% else %>
+$("#evaluation").html("<b>Your Evaluation:</b><br><%= best_in_place @eval, 'evaluation', :type => :textarea, :classes =>'textareabig' if @eval%><a href='<%=evaluation_path(@eval)%>' class='btn btn-mini btn-danger' data-confirm='Are you sure?' data-method='delete' data-remote='true' rel='nofollow' style='float:right;margin-top:2px;'>X</a>")
+<% end %>

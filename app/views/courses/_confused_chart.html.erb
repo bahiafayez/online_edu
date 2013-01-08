@@ -4,20 +4,23 @@
 <div class="span9">
 
 
-<div id="container3" style="min-width: 400px; height: 400px; margin: 0 auto"></div><br />
-<center><div id="youtube" style="width:800px;height:450px;"></div></center>
+<center><div id="youtube" style="width:800px;height:450px;"></div><br />
+	<div id="container3" style="min-width: 700px;max-width:800px; height: 200px; margin: 0 auto; margin-top:-20px;"></div>
+	<select onchange="changeGraph(this.value)"><option value="confusing" selected="selected">Confusing Points</option><option value="questions">Questions</option><option value="back">Back 10 seconds</option><option value="pause">Pauses</option></select>
+</center>
 
 </div>
 </div>
 
 <script>
 var pop;
+var chart;	
 	function skipTo(time)
 	{
 		pop.currentTime(time);
 	}
 	$(function () {
-    var chart;
+    
     $(document).ready(function() {
     	
     	getData();
@@ -26,10 +29,18 @@ var pop;
         chart = new Highcharts.Chart({
             chart: {
                 renderTo: 'container3',
-                type: 'spline'
+                type: 'column',
+                //spacingBottom: '10'
             },
             title: {
-                text: 'Confusing Points'
+                text: '',
+                verticalAlign: 'bottom',
+                y: 10,
+                style: {
+                	fontSize: '12px'
+                },
+                margin:'30px'
+                
             },
             subtitle: {
                 text: ''
@@ -38,7 +49,13 @@ var pop;
                 type: 'datetime',
                 dateTimeLabelFormats: { // don't display the dummy year
                     minute: '%H:%M'
-                }
+               },
+
+                min:<%= @min %>,
+                max:<%= @max %>
+            },
+            legend:{
+            	enabled: false
             },
             yAxis: {
                 title: {
@@ -74,14 +91,42 @@ var pop;
                 // Define the data points. All series have a dummy year
                 // of 1970/71 in order to be compared on the same x axis. Note
                 // that in JavaScript, months start at 0 for January, 1 for February etc.
-                data: getData()
+                data: getData("confusing")
             }, ]
         });
+        
     });
     
 })
 
-getData = function(){
+function changeGraph(type)
+{
+		data = chart.series[0].options.data;
+        chart.series[0].setData(getData(type));	
+        setTooltip(type);
+        
+}
+
+function setTooltip(type){
+chart.tooltip.options.formatter = function() {
+    if(type=="confusing" || type=="back" || type=="pause")
+    {
+ 	    //return  '<b>'+ this.series.name +'</b><br/>'+
+        return   Highcharts.dateFormat('%H:%M:%S', this.x) +' = '+ this.y +' students';
+    }
+ 
+    else{
+    	questions=<%= raw @questions %>
+    	console.log(questions)
+    	//return '<b>'+ this.series.name +'</b><br/>'+
+          return  Highcharts.dateFormat('%H:%M:%S', this.x) +' = '+ this.y +' students<br>'+ questions[this.point.x/1000].join("<br>");
+    }
+}
+}
+
+getData = function(type){
+	if(type=="confusing")
+	{
 	var confused= <%= raw @confused_chart %>
 	var d= new Date()
 	for(e in confused){
@@ -90,6 +135,41 @@ getData = function(){
 		console.log("confused is "+confused[e][0]+ "and offset is"+ d.getTimezoneOffset()*60*1000);
 	}
 	return confused
+	}
+	else if(type=="questions")
+	{
+		var questions= <%= raw @questions_chart %>
+		var d= new Date()
+		for(e in questions){
+			console.log(questions[e])
+			questions[e][0]= questions[e][0] *1000 //+ d.getTimezoneOffset()*60*1000
+			console.log("confused is "+questions[e][0]+ "and offset is"+ d.getTimezoneOffset()*60*1000);
+		}
+		return questions
+	}
+	else if(type=="back")
+	{
+	var confused= <%= raw @back_chart %>
+	var d= new Date()
+	for(e in confused){
+		console.log(confused[e])
+		confused[e][0]= confused[e][0] *1000 //+ d.getTimezoneOffset()*60*1000
+		console.log("confused is "+confused[e][0]+ "and offset is"+ d.getTimezoneOffset()*60*1000);
+	}
+	return confused
+	}
+	
+	else if(type=="pause")
+	{
+	var confused= <%= raw @pause_chart %>
+	var d= new Date()
+	for(e in confused){
+		console.log(confused[e])
+		confused[e][0]= confused[e][0] *1000 //+ d.getTimezoneOffset()*60*1000
+		console.log("confused is "+confused[e][0]+ "and offset is"+ d.getTimezoneOffset()*60*1000);
+	}
+	return confused
+	}
 }
 
 putVideo = function(){

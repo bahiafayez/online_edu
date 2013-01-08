@@ -17,7 +17,7 @@ function updateIDs()
 
 }
 
-function createnewLecture(group)
+function createnewLecture(group) // when add a lecture, this is called which calls a controller method to add the lecture to the database and then updates the view
 {
 	
 	$('#best_in_place_lecture__name').text("New Lecture")
@@ -54,7 +54,7 @@ function moveElement(elem)
 }
 
 
-function createnewQuiz(group)
+function createnewQuiz(group) // to add a new quiz (like lecture)
 {
 	
 	$('#best_in_place_quiz__name').text("New Quiz")
@@ -94,7 +94,7 @@ function showQuiz(elem, url)
 		//setupVideo(lec)
 	}
 }
-function showOnlineQuiz(elem,q,l)
+function showOnlineQuiz(elem,q,l)  // shows the online quiz on the right
 {
 	var time=elem.siblings('.time').text()
 	var a = time.split(':'); // split it at the colons
@@ -109,7 +109,7 @@ function showOnlineQuiz(elem,q,l)
 							 }
 		 });
 }
-function setAuthor(element)
+function setAuthor(element) // get the author of the youtube video and display it.
 {
 	id=element.text().split("v=")[1]
 	//text_field=$(caller).parent().parent()
@@ -156,7 +156,7 @@ function formatTime(element)
 	$(element).val(formatSecondsAsTime($(element).val()))
 }
 
-function loadAuthor()
+function loadAuthor() // calls setAuthor on each of the youtube videos
 {
 	elements=[]
 	for(var counter=0; counter< $('.youtube').length; counter++)
@@ -173,7 +173,7 @@ function loadAuthor()
 	
 }
 
-function dosomething(caller)
+function dosomething(caller) // called when the URL is changed since I need to update the duration
 {
 	
 	id=$(caller).val().split("v=")[1]
@@ -227,7 +227,7 @@ loadAuthor()
 
 });
 
-function setup()
+function setup() // This method controls the accordian, makes sure the one that is open is the one displayed on the right, and all others are closed
 {
 	
 	 $('.contracted').next().hide();
@@ -271,7 +271,7 @@ function setupVideo(lec)
 	pop.controls( false );                          
 	pop.play();
 }
-function showVideo(elem, url)
+function showVideo(elem, url) // to show the video on the right (not the online quiz just the video from the beginning)
 {
 	console.debug("here")
 	//var url= elem.siblings('.list_header').children('.youtube').text();
@@ -283,7 +283,7 @@ function showVideo(elem, url)
 	}
 }
 
-function createnewOnlineQuiz(lecture,course)
+function createnewOnlineQuiz(lecture,course)  // add an onlinequiz to the lecture
 {
 	console.debug("group isssssssss "+lecture.attr("id"))  //with lecture_ so split on _ first.
 	$('#best_in_place_online_quiz__question').text("New Quiz")
@@ -314,6 +314,14 @@ function createnewOnlineQuiz(lecture,course)
 	
 }
 
+showURL = function(elem) {
+	if($(elem).siblings(".youtube").css("display")=="inline")
+		$(elem).siblings(".youtube").css("display","none")
+	else
+		$(elem).siblings(".youtube").css("display","inline")
+	return false;
+};
+
 $(document).ready(function(){
   setup();
 });
@@ -337,19 +345,19 @@ $(document).ready(function(){
 	}
 	
 	.title{
-	position: absolute;
-    line-height: 15px;
+	#position: absolute;
+    line-height: 10px;
     font-size: 10px;
     font-weight: normal;
     #margin-top: -20px;
-    margin-left: 20px;
+    margin-left: 0px;
     margin-bottom:-20px;
 	}
 	
 	.author{
 		
-    position: absolute;
-    line-height: 15px;
+    #position: absolute;
+    line-height: 10px;
     font-size: 10px;
     font-weight: normal;
     margin-top: -20px;
@@ -359,6 +367,18 @@ $(document).ready(function(){
 	
 	.time:hover{
 		background: transparent;
+	}
+	
+	.item_row{
+		padding:2px 20px 2px;
+		font-size:12px;
+	}
+	.list_header{
+		font-size:12px;
+		line-height:20px;
+	}
+	.youtube{
+		display:none;
 	}
 </style>
 
@@ -373,7 +393,7 @@ $(document).ready(function(){
 	
 	<!-- <%= task_form.input :name %> -->
 	<li id=<%= "lecture_#{task_form.object.id}" %> style="height=0px;margin-bottom:-10px">
-    <div class="contracted" style="display:block"><%= link_to "IMAGE TEXT" , "#" ,:onclick => "showVideo($(this),'#{group_editor_course_group_path(@course,@group,:lec =>task_form.object.id)}')", :class=>"list_header_link" , :style=> "background-color:rgb(233,233,233);text-indent: -9999em;display:block;" %><h3 class="list_header" style="line-height: 50px;"><%= link_to image_tag("play3.png"), group_editor_course_group_path(@course,@group, :lec => task_form.object.id), :style => "margin-right:10px;margin-top=-2px;" %><%= best_in_place task_form.object, "name", :path => [@course, task_form.object] %><%= best_in_place task_form.object, "url", :path => [@course, task_form.object], :classes => "tabbed youtube" , :html_attrs => {:onChange =>"dosomething(this)" }   %><!-- <%= link_to "Edit url", "#", :id => "activate_#{task_form.object.id}" , :class =>"btn btn-mini", :style =>"margin-top:2px;float:right;" %> --><%= link_to "X", [@course, task_form.object ] ,:confirm => "Are you sure?", :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" , :id => "removeB"%><br><b class="title">Title: </b><br><b class="author">Author: </b></h3><span class="list_header_state hidden">(expanded, click to collapse)</span></div>
+    <div class="contracted" style="display:block"><%= link_to "IMAGE TEXT" , "#" ,:onclick => "showVideo($(this),'#{group_editor_course_group_path(@course,@group,:lec =>task_form.object.id)}')", :class=>"list_header_link" , :style=> "background-color:rgb(233,233,233);text-indent: -9999em;display:block;" %><h3 class="list_header" style="line-height: 25px;"><%= best_in_place task_form.object, "name", :path => [@course, task_form.object] %><%= best_in_place task_form.object, "url", :path => [@course, task_form.object], :classes => "tabbed youtube" , :html_attrs => {:onChange =>"dosomething(this)" } %><!-- <%= link_to "Edit url", "#", :id => "activate_#{task_form.object.id}" , :class =>"btn btn-mini", :style =>"margin-top:2px;float:right;" %> --><%= link_to "X", [@course, task_form.object ] ,:confirm => "Are you sure?", :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" , :id => "removeB"%> <%= link_to "Show/Hide URL","", :remote=> true, :onclick => "showURL(this)", :style=>"float:right;font-size:10px;padding-right:5px;"%> <br><b class="title">Title: </b><b class="author">Author: </b></h3><span class="list_header_state hidden">(expanded, click to collapse)</span></div>
     <ul class="item_section_list">
 	 
 	 <%= task_form.fields_for :online_quizzes do |t| %>
@@ -399,9 +419,6 @@ $(document).ready(function(){
   	
 	<% end %>
 	
-	
-	
-	
 	<%= f.fields_for :quizzes do |task_form| %>
 	
 	<!-- <%= task_form.input :name %> -->
@@ -422,14 +439,8 @@ $(document).ready(function(){
 	<%= f.link_to_add "Add a Quiz", :quizzes, :onclick => "createnewQuiz(#{@group.id})" ,:class =>"btn btn-primary", :style => "float:right;margin-bottom:20px;margin-top:20px;margin-right:10px;"%>
 	<%= f.link_to_add "Add a Lecture", :lectures, :onclick => "createnewLecture(#{@group.id})" ,:class =>"btn btn-primary", :style => "float:right;margin-bottom:20px;margin-top:20px;margin-right:10px;"%>
 	
-	
-	
   </div>
   
 <% end %>
-
-
-
-
 
 

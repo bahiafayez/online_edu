@@ -1,6 +1,15 @@
 <style>
 	.accordion-heading{
-		height:120px;
+		padding:9px 15px;
+		font-size:12px;
+		/*text-align: center;*/
+	}
+	.accordion-inner{
+		font-size:12px;
+		padding:2px 15px;
+	}
+	.accordion-body{
+		width:100%;
 	}
 </style>
 
@@ -18,8 +27,9 @@
 <% if g.appearance_time <= Time.zone.now %>	
 <div class="accordion-group">
 <div class="accordion-heading">
-
-<table class="table" height="120px;">
+	<%= link_to g.name, "#group_#{g.id}", :class =>"accordion-toggle", "data-toggle"=> "collapse", "data-parent"=>"#accordian2", :style => "text-decoration:none;display:inline;vertical-align:center" %>
+	<p style="display: inline;float:right;font-size:10px;color:gray"><%= g.total_time %> / <%= g.total_questions%> Questions</p>
+<!-- <table class="table" height="120px;">
 	<tr>
 		<td rowspan="2"><%= link_to g.name, "#group_#{g.id}", :class =>"accordion-toggle", "data-toggle"=> "collapse", "data-parent"=>"#accordian2", :style => "text-decoration:none;display:inline;vertical-align:center" %></td>
 		<td style="color:gray;vertical-align:middle;background-color:rgb(223,240,216);font-size:12px">Total Time:<%= g.total_time %></td>
@@ -28,7 +38,7 @@
 		
 		<td style="color:gray;vertical-align:middle;background-color:rgb(223,240,216);font-size: 12px;">Number of Questions:<%= g.total_questions%></td>
 	</tr>
-</table>
+</table> -->
 
 
 </div>

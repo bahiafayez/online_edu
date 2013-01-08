@@ -83,11 +83,15 @@ class GroupsController < ApplicationController
      end
     @group = @course.groups.find(params[:id])
     
+    # When I update the module, I need to update the event as well. Can destroy it and create it again since I have only one event per module.
+    # If the lecture/quiz have different appearance or due dates, then I create a separate event for them as well. (but only one per lecture/quiz as well (for due date only))
     @group.events.where(:quiz_id => nil, :lecture_id => nil).destroy_all #its ok since I only have the due date.
     
     
     respond_to do |format|
       if @group.update_attributes(params[:group])
+        @group.due_date= @group.due_date.end_of_day
+        @group.save
         @group.events << Event.new(:name => "#{@group.name} due", :start_at => @group.due_date, :end_at => @group.due_date, :all_day => false, :color => "red", :course_id => @course.id)
         format.html { redirect_to [@course,@group], notice: 'Group was successfully updated.' }
         format.json { head :no_content }
@@ -111,10 +115,10 @@ class GroupsController < ApplicationController
     end
   end
   
-  def new_or_edit
+  def new_or_edit #called from course_editor / module editor to add a new module
     print "here"
     #render json: "a" => "b" 
-    @group = @course.groups.build(:name => "New Module", :appearance_time => Time.zone.now, :due_date => 1.week.from_now)
+    @group = @course.groups.build(:name => "New Module", :appearance_time => Time.zone.now.beginning_of_day, :due_date => 1.week.from_now.end_of_day)
     @group.events << Event.new(:name => "#{@group.name} due", :start_at => @group.due_date, :end_at => @group.due_date, :all_day => false, :color => "red", :course_id => @course.id)
     
       if @group.save
@@ -123,14 +127,14 @@ class GroupsController < ApplicationController
         logger.debug("appearance time isssss #{@updated}")
         render json: {"group" => @group, "updated"=>@updated, "updatedDue"=>@updatedDue}, status: :created 
       else
-       
+       logger.debug(@group.errors.full_messages)
         render json: @group.errors, status: :unprocessable_entity 
       end
     
   end
   
   
-   def sort
+   def sort #called from course_editor to sort the modules (by dragging)
    @groups = Group.where(:course_id => @course.id)
    @groups.each do |f|
      f.position = params['group'].index(f.id.to_s) + 1
@@ -140,9 +144,10 @@ class GroupsController < ApplicationController
    end
  
    def group_editor
+     #stopped here
+     # Getting the lecture/quiz/onlinequiz to render on the right hand side using a javascript partial.
      @group=Group.find(params[:id])
      @lecture= Lecture.find(params[:lec]) if params[:lec]
-     #@quiz= OnlineQuiz.find(params[:quiz]) 
      @quiz=OnlineQuiz.where(:id => params[:quiz], :lecture_id => params[:lec]) if params[:quiz]
      @real_quiz=Quiz.where(:id => params[:real_quiz], :group_id => params[:id], :course_id => params[:course_id]) if params[:real_quiz]
      #if @quiz

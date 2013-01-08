@@ -120,11 +120,15 @@
              }            
              var confused=  $('<div>',{"class":'confusedDiv', "onclick":"confused('video_"+haveid+"')"}).appendTo(elements.container);
              var question=  $('<div>',{"class":'questionDiv', "onclick":"fading('video_"+haveid+"')"}).appendTo(elements.container);
+             var shortcuts=  $('<div>',{"class":'shortcutDiv', "onclick":"shortcuts('video_"+haveid+"')"}).appendTo(elements.container);
              
              // for the question
              var hidden_div= $('<div>',{"id":"conf_video_"+haveid,"style":'display:none;',"class":"hidden_div"}).appendTo(elements.container);
-             var hidden_input= $('<input>',{"type":'text', "id":"confusedQues_video_"+haveid, "placeholder":"Enter Question", "style":"margin-top:8px;width:150px;", "name":"confusedQues", "required":"true"}).appendTo(hidden_div);
-             var hidden_button= $('<input>',{"type":"button", "onclick":"confusedQuestion('video_"+haveid+"')", "class":"btn btn-primary", "value":"Save"}).appendTo(hidden_div);
+             var hidden_input= $('<input>',{"type":'text', "id":"confusedQues_video_"+haveid, "placeholder":"Enter Question", "style":"margin-top:8px;width:150px;height:15px;", "name":"confusedQues", "required":"true"}).appendTo(hidden_div);
+             var hidden_button= $('<input>',{"type":"button", "onclick":"confusedQuestion('video_"+haveid+"')", "class":"btn btn-primary", "style":"height:25px;margin-bottom:2px","value":"Save"}).appendTo(hidden_div);
+             
+             
+             var hidden_shortcuts= $('<div>',{"id":"short_video_"+haveid,"style":'display:none',"class":"well hidden_shortcuts"}).appendTo(elements.container);
              
              // for confused notification
              var confused_notif = $('<div>',{"id":"confused_notify_video_"+haveid, "class":"confused_notif"}).appendTo(elements.container);
@@ -132,6 +136,7 @@
              // change duration:
              $('#dur').html(formatSecondsAsTime(data.duration))
              
+             $('#timer_video_'+haveid).html("<p style='float:left;margin-left:60px;left:50px;line-height:60px;color:gray'>"+formatSecondsAsTime(0) +"</p> <p style='float:left;margin-left:0px;line-height:60px;color:gray'> / "+formatSecondsAsTime(data.duration)+"</p>");
              
              $('.fullscreenDiv.full').click(function(){
 				//alert("i was clicked");
@@ -158,6 +163,10 @@
             
             // setting quality.
             
+			////// adding shortcuts //////
+			
+			//////////////////////////////
+
 
 			// If the user wants to show the progress bar:
 
@@ -261,6 +270,7 @@
 								elements.control.removeClass('pause').addClass('play');
 								elements.container.removeClass('playing');
 								elements.player.pauseVideo();
+								pause(elements.player.getCurrentTime());
 								
 								if(settings.progressBar){
 									window.clearInterval(interval);
@@ -284,6 +294,7 @@
 				if(status==0){ // video has ended
 					elements.control.removeClass('pause').addClass('replay');
 					elements.container.removeClass('playing');
+					//showEvaluation(settings.safeID);  .. khaleto mawgoud 3ala tool.
 				}
 			}
 			
@@ -299,6 +310,7 @@
                      var interval = window.setInterval(function() { checkTime('video_'+playerID, $(document.getElementById('video_'+playerID)).children("param[name='duration']:first").val()); }, 100);
                     console.log(interval);
                     
+                   
                     //set quality
                     document.getElementById('video_'+playerID).setPlaybackQuality("large"); // could make it default.. to change dynamically based on user capabilities.
                     

@@ -47,7 +47,13 @@
   /*top: auto; /* fade in to correct spot */
 }
 
+textarea{
+	width:100%;
+	min-height:80px;
+}
+
 </style>
+<div id="error"></div>
 
 <p>
   <b>Name:</b>
@@ -73,7 +79,10 @@
 	<div class="ontop" id="ontop_video_youVideo" style="min-height:450px;"></div>
 	<div id="player" style="position:absolute"></div>
 	<!-- <div id="checkButton" style="margin-top:-70px; position:absolute; margin-left:150px"></div> -->
+	
 </div>
+	<div id="evaluation" style='width:800px;'></div>
+
 
 <hr style="position:absolute">    
 
@@ -112,12 +121,23 @@ var currentID=""
 //$(document).ready(function() {
 //$('#toask').clickover({ global_close: true, html:true })//, template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'})//.dblclick(function() {
 //});
+
+//$('.best_in_place').bind('ajax:success', function(){ this.innerHTML = this.innerHTML.replace(/\n/g, '<br />') });
+
 function fading(hid)
 {
 	$('#conf_'+hid).fadeToggle();
 	if($('#conf').css('display')!="none")
 		//pop.pause();
 		pauseVideo(hid);
+}
+
+function shortcuts(hid)
+{
+	//<li><b>up/down:</b> Change playback speed</li> // add to shortcuts when done
+	$("#short_"+hid).html("Keyboard Controls:<br><ul><li><b>b:</b> Back 10 Seconds</li><li><b>space:</b> pause/play </li><li><b>q:</b> Ask Question</li><li><b>c:</b> Confused</li></ul>");
+	$("#short_"+hid).fadeToggle();
+	
 }
 
 function markSeen()  // marks that lecture was viewed
@@ -128,6 +148,27 @@ function markSeen()  // marks that lecture was viewed
 	});
 
 }
+
+function showEvaluation(hid)
+{
+	$.getJSON('<%= @get_evaluation_path %>', {"course_id":<%= @course.id %>, "lecture_id":<%= @q.id %>}, function(response){
+	console.log(response)
+	value= response['first']
+	console.log(value)
+	if(value==true)
+	$("#evaluation").html("<b>Evaluate Lecture:</b><br><textarea id='evaluate' rows='5' style='width:100%;'/><input type='button' class='btn btn-primary' style='float:right;' onclick='saveEval()' value='Save'>");
+	else
+	$("#evaluation").html("<b>Your Evaluation:</b><br><span class='best_in_place' id='best_in_place_evaluation_"+response['eval']['id']+"_evaluation' data-url='/evaluations/"+response['eval']['id']+"' data-object='evaluation' data-attribute='evaluation' data-type='textarea'>"+response['eval']['evaluation']+"</span><a href='/evaluations/"+response['eval']['id']+"' class='btn btn-mini btn-danger' data-confirm='Are you sure?' data-method='delete' data-remote='true' rel='nofollow' style='float:right;margin-top:2px;'>X</a>")
+	});
+}
+
+function saveEval()
+{
+	text=$('#evaluate').val();
+	$.post('<%= @evaluation_path %>', {"eval":text, "course_id":<%= @course.id %>, "lecture_id":<%= @q.id %>}, function(response){
+	});
+}
+
 function pauseFirst(){
 	//pop.pause();
 	pauseVideo();
@@ -159,7 +200,7 @@ function formatSecondsAsTime(secs, format) {
 
 function confused(hid)
 {
-	$('#confused_notify_'+hid).html("<div id='fading_"+hid+"' style='width:100px;' class='alert alert-success'>Thanks!</div>")
+	$('#confused_notify_'+hid).html("<div id='fading_"+hid+"' style='width:40px;height:10px;text-align:center;vertical-align:center;line-height:12px;padding-left:20px;' class='alert alert-success'>Thanks!</div>")
 	$("#fading_"+hid).fadeOut(5000);
 
 	
@@ -167,6 +208,20 @@ function confused(hid)
 	$.getJSON('<%= @confused_path %>', {"time":player.getCurrentTime()}, function(response){
 	});
 }
+
+function back(time)
+{
+	$.getJSON('<%= @back_path %>', {"time":time}, function(response){
+	});
+}
+
+function pause(time)
+{
+	$.getJSON('<%= @pause_path %>', {"time":time}, function(response){
+	});
+}
+
+
 
 function confusedQuestion(hid)
 {
@@ -237,7 +292,7 @@ function checkTime(hid, duration) {
                 	logStudent(player.getCurrentTime(), duration)
                 
                 
-                	$('#timer_'+hid).html("<p style='float:right;margin-right:30px;line-height:50px;'>"+formatSecondsAsTime(player.getCurrentTime())+"</p>");
+                	$('#timer_'+hid).html("<p style='float:left;margin-left:60px;left:50px;line-height:60px;color:gray'>"+formatSecondsAsTime(player.getCurrentTime())+"</p><p style='float:left;margin-left:0px;line-height:60px;color:gray'> / "+formatSecondsAsTime(duration)+"</p>");
                 	
                 	a= <%= raw lecture.online_quizzes.to_json %>;   // important how to convert rails array of objects to JS array of objects
     //console.debug(a)
@@ -362,9 +417,73 @@ $(document).ready(function(){
 //.youTubeEmbed('http://www.youtube.com/watch?v=quwebVjAEJA');				
 	console.log("<%= lecture.url %>")
 
-
+	// adding shortcuts
+	 // add shortcuts
+    shortcut.add("c",function() {
+		//alert("hey");
+		 if($('#myModal2').css("display")=="none")
+			confused("video_youVideo");
+		else
+			confused("video_bigVideo");
+	},{"disable_in_input" : true});
 	
-
+	shortcut.add("q",function() {
+		//alert("hey");
+		 if($('#myModal2').css("display")=="none")
+			fading("video_youVideo");
+		else
+			fading("video_bigVideo");
+	},{"disable_in_input" : true});
+    
+    shortcut.add("Space",function() {
+		//alert("hey");
+		 if($('#myModal2').css("display")=="none"){
+			if(document.getElementById("video_youVideo").getPlayerState()==1){
+				document.getElementById("video_youVideo").pauseVideo();
+				t=document.getElementById("video_youVideo").getCurrentTime();
+				pause(t);
+			}else{
+				document.getElementById("video_youVideo").playVideo();}
+		}else{
+			if(document.getElementById("video_bigVideo").getPlayerState()==1){
+				document.getElementById("video_bigVideo").pauseVideo();
+				t=document.getElementById("video_bigVideo").getCurrentTime();
+				pause(t)
+			}else{
+				document.getElementById("video_bigVideo").playVideo();}
+		}
+	},{"disable_in_input" : true});
+	
+	shortcut.add("b",function() {
+		//alert("hey");
+		 if($('#myModal2').css("display")=="none"){
+		 		t=document.getElementById("video_youVideo").getCurrentTime();
+				document.getElementById("video_youVideo").seekTo(t-10,true);
+				back(t)
+		}else{
+				t=document.getElementById("video_bigVideo").getCurrentTime();
+				document.getElementById("video_bigVideo").seekTo(t-10,true);
+				back(t)
+		}
+		
+		//console.log(document.getElementById("video_youVideo").getAvailablePlaybackRates())
+	},{"disable_in_input" : true});
+	
+	shortcut.add("Up",function() {
+		//alert("hey");
+		 if($('#myModal2').css("display")=="none"){
+				document.getElementById("video_youVideo").setPlaybackRate(2);
+				console.log(document.getElementById("video_youVideo").getAvailablePlaybackRates())
+		}else{
+				document.getElementById("video_bigVideo").setPlaybackRate(2);
+		}
+		
+		//console.log(document.getElementById("video_youVideo").getAvailablePlaybackRates())
+	},{"disable_in_input" : true});
+	
+	
+	showEvaluation("");  // on load show evaluation .. (only if 7aga mo3ayana?)
+    
 });
 
 function pauseVideo(hid)

@@ -26,6 +26,12 @@ OnlineEdu::Application.routes.draw do
   resources :answers
 
   resources :questions
+  
+  resources :evaluations do
+    collection do
+      get 'get'
+    end
+  end
 
  # namespace :teacher do
  #   resources :courses
@@ -82,6 +88,8 @@ OnlineEdu::Application.routes.draw do
         get 'new_or_edit'
         get 'new_quiz'
         get 'save_duration'
+        get 'back'
+        get 'pause'
       end
     end    
   end

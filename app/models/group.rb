@@ -2,10 +2,10 @@ class Group < ActiveRecord::Base
   attr_accessible :course_id, :description, :name, :lecture_ids, :quiz_ids, :appearance_time, :position, :lectures_attributes, :due_date
   acts_as_list :scope => :course
   
-  validates :appearance_time, :presence => true
+  validates :appearance_time, :course_id, :name, :due_date, :presence => true
   belongs_to :course
-  has_many :lectures  #no dependent destroy since they are independent
-  has_many :quizzes #no dependent destroy since they are independent
+  has_many :lectures, :dependent => :destroy  #no dependent destroy since they are independent
+  has_many :quizzes, :dependent => :destroy #no dependent destroy since they are independent
   has_many :events
   after_destroy :clean_up
   

@@ -4,7 +4,7 @@ require "event_calendar"
 class EventsController < ApplicationController
   
   before_filter :get_course
-   before_filter :set_zone
+  before_filter :set_zone
   
   def set_zone
     @course=Course.find(params[:course_id])

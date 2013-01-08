@@ -1,80 +1,45 @@
+<%# Shows course information for the teacher to see.%>
+<style>
+	.table th, .table td{
+		border: none
+	}
+</style>
 <%= render 'shared/head' %>
 
 <div class="row">
 <div class="span6">
-  <h3> <%= @course.short_name %> - <%= @course.name %></h3>
+  <h4> <%= @course.short_name %> - <%= @course.name %></h4>
 
+<table class="table">
+<tr>
+  <td><b>Start date:</b></td>
+  <td><%= @course.start_date %></td>
+</tr>
 
-<p>
-  <b>Start date:</b>
-  <%= @course.start_date %>
-</p>
+<tr>
+  <td><b>Duration:</b></td>
+  <td><%= @course.duration %> Weeks</td>
+</tr>
 
-<p>
-  <b>Duration:</b>
-  <%= @course.duration %>
-</p>
+<tr>
+  <td><b>Description:</b></td>
+  <td><%= @course.description %></td>
+</tr>
 
-<p>
-  <b>Description:</b>
-  <%= @course.description %>
-</p>
+<tr>
+  <td><b>Prerequisites:</b></td>
+  <td><%= @course.prerequisites %></td>
+</tr>
 
-<p>
-  <b>Prerequisites:</b>
-  <%= @course.prerequisites %>
-</p>
+<tr>
+  <td><b>Time Zone</b></td>
+  <td><%= @course.time_zone %></td>
+</tr>
 
-<p>
-  <b>Time Zone</b>
-  <%= @course.time_zone %>
-</p>
-
-<!-- <p>
-  <b>User:</b>
-  <%= @course.user_id %>
-</p> -->
-<br>
+</table>
 
 <%= link_to 'Edit', edit_course_path(@course) %> |
 <%= link_to 'Back', courses_path %>
 </div>
 
 </div> 
-<div class="row">
-<div class="span6">
-<!-- <h4>Course Material:</h4>
-
-<%= link_to "Quizzes" , course_quizzes_path(@course) %> <!-- want to redirect to courses/1/quizzes  see how--> 
-</div>
-
-<div class="span6">
-</div>
-</div>
-
-
-<!-- <script>
-$(document).ready(function(){   // should put this somewhere elsee..
-    
-	
-	//document.getElementById(b).parentNode.parentNode.style.display ="none";
-
-var data =<%= @student_ids %>;
-var data2=<%= @student_ids2 %>;
-console.debug("i isssss "+data)
-
-for(i=0; i<data.length; i++){
-b= "studentsin_"+data[i]
-document.getElementById(b).parentNode.parentNode.style.display ="none";
-}
-
-for(i=0; i<data2.length; i++){
-
-b= "students["+data2[i]+"]"
-console.debug(b)
-document.getElementById(b).parentNode.parentNode.style.display ="none";
-}
-
-});
-</script> -->
-
