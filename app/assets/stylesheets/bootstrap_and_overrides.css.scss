@@ -27,7 +27,7 @@ body { padding-top: 60px; }
 
 
 .content {
-  #background-color: #FFFFFF;
+  //#background-color: #FFFFFF;
   background-color: #F9F9F9;
   background-image: -moz-linear-gradient(center top , #FFFFFF, #F2F2F2);
   background-repeat: repeat-x;
@@ -42,9 +42,9 @@ body {
   color: #000;
   text-decoration: none;
   display: block;
-  #margin-bottom: -11px;
-  #border-top: 2px solid #ddd;
-  #line-height: 25px;
+  //#margin-bottom: -11px;
+  //#border-top: 2px solid #ddd;
+  //#line-height: 25px;
 }
 
 .accordion-toggle{

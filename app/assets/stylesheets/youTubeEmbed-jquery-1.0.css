@@ -69,7 +69,7 @@
 	left:50%;*/
 	right:0px;
 	margin-top:-50px;
-	#margin-right:0px;
+	/*#margin-right:0px;*/
 	bottom: 0px;
 }
 
@@ -87,14 +87,14 @@
 
 .confused_notif{
 	position:absolute;
-	#margin-top::-60px;
+	/*#margin-top::-60px;*/
 	right:200px;
 	bottom: -15px;
 }
 
 .hidden_div{
     position:absolute;
-	#margin-top:-50px;
+	/*#margin-top:-50px;*/
 	right:200px;
 	bottom: -1px;
 	z-index:3;
@@ -102,7 +102,7 @@
 
 .hidden_shortcuts{
     position:absolute;
-	#margin-top:-50px;
+	/*#margin-top:-50px;*/
 	left:10px;
 	top: 10px;
 	z-index:3;
