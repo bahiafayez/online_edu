@@ -96,10 +96,19 @@ class LecturesController < ApplicationController
     respond_to do |format|
       if @lecture.update_attributes(params[:lecture])
         
-         @lecture.due_date = @lecture.due_date.end_of_day
+        @lecture.due_date = @lecture.due_date.end_of_day
         @lecture.save
+        print "lecture due date is #{@lecture.due_date.to_formatted_s(:db) }"
+        print "lecture appearance date is #{@lecture.appearance_time.to_formatted_s(:db) }"
+        print "group due_date is #{@lecture.group.due_date.to_formatted_s(:db) }"
+        print "group appearance date is #{@lecture.group.appearance_time.to_formatted_s(:db) }"
+        print @lecture.due_date != @lecture.group.due_date
+        print @lecture.appearance_time != @lecture.group.appearance_time
         
-        if @lecture.due_date != @lecture.group.due_date or @lecture.appearance_time != @lecture.group.appearance_time
+        #comparing without the fractional part of the second.
+        if @lecture.due_date.to_formatted_s(:number) != @lecture.group.due_date.to_formatted_s(:number) or @lecture.appearance_time.to_formatted_s(:number) != @lecture.group.appearance_time.to_formatted_s(:number)
+          print @lecture.due_date.to_formatted_s(:number)
+          print @lecture.group.due_date.to_formatted_s(:number)
           @lecture.events << Event.new(:name => "#{@lecture.name} due", :start_at => @lecture.due_date, :end_at => @lecture.due_date, :all_day => false, :color => "red", :course_id => @course.id, :group_id => @lecture.group.id)
         end
         format.html { redirect_to [@course, @lecture], notice: 'Lecture was successfully updated.' }
