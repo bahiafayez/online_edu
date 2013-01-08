@@ -332,7 +332,10 @@ class CoursesController < ApplicationController
     @students=@course.users
     @quizzes=@course.quizzes
     @student_names=[]
-   puts @course.lectures
+    @course.lectures.each do |l|
+      puts l.name
+      puts l.group
+    end
    
    if params[:all_modules]  #when click on the modules - all modules, progress of each student in each module (done/not done/done but not on time)
      @matrix={}
