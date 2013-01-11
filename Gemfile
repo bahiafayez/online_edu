@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-gem 'rails', '3.2.6'
+gem 'rails', '3.2.11'
 #gem 'sqlite3'
 
 group :development, :test do
@@ -41,3 +41,5 @@ gem 'acts_as_list'
 gem 'best_in_place'
 gem 'jquery_datepicker'
 gem 'event-calendar', :require => 'event_calendar'
+#gem "will_paginate", :git => "https://github.com/p7r/will_paginate.git", :branch => "rails3"
+gem "kaminari"

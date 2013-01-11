@@ -21,7 +21,20 @@
 //= require jquery_nested_form
 
 
-
+add_remove = function(elem,student, url, url2) {
+	if(elem.is(":checked")) // then add it
+	{
+		add(student,url)	
+	}else // then remove it
+	{
+		remove(student,url2)
+	}
+	// and if type is not or enrolled then will reload table
+	if($('#type').val()=="not" || $('#type').val()=="enrolled")
+	{
+		change();
+	}
+}
 
 add = function(student, url) {
    $.getJSON(url,{"student":student}, function(resp){
@@ -38,11 +51,15 @@ add = function(student, url) {
 	//document.getElementById("students["+student+"]").hide();
 	a= "students["+student+"]"
 	b= "studentsin_"+student
-	document.getElementById(a).parentNode.parentNode.style.display="table-row"
-	//document.getElementById(a).style.display = 'none';
-	document.getElementById(b).parentNode.parentNode.style.display ="none";
-    console.debug("heyyyyy thereee b2aaaaaaaaa"+student);
-    console.debug("students["+student+"]");
+	
+	
+	
+	
+	//document.getElementById(a).parentNode.parentNode.style.display="table-row"
+	////document.getElementById(a).style.display = 'none';
+	//document.getElementById(b).parentNode.parentNode.style.display ="none";
+    //console.debug("heyyyyy thereee b2aaaaaaaaa"+student);
+    //console.debug("students["+student+"]");
 };
 
 remove = function(student, url) {
@@ -60,13 +77,14 @@ remove = function(student, url) {
 	//document.getElementById("students["+student+"]").hide();
 	a= "students["+student+"]"
 	b= "studentsin_"+student
-	document.getElementById(a).parentNode.parentNode.style.display="none"
-	//document.getElementById(a).style.display = 'none';
-	document.getElementById(b).parentNode.parentNode.style.display ="table-row";
-	document.getElementById(b).checked=false   //uncheck the checkbox
 	
-    console.debug("heyyyyy thereee b2aaaaaaaaa"+student);
-    console.debug("students["+student+"]");
+	//document.getElementById(a).parentNode.parentNode.style.display="none"
+	////document.getElementById(a).style.display = 'none';
+	//document.getElementById(b).parentNode.parentNode.style.display ="table-row";
+	//document.getElementById(b).checked=false   //uncheck the checkbox
+	
+    //console.debug("heyyyyy thereee b2aaaaaaaaa"+student);
+    //console.debug("students["+student+"]");
 };
 
 

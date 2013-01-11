@@ -264,15 +264,26 @@ class CoursesController < ApplicationController
   end
   def enrolled_students
      @course = Course.find(params[:id])
-    
-    @students= User.students
+     
+    all_users2= @course.not_enrolled_students #not enrolled
+    @students2 = @course.enrolled_students #enrolled
+    #@students= User.students
+    #ordered by name always
+    if params[:type]
+      @students =  User.order(:name).search(params[:search]).page(params[:page]).per(10) if params[:type]=="all"
+      @students =  @students2.order(:name).search(params[:search]).page(params[:page]).per(10) if params[:type]=="enrolled"
+      @students =  all_users2.order(:name).search(params[:search]).page(params[:page]).per(10) if params[:type]=="not"
+    else
+      @students =  User.order(:name).search(params[:search]).page(params[:page]).per(10)
+    end
+
     
     # enrolled students
-    @students2 = @course.enrolled_students  
+    #@students2 = @course.enrolled_students  
     @student_ids= @students2.map{|a| a.id}
     
     #students not enrolled
-    all_users2= @course.not_enrolled_students
+    #all_users2= @course.not_enrolled_students
     @student_ids2=all_users2.map{|a| a.id}
     
     logger.debug("students areeeee #{@students}")
@@ -280,6 +291,7 @@ class CoursesController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @course }
+      format.js
     end
   end
   def progress

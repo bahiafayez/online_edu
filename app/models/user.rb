@@ -219,4 +219,19 @@ class User < ActiveRecord::Base
     enrollments.where(:course_id => course_id).destroy_all
   end
   
+  
+
+  def self.search(search)
+    if search
+      joins(:roles).where(:roles =>{:name => "user"}).where('users.name LIKE ? or users.email LIKE ?', "%#{search}%","%#{search}%")
+    else
+      #scoped
+      #returning all students
+      User.joins(:roles).where(:roles =>{:name => "user"})
+
+    end
+  end
+
+
+  
 end

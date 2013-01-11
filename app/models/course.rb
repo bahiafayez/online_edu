@@ -19,12 +19,13 @@ class Course < ActiveRecord::Base
   attr_accessible :users_attributes, :groups_attributes, :lectures_attributes
   #attr_accessible :enrollment_attributes
   
-  def enrolled_students
-    return users
+  def enrolled_students #returns scope (relation)
+    return User.joins(:courses).where("course_id = ?", id)
   end
   
-  def not_enrolled_students
-    u=User.all - User.joins(:courses).where("course_id = ?", id)
-    u=u.find_all{|u| u.has_role?('user')}
+  def not_enrolled_students #returns scope (relation)
+    #u=User.all
+    a=enrolled_students.pluck("users.id")
+    u=User.joins(:roles).where(:roles =>{:name => "user"}).where("users.id NOT IN (?)",a)
   end
 end
