@@ -93,6 +93,24 @@ class LecturesController < ApplicationController
     
     @lecture.events.where(:quiz_id => nil, :group_id => @lecture.group.id).destroy_all
     
+    #if same as module, then i will change the due date/ appearance date to be like the module.
+    if params[:lecture][:due_date_module] and params[:lecture][:due_date_module]=="true"
+      params[:lecture][:due_date]=@lecture.group.due_date
+    end 
+    
+    if params[:lecture][:appearance_time_module] and params[:lecture][:appearance_time_module]=="true"
+      params[:lecture][:appearance_time]=@lecture.group.appearance_time
+    end 
+    
+    #can't change due_date/ appearance_time if boolean is true (take from module)
+    if params[:lecture][:due_date] and @lecture.due_date_module==true
+      params[:lecture][:due_date]=@lecture.group.due_date
+    end
+    
+    if params[:lecture][:appearance_time] and @lecture.appearance_time_module==true
+      params[:lecture][:appearance_time]=@lecture.group.appearance_time
+    end
+    
     respond_to do |format|
       if @lecture.update_attributes(params[:lecture])
         
@@ -356,7 +374,7 @@ class LecturesController < ApplicationController
   end
   
   def new_or_edit #called from course_editor / module editor to add a new quiz
-    @lecture = @course.lectures.build(:name => "New Lecture", :appearance_time => Group.find(params[:group]).appearance_time, :due_date => Group.find(params[:group]).due_date, :url => "none", :group_id => params[:group], :slides => "none")
+    @lecture = @course.lectures.build(:name => "New Lecture", :appearance_time => Group.find(params[:group]).appearance_time, :due_date => Group.find(params[:group]).due_date, :appearance_time_module => true, :due_date_module => true, :url => "none", :group_id => params[:group], :slides => "none")
     
     
       if @lecture.save

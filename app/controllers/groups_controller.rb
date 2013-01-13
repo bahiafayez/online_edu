@@ -93,6 +93,30 @@ class GroupsController < ApplicationController
         @group.due_date= @group.due_date.end_of_day
         @group.save
         @group.events << Event.new(:name => "#{@group.name} due", :start_at => @group.due_date, :end_at => @group.due_date, :all_day => false, :color => "red", :course_id => @course.id)
+        
+        # also change due date and appearance date of all lectures/quizzes with boolean checked.
+        @group.lectures.each do |l|
+          if l.appearance_time_module
+            l.appearance_time = @group.appearance_time
+          end
+          if l.due_date_module
+            l.due_date = @group.due_date
+          end
+          l.save
+        end
+        
+        @group.quizzes.each do |q|
+          if q.appearance_time_module
+            q.appearance_time = @group.appearance_time
+          end
+          if q.due_date_module
+            q.due_date = @group.due_date
+          end
+          q.save
+        end
+        
+        
+        
         format.html { redirect_to [@course,@group], notice: 'Group was successfully updated.' }
         format.json { head :no_content }
       else

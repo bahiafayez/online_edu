@@ -27,8 +27,14 @@
 <div style="z-index:10">
 	More Details: <br/>
 	Link to Slides: <%= best_in_place @lecture, :slides ,:path => [@course, @lecture] %><br />
+	Apperance Date Like Module: <%= best_in_place @lecture, :appearance_time_module, :type => :checkbox ,:path => [@course, @lecture], :classes => "hide_on_success" %><br />
+	Due Date Like Module: <%= best_in_place @lecture, :due_date_module, :type => :checkbox ,:path => [@course, @lecture], :classes => "hide_on_success_due" %><br />
+	<div class="to_hide_due">
 	Due Date: <%= best_in_place @lecture, :due_date, :type => :date ,:path => [@course, @lecture], :classes => "d2" %><br />
+	</div>
+	<div class="to_hide_appear">
 	Appearance Date:<%= best_in_place @lecture, :appearance_time, :type => :date, :path => [@course, @lecture], :classes => "d2" %> <br />
+	</div>
 </div>
 
 
@@ -74,6 +80,28 @@ function skip_to(time)
 	//pop.play();	
 }
 
+function hide_appear(elem)
+{
+	if($(elem).text()=="Yes")
+		$('.to_hide_appear').hide();
+	else
+		$('.to_hide_appear').show();
+		
+	//reload appearance date to show new one(if updated from module)	
+	$('.to_hide_appear').html("Appearance Time: <%= best_in_place @lecture, :appearance_time, :type => :date ,:path => [@course, @lecture], :classes => 'd2' %><br />");
+}
+
+function hide_due(elem)
+{
+	if($(elem).text()=="Yes")
+		$('.to_hide_due').hide();
+	else
+		$('.to_hide_due').show();
+		
+	//reload due date to show new one(if updated from module)	
+	$('.to_hide_due').html("Due Date: <%= best_in_place @lecture, :due_date, :type => :date ,:path => [@course, @lecture], :classes => 'd2' %><br />");
+}
+
 
 
 $(document).ready(function() {
@@ -90,6 +118,18 @@ $(document).ready(function() {
 	//document.getElementById('pos').style.top = right;
 	//document.getElementById('pos').style.display='block';
   });
+  hide_appear($('.hide_on_success'));
+  hide_due($('.hide_on_success_due'));
+  
+  
+  // $('.hide_on_success').bind("ajax:success", function(){
+	// alert("here");
+	// if($(this).data('appear')==true)
+		// $('.to_hide').hide();
+	// else
+		// $('.to_hide').show();
+  // });
+
 });
 
 

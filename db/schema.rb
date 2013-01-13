@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130105160801) do
+ActiveRecord::Schema.define(:version => 20130113094900) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -198,13 +198,15 @@ ActiveRecord::Schema.define(:version => 20130105160801) do
     t.string   "name"
     t.text     "description"
     t.string   "url"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
     t.integer  "group_id"
     t.datetime "appearance_time"
     t.datetime "due_date"
     t.float    "duration"
     t.string   "slides"
+    t.boolean  "appearance_time_module"
+    t.boolean  "due_date_module"
   end
 
   add_index "lectures", ["course_id"], :name => "index_lectures_on_course_id"
@@ -301,12 +303,14 @@ ActiveRecord::Schema.define(:version => 20130105160801) do
   create_table "quizzes", :force => true do |t|
     t.integer  "course_id"
     t.string   "name"
-    t.text     "instructions",    :limit => 255
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
+    t.text     "instructions",           :limit => 255
+    t.datetime "created_at",                            :null => false
+    t.datetime "updated_at",                            :null => false
     t.integer  "group_id"
     t.datetime "due_date"
     t.datetime "appearance_time"
+    t.boolean  "appearance_time_module"
+    t.boolean  "due_date_module"
   end
 
   add_index "quizzes", ["course_id"], :name => "index_quizzes_on_course_id"

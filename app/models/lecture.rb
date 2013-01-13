@@ -1,6 +1,7 @@
 class Lecture < ActiveRecord::Base
   
   validates :name, :url,:appearance_time, :due_date,:course_id, :group_id, :due_date, :presence => true
+  validates_inclusion_of :appearance_time_module, :due_date_module, :in => [true, false] #not in presence because boolean false considered not present.
   has_many :online_quizzes, :dependent => :destroy
   has_many :backs, :dependent => :destroy
   has_many :confuseds, :dependent => :destroy
@@ -14,7 +15,7 @@ class Lecture < ActiveRecord::Base
   has_many :events
   after_destroy :clean_up
   
-  attr_accessible :course_id, :description, :name, :url, :group_id, :appearance_time, :due_date, :duration, :slides
+  attr_accessible :course_id, :description, :name, :url, :group_id, :appearance_time, :due_date, :duration, :slides, :appearance_time_module, :due_date_module
   
   accepts_nested_attributes_for :online_quizzes, :allow_destroy => true
 

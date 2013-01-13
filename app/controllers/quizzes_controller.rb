@@ -112,11 +112,19 @@ class QuizzesController < ApplicationController
     puts "Due date issssss #{params[:quiz][:due_date]}"
     @quiz.events.where(:lecture_id => nil, :group_id => @quiz.group.id).destroy_all
     
+    
     respond_to do |format|
       if @quiz.update_attributes(params[:quiz])
         #@quiz.due_date = @quiz.due_date.end_of_day
         #@quiz.save
+          #if same as module, then i will change the due date/ appearance date to be like the module.
+        if params[:quiz][:due_date_module] == "1"
+          @quiz.due_date=@quiz.group.due_date
+        end 
         
+        if params[:quiz][:appearance_time_module]=="1"
+          @quiz.appearance_time=@quiz.group.appearance_time
+        end 
         #comparing without the seconds.
         if @quiz.due_date.to_formatted_s(:long) != @quiz.group.due_date.to_formatted_s(:long) or @quiz.appearance_time.to_formatted_s(:long) != @quiz.group.appearance_time.to_formatted_s(:long)
           @quiz.events << Event.new(:name => "#{@quiz.name} due", :start_at => @quiz.due_date, :end_at => @quiz.due_date, :all_day => false, :color => "red", :course_id => @course.id, :group_id => @quiz.group.id)
@@ -148,7 +156,7 @@ class QuizzesController < ApplicationController
   
   def new_or_edit   #called from course_editor / module editor to add a new quiz
     @course = Course.find(params[:course_id])
-    @quiz = @course.quizzes.build(:name => "New Quiz", :instructions => "Please choose the correct answer(s)", :appearance_time => Group.find(params[:group]).appearance_time, :due_date => Group.find(params[:group]).due_date , :group_id => params[:group])
+    @quiz = @course.quizzes.build(:name => "New Quiz", :instructions => "Please choose the correct answer(s)", :appearance_time => Group.find(params[:group]).appearance_time, :due_date => Group.find(params[:group]).due_date ,:appearance_time_module => true, :due_date_module => true, :group_id => params[:group])
     
     
       if @quiz.save

@@ -8,8 +8,14 @@
     <%= f.input :name %>
     <%= f.input :instructions , :input_html => {:style => 'width: 250px; height: 50px'} %>
     <!-- <%= f.association :group, :label => "Module", :collection => Group.where(:course_id => @course.id) %> -->
-    <%= f.input :due_date , :input_html => {:style => 'width:100px;'}%>
-    <%= f.input :appearance_time , :input_html => {:style => 'width:100px;'}%>
+  	<%= f.input :due_date_module , :label => "Due date like module?", :input_html => {:style => 'width:100px;'}%>
+    <%= f.input :appearance_time_module ,:label => "Appearance date like module?", :input_html => {:style => 'width:100px;'} %>
+  	<div class="to_hide_due">
+    	<%= f.input :due_date , :input_html => {:style => 'width:100px;'}%>
+    </div>
+    <div class="to_hide_appear">
+    	<%= f.input :appearance_time , :input_html => {:style => 'width:100px;'}%>
+    </div>
   </div>
 	
 	<%= f.fields_for :questions do |task_form| %>
@@ -35,3 +41,33 @@
     <%= f.button :submit %>
   </div>
 <% end %>
+
+
+<script>
+	
+function hide_appear(elem)
+{
+	if($(elem).is(":checked"))
+		$('.to_hide_appear').hide();
+	else
+		$('.to_hide_appear').show();
+		
+		
+	
+}
+
+function hide_due(elem)
+{
+	if($(elem).is(":checked"))
+		$('.to_hide_due').hide();
+	else
+		$('.to_hide_due').show();
+		
+}
+
+$(document).ready(function() {
+  hide_appear($('#quiz_appearance_time_module'));
+  hide_due($('#quiz_due_date_module'));
+});
+
+</script>

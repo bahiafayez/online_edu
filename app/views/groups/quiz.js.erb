@@ -1,2 +1,10 @@
 //console.log("in this weird thing.")
 $('#videospan').html("<%= escape_javascript(render :partial => 'quiz') %>");
+
+$('#quiz_appearance_time_module').click(function (event) {  
+	hide_appear(this);
+});
+
+$('#quiz_due_date_module').click(function (event) {  
+	hide_due(this);
+});
