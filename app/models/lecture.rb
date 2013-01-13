@@ -1,7 +1,7 @@
 class Lecture < ActiveRecord::Base
   
   validates :name, :url,:appearance_time, :due_date,:course_id, :group_id, :due_date, :presence => true
-  validates_inclusion_of :appearance_time_module, :due_date_module, :in => [true, false, "true","false"] #not in presence because boolean false considered not present.
+  validates_inclusion_of :appearance_time_module, :due_date_module, :in => [true, false] #not in presence because boolean false considered not present.
   has_many :online_quizzes, :dependent => :destroy
   has_many :backs, :dependent => :destroy
   has_many :confuseds, :dependent => :destroy
