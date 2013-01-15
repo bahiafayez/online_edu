@@ -1,12 +1,17 @@
 <h3>Module Progress Chart</h3>
+<style>
+	.table{
+		font-size: 10px;
+	}
+</style>
 <table class="table">
 	<% @matrix.each do |k,v| %>
 	<tr>
 		<td><%= k %></td>
 		<% v.each do |n| %>
-			<td><%= image_tag "check5.png", :style =>"width:20px;"  if n == "Finished on Time" %>
-				<%= image_tag "redx.png", :style =>"width:20px;"  if n == "Not Finished" %>
-				<%= image_tag "check5gray.png", :style =>"width:20px;"  if n == "Finished Not on time" %>
+			<td><%= image_tag "check5.png", :style =>"width:15px;"  if n == "Finished on Time" %>
+				<%= image_tag "redx.png", :style =>"width:15px;"  if n == "Not Finished" %>
+				<%= image_tag "check5gray.png", :style =>"width:15px;"  if n == "Finished Not on time" %>
 			</td>
 		<% end %>
 	</tr>

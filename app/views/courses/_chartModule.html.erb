@@ -1,6 +1,10 @@
 <div id="container2" style="min-width: 400px; height: 100%; margin: 0 auto"></div><br><br />
 
-
+<style>
+	.popover-content{
+		/*height:500px;*/
+	}
+</style>
 
 <script>
 $(function () {
@@ -21,7 +25,9 @@ $(function () {
             xAxis: {
                 categories: <%= raw @qnames.values %>,
                 labels:{
-                useHTML: true}
+                useHTML: true,
+                
+                }
                 // <%= raw @chart_data.keys %>
             },
             yAxis: {
@@ -110,6 +116,8 @@ $(function () {
         }
         
     // $('.highcharts-axis-labels text').click(function(){ alert($(this).text());  });    
+    
+    $('[rel="popover"]').popover({trigger:"hover", html:true});
     });
 
     

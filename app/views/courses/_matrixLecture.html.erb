@@ -1,4 +1,9 @@
 <h3>Module Progress Chart</h3>
+<style>
+	.table{
+		font-size: 10px;
+	}
+</style>
 <table class="table">
 	<tr>
 	<td></td>
@@ -12,9 +17,9 @@
 		<td><%= k.name %></td>
 		<td><%= k.email %></td>
 		<% v.each do |key,value| %>
-			<td><%= image_tag "check5.png", :style =>"width:20px;"  if value == "Finished on Time" %>
-				<%= image_tag "redx.png", :style =>"width:20px;"  if value == "Not Finished" %>
-				<%= image_tag "check5gray.png", :style =>"width:20px;"  if value == "Finished Not on time" %> <%= "(#{@late[k][key]} days)" if @late[k][key]%>
+			<td><%= image_tag "check5.png", :style =>"width:15px;"  if value == "Finished on Time" %>
+				<%= image_tag "redx.png", :style =>"width:15px;"  if value == "Not Finished" %>
+				<%= image_tag "check5gray.png", :style =>"width:15px;"  if value == "Finished Not on time" %> <%= "(#{@late[k][key]} days)" if @late[k][key]%>
 			</td>
 		<% end %>
 	</tr>

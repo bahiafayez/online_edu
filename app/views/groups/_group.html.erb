@@ -144,7 +144,7 @@ function setAuthor(element) // get the author of the youtube video and display i
 					       console.log(data.entry.media$group.media$thumbnail[0].url) // 0 is big one 1 is small one..
 					        
 					        //console.log("i is "+i);
-					        element.siblings(".title").html("<b data-content='<center><img class=bigimg src="+data.entry.media$group.media$thumbnail[0].url+" /></center>' rel='popover'> Title "+title+"</b>");
+					        element.siblings(".title").html("<b data-content='<center><img class=bigimg src="+data.entry.media$group.media$thumbnail[0].url+" /></center>' rel='popover'> Title: "+title+"</b>");
 					        element.siblings(".author").html("<b> Author: "+author+"</b>");
 					        console.log(element.siblings(".image").html());
 					        // to display image uncomment next line

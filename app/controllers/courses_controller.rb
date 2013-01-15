@@ -377,7 +377,9 @@ class CoursesController < ApplicationController
       counter=0
       @modulechart.lectures.each_with_index do |l,index|
         l.online_quizzes.order(:time).each_with_index do |online_q, j|   
-          @qnames["#{l.name} #{Time.at(online_q.time).gmtime.strftime('%R:%S')}"]="#{l.name}<br><a href='/courses/#{@course.id}/groups/#{@modulechart.id}/group_editor?lec=#{l.id}&quiz=#{online_q.id}'> #{online_q.question}</a>"
+          content=online_q.question.gsub("'","")
+          content=content.gsub /"/, ''
+          @qnames["#{l.name} #{Time.at(online_q.time).gmtime.strftime('%R:%S')}"]="#{l.name}<br><a href='/courses/#{@course.id}/groups/#{@modulechart.id}/group_editor?lec=#{l.id}&quiz=#{online_q.id}' rel='popover' data-content='#{content}' > #{Time.at(online_q.time).gmtime.strftime('%R:%S')} </a>"
           @chart_data["#{l.name} #{Time.at(online_q.time).gmtime.strftime('%R:%S')}"] = []  
           @answers[counter] = []    
           online_q.online_answers.order('ycoor').each_with_index do |ans, i|
