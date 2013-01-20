@@ -203,6 +203,11 @@ class LecturesController < ApplicationController
     
   end
   
+  def getOldData
+    @old= OnlineAnswer.where(:online_quiz_id => params[:quiz])#.to_json
+    render json: {:old => @old}
+  end
+  
   def add_answer #creating an online answer, and associating it with an online quiz.
     logger.debug("in add answer!!!#{params[:flag]}")
     if params[:flag]!="false"
@@ -269,14 +274,14 @@ class LecturesController < ApplicationController
     logger.debug("in remove answer!!!!!!")
     @a=OnlineAnswer.find(params[:answer])
     @a.destroy
-    @course= Course.find(params[:course_id])
-    @lecture= Lecture.find(params[:id])
-    @answers= OnlineAnswer.where(:online_quiz_id => params[:quiz])#.pluck(:time)
-    @loc= coordinates_course_lecture_path(@course,@lecture, :quiz => params[:quiz])
-    @loc2=remove_answer_course_lecture_path(@course,@lecture)
+    #@course= Course.find(params[:course_id])
+    #@lecture= Lecture.find(params[:id])
+    #@answers= OnlineAnswer.where(:online_quiz_id => params[:quiz])#.pluck(:time)
+    #@loc= coordinates_course_lecture_path(@course,@lecture, :quiz => params[:quiz])
+    #@loc2=remove_answer_course_lecture_path(@course,@lecture)
     #@save= save_answers_course_lecture_path(@course,@lecture)
     #@loc3=coordinates_course_lecture_path(@course,@lecture)
-    render json: {:a => @answers, :loc => @loc, :loc2=> @loc2}#, :save => @save}#, :loc3 => @loc3} 
+    render json: {:loc => "none"}#, :save => @save}#, :loc3 => @loc3} 
     
   end
   

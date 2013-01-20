@@ -96,19 +96,46 @@ function showQuiz(elem, url)
 }
 function showOnlineQuiz(elem,q,l)  // shows the online quiz on the right
 {
+	if(elem.attr('disabled')!='disabled')
+	{
+	if(elem.hasClass("active"))
+	{
+		document.getElementById("ontop").innerHTML="" // empty questions.
+		$('.ontop').css("min-height","278px");
+		elem.removeClass('active');
+		$('.ontop').unbind();
+		$('.edit').attr("disabled",false)
+		
+	}else{
 	var time=elem.siblings('.time').text()
 	var a = time.split(':'); // split it at the colons
 	var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]); 
+	console.log("time is "+seconds)
 	pop.currentTime(seconds);
 	pop.pause();
-		 $.ajax({
-                        url: "/courses/<%=@course.id %>/groups/<%=@group.id%>/group_editor?lec="+l+"&quiz="+q,  
-                        type: 'get', dataType:'script' , 
-                        success: function (data) {
-					    	 console.debug("herhe")
-							 }
-		 });
+	$('.ontop').css("min-height","312px");
+	
+	
+	// and khaly edit dahkhel l gowa.. lama ytla3 , return ontop size and remove everything.. 
+	// and unbind.. and remove the buttons..
+	
+		 // $.ajax({
+                        // url: "/courses/<%=@course.id %>/groups/<%=@group.id%>/group_editor?lec="+l+"&quiz="+q,  
+                        // type: 'get', dataType:'script' , 
+                        // success: function (data) {
+					    	 // console.debug("herhe")
+							 // }
+		 // });
+	storedData={};
+	getOldData(q,l);
+	addDoubleClickBind(q,l);
+	$('.edit').attr("disabled","disabled")
+	elem.addClass('active');
+	elem.attr("disabled",false)
+	}
+	}
 }
+
 function setAuthor(element) // get the author of the youtube video and display it.
 {
 	id=element.text().split("v=")[1]
@@ -303,7 +330,7 @@ function createnewOnlineQuiz(lecture,course)  // add an onlinequiz to the lectur
    // 	$('#best_in_place_lecture__appearance_time').text(resp["updated"])
    		$('#best_in_place_online_quiz__question').siblings('a').attr("href","/online_quizzes/"+resp["quiz"]["id"]) // adjusting the remove.
     	$('#best_in_place_online_quiz__question').siblings('a.edit').attr("onclick","showOnlineQuiz($(this),"+resp["quiz"]["id"]+", "+resp["quiz"]["lecture_id"]+")") // adjusting the remove.
-    	$('#best_in_place_online_quiz__question').siblings('a.edit').attr("href","#");
+    	$('#best_in_place_online_quiz__question').siblings('a.edit').attr("href","");
     	$('#best_in_place_online_quiz__question').closest('li').attr("id", "online_quiz_"+resp["quiz"]["id"]) // setting li to correct id
     	$('#best_in_place_online_quiz__question').attr("data-url", "/online_quizzes/"+resp["quiz"]["id"])
     	$('#best_in_place_online_quiz__question').attr("id","best_in_place_online_quiz_"+resp["quiz"]["id"]+"_question")
@@ -411,7 +438,7 @@ $(document).ready(function(){
   		 
   		<%= best_in_place t.object, "question", :path => online_quiz_path(t.object.id||0) %> Time: <%= best_in_place t.object, "time", :path => online_quiz_path(t.object.id||0), :display_as => :formatted_time, :activator =>"#notthere", :html_attrs => {:onChange => "formatTime(this)"}, :classes =>"time" %>
   		<%= link_to "X", online_quiz_path(t.object.id||0) ,:confirm => "Are you sure?", :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" %>
-  		<%= link_to "Edit", "#",  :class=> "btn btn-mini edit", :style=>"float:right;margin-top:2px;", :onclick => "showOnlineQuiz($(this), #{t.object.id}, #{task_form.object.id})" %>
+  		<%= link_to "Edit", "",  :class=> "btn btn-mini edit", :style=>"float:right;margin-top:2px;", :onclick => "showOnlineQuiz($(this), #{t.object.id}, #{task_form.object.id})", :remote => true %>
   		
   		<!-- </p> -->
   		</div>

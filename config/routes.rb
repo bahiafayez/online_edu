@@ -90,6 +90,7 @@ OnlineEdu::Application.routes.draw do
         get 'save_duration'
         get 'back'
         get 'pause'
+        get 'getOldData'
       end
     end    
   end

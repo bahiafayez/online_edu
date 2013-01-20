@@ -4,7 +4,7 @@
 		/*background:#fff;  /* invisible div*/
         position:absolute;
         min-width:500px;
-        min-height:277px;
+        min-height:278px;
         z-index:5;
 	}
 	
@@ -14,14 +14,17 @@
 	#ui-datepicker-div {
   z-index: 9999999!important;
 }
+.myclass{
+		width:250px;
+	}
 </style>
 
 
-<div style="width:500px" >
+<div id="notify"></div>
+<center><div class="ontop2" style="width:500px;border:8px solid;margin-top:0px;" >
 <div class="ontop" id="ontop"></div>
-<div id="youtube" style="width:500px;height:312px;"></div><br />
-<div id="foo"></div><br />
-
+<div id="youtube" style="width:500px;height:312px;"></div>
+<div id="foo"></div>
 </div></center>
 
 <div style="z-index:10">
@@ -167,6 +170,188 @@ add_quiz = function(lecture,url) {
 });
 
 };
+
+
+// Quiz stuff //
+
+
+
+function onDoubleClick(elem)
+{
+	console.debug("in this one"+elem);
+	elem.popover('show');
+}
+function callFirst()
+{
+	alert("here");
+}
+function addDoubleClickBind(q,l)
+{
+	$('.ontop').unbind();
+	$('.ontop').dblclick(function(e) {
+    var offset = $(this).offset();
+  	left= parseInt(e.pageX) - parseInt(offset.left) -5//not clientX because client depends on window.. so numbers change when scrolling.
+  	top2 = parseInt(e.pageY) - parseInt(offset.top) -5
+  	
+  	console.debug("offset is "+ left)
+  	console.debug("offset is "+ top2)
+  	
+  	
+  	// OK SO OVER HERE CREATE A NEW BUTTON AND ADD IT TO DROAPPABLE WITH ALL REQUIRED ATTRIBUTES LIKE WHEN DRAGGING. ALTER BELOW.
+  	
+  	
+  	var toadd = $('<img />').attr({'src': '/assets/button8.png' });
+  	toadd= toadd.addClass("component").addClass("dropped").draggable({cursor: 'move',containment: ".ontop"});
+    
+    toadd.css({"top":top2+"px", "left":left+"px", 'zIndex': 5, 'position':'absolute'})
+    $('#ontop').append(toadd) 
+     
+  	 $.getJSON('<%= add_answer_course_lecture_path(@course, @lecture) %>',{"left":toadd.position().left, "top":toadd.position().top, "quiz": q, "flag":true}, function(resp){
+                	
+                	storedData[resp['current'].id]=[false,"", ""]
+                	console.debug("current id issss "+ resp['current'].id)
+                	console.debug("to add isss "+toadd.attr("id"))
+                	toadd.attr("id", ""+resp['current'].id) 
+                	console.debug("to add isss "+toadd.attr("id"))
+                	toadd.attr("onclick","load('"+toadd.attr('id')+"')")
+	        		toadd.attr("rel","popover").attr("data-content","Correct:<input name='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Answer: <textarea rows=3 id='answer_"+toadd.attr('id') +"' type='text' /><br>Explanation:<textarea rows=3 id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=remove('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
+	                toadd.attr("data-original-title","")
+	                toadd.clickover({ global_close: false, template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'})//.dblclick(function() {
+               
+    });
+                
+  	
+     
+  });
+
+}
+
+function getOldData(q,l)
+{
+	//first of all, will get the data at the very beginning
+	$.getJSON('<%= getOldData_course_lecture_path(@course, @lecture) %>',{"quiz": q}, function(resp){
+  var old= resp["old"]
+  for(i=0; i<old.length; i++)
+  {               
+  	var toadd = $('<img />').attr({ 'id': old[i].id , 'src': '/assets/button8.png' });
+  	toadd= toadd.addClass("component").addClass("dropped").draggable({cursor: 'move',containment: ".ontop"});
+    storedData[old[i].id]=[old[i].correct,old[i].answer, old[i].explanation]
+    toadd.css({"top":old[i].ycoor+"px", "left":old[i].xcoor+"px", 'zIndex': 5, 'position':'absolute'})
+    toadd.attr("onclick","load('"+toadd.attr('id')+"')")
+	toadd.attr("rel","popover").attr("data-content","Correct:<input group='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Answer: <textarea rows=3 id='answer_"+toadd.attr('id') +"' type='text' /><br>Explanation:<textarea rows=3 id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=remove('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
+	toadd.attr("data-original-title","")
+	toadd.clickover({ global_close: false, template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'})//.dblclick(function() {
+     $('#ontop').append(toadd) 
+    // console.log("to add is")
+    // console.log(toadd)          
+  }
+  });
+}
+function remove(elem)
+{
+	// This method called controller action to remove answer from DB
+	// It also removes it from the screen and the storedData hash
+	$.getJSON('<%= remove_answer_course_lecture_path(@course,@lecture) %>',{"answer":elem }, function(resp){
+	});
+	$("#"+elem).remove()
+	delete storedData[elem];	
+}
+function save(elem)
+{
+	// Save the explanation and the correct to storedData
+	storedData[elem]=[document.getElementById("correct_"+elem).checked, document.getElementById("answer_"+elem).value, document.getElementById("explain_"+elem).value]
+	console.debug("element is "+elem);
+	console.debug("explanation is "+document.getElementById("explain_"+elem).value)
+	console.debug("correct is "+document.getElementById("correct_"+elem).checked)
+	if(storedData[elem][0]==true)
+	{
+		for(key in storedData)
+		{
+			if(key==elem)
+				continue;
+			storedData[key][0]=false
+		}
+	}
+	
+	// when update text save all
+	saveAll();
+}
+function saveAll()
+{
+	// This is called at the very end, to save everything in the storedData and positions to the database.
+	// Then redirect to lecture page.
+	console.debug(storedData)
+	var storedData2={}
+	for(key in storedData){
+		storedData2[key]=[]
+		console.debug("key:"+storedData[key])
+		//storedData2[key].push.apply(storedData2[key],storedData[key],[$('#'+key).position().top,$('#'+key).position().left]);
+		storedData2[key]= storedData[key].concat([$('#'+key).position().top,$('#'+key).position().left])
+	}
+	console.debug(storedData)
+	console.debug(storedData2)
+	
+	$.getJSON('<%= save_answers2_course_lecture_path(@course, @lecture) %>',{"stored":storedData2}, function(resp){
+		console.debug(resp)
+		console.debug("calling redirect")
+	//	$('#notify').html("<div class='alert alert-success'>Saved</div>")
+		//redirect()
+		
+	});
+}
+function redirect()
+{
+	console.debug("in redirect")
+	window.location = "<%= group_editor_course_group_path(@course,@group,:lec => @lecture.id)  %>"
+}
+function load(elem)
+{
+	// When call popover, its loaded from here.
+	console.debug("elem is "+elem)
+	document.getElementById("correct_"+elem).checked=storedData[elem][0]
+	document.getElementById("explain_"+elem).value=storedData[elem][2]
+	document.getElementById("answer_"+elem).value=storedData[elem][1]
+}
+
+jQuery(function() {
+	var count=0;
+	// This is to make the image draggable, and clone it when dragged.
+    jQuery(".component").draggable({
+        //  use a helper-clone that is append to 'body' so is not 'contained' by a pane
+        helper: function() {
+        	//callFirst(); // can call function here to save button for example..
+            z=jQuery(this).clone().appendTo('.ontop').css({
+                'zIndex': 5, 'position':'absolute'
+            }).attr("id","circle_"+count)//.attr("ondbclick","callme()");
+            count++;
+            
+            console.debug("z is "+z)
+            return z;
+        },
+        cursor: 'move',
+        containment: ".ontop"
+       
+    });
+	var toadd=""
+	// makes ontop droppable
+    jQuery('.ontop').droppable({
+        //activeClass: 'ui-state-hover',
+        accept: '.component',
+        drop: function(event, ui) {
+            if (!ui.draggable.hasClass("dropped")){
+            	
+                }else{
+                	// dragging inside the div
+                
+                toadd=jQuery(ui.helper)  // every time a button is dragged it is here in toadd. could get its position and save it.
+                
+                console.debug("new position is "+toadd.position().top+" and id is "+toadd.id+" explanation is ")//+document.getElementById('explain_'+toadd.id).value() )
+               	saveAll(); // save all when change position.
+                }
+               
+            }
+        });
+    });
 
 </script>
 </div>
