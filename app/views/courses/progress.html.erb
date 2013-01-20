@@ -17,23 +17,20 @@
 <td>
 
 <blockquote>
-<% g.lectures.where("appearance_time<= ?",Time.zone.now).each do |l|  %>
-
-<%= link_to l.name, courseware_course_path(@course, :l =>l.id) %><br />
-<% l.online_quizzes.order(:time).each do |f| %>
-	<span style="padding-right:2em;"><%= @lectureGrades[f.id]||0 %>/1.0</span>
-<% end %><br /><br />
-
-<% end %>
-<% g.quizzes.where("appearance_time<= ?",Time.zone.now).each do |q|  %>
-
-
-<%= link_to q.name, courseware_course_path(@course, :q =>q.id) %><br />
- <small>Deadline: <%= q.due_date.to_formatted_s(:short) %></small>
- <%= @quiztable[q.id][0] %>/<%= @quiztable[q.id][1] %><br /><br />
-
+<% (g.lectures.where("appearance_time<= ?",Time.zone.now) + g.quizzes.where("appearance_time<= ?",Time.zone.now)).sort!{|x,y| ( x.position and y.position ) ? x.position <=> y.position : ( x.position ? -1 : 1 )  }.each do |l| %>
+<% if l.class.name=="Lecture" %>
+	<%= link_to l.name, courseware_course_path(@course, :l =>l.id) %><br />
+	<% l.online_quizzes.order(:time).each do |f| %>
+		<span style="padding-right:2em;"><%= @lectureGrades[f.id]||0 %>/1.0</span>
+	<% end %><br /><br />
+<% else %>
+<%= link_to l.name, courseware_course_path(@course, :q =>l.id) %><br />
+ <small>Deadline: <%= l.due_date.to_formatted_s(:short) %></small>
+ <%= @quiztable[l.id][0] %>/<%= @quiztable[l.id][1] %><br /><br />
 
 <% end %>
+<% end %>
+
 </blockquote> 
 </td>
 </tr>

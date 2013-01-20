@@ -298,14 +298,20 @@ class CoursesController < ApplicationController
     
     #At the moment there are only quizzes.. later assigments, lectures, lecture quizzes,... graphs for grades..
     @course=Course.find(params[:id])
-    @quizzes=Course.find(params[:id]).quizzes
+    @quizzes=[]
+    @course.groups.each do |g|
+      @quizzes<<g.quizzes if !g.quizzes.empty?
+    end
+    @quizzes.flatten! #to be in one array (nothing nested)
     @quizNames=[]
     @quizzes_taken=[]
     @quizScores=[]
     @quiztable={}
+    puts @quizzes.inspect
     @quizzes.each do |q|
       #if !QuizGrade.where(:quiz_id => q.id, :user_id => current_user.id).empty?
       # all submitted quizzes
+      
       if !QuizStatus.where(:quiz_id => q.id, :user_id => current_user.id, :course_id => params[:id], :status => "Submitted").empty?
         @quizzes_taken<<q
         @quizNames<<q.name
@@ -330,7 +336,7 @@ class CoursesController < ApplicationController
     end
     
     #Now loop on weeks
-    @groups=Group.where("course_id = ? and appearance_time<= ?", params[:id], Time.zone.now)
+    @groups=@course.groups.where("appearance_time<= ?", Time.zone.now)
     #@quizGrades={}
     @lectureGrades={}
     current_user.online_quiz_grades.each do |o|
@@ -723,6 +729,20 @@ class CoursesController < ApplicationController
   
   def course_editor
     @course= Course.find(params[:id])
+    @to_return={}
+    #getting order of lecture and quizzes in each module.
+    @course.groups.each_with_index do |g,index|
+       all = g.lectures + g.quizzes
+       puts g
+       puts all
+       all.sort!{|x,y| ( x.position and y.position ) ? x.position <=> y.position : ( x.position ? -1 : 1 )  }
+       @to_return[index]=[]
+       all.each do |s|
+         @to_return[index]<< "#{s.class.name.downcase}_#{s.id}"
+       end
+     end
+     
+     @to_return = @to_return.to_json 
   end
   
 end

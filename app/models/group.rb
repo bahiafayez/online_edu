@@ -4,8 +4,8 @@ class Group < ActiveRecord::Base
   
   validates :appearance_time, :course_id, :name, :due_date, :presence => true
   belongs_to :course
-  has_many :lectures, :order => :created_at, :dependent => :destroy  #no dependent destroy since they are independent
-  has_many :quizzes, :dependent => :destroy #no dependent destroy since they are independent
+  has_many :lectures, :order => :position, :dependent => :destroy  #no dependent destroy since they are independent
+  has_many :quizzes,:order => :position, :dependent => :destroy #no dependent destroy since they are independent
   has_many :events
   after_destroy :clean_up
   

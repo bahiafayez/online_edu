@@ -67,6 +67,18 @@ function setup()
     });
 }
 $(document).ready(function(){
+	
+	// reorder lectures and quizzes.
+	console.log("over here")
+	var category_sort_order = <%= raw @to_return %>
+	console.log(category_sort_order);
+	//$('.item_list').reOrder(category_sort_order);
+	
+	$('.item_list').children('.fields').each(function( index , element) {
+		$($($(this).children('li')[0]).children('.item_section_list')[0]).reOrder(category_sort_order[index]);
+	});
+	
+	
   setup();
 });
 </script>
@@ -189,7 +201,36 @@ function createnewModule() // when add a module, I save it with a controller met
     	updateIDs() // nedd to update li id first.
     });
 	
+	
 }
+
+(function($) {
+
+// to reorder when load
+$.fn.reOrder = function(array) {
+	console.log(this)
+  return this.each(function() {
+
+    if (array) {    
+      for(var i=0; i < array.length; i++) 
+        array[i] = $("#" + array[i]);
+	  
+	  // adding the two buttons.
+	  array[i]=$(this).children('a')[0]
+	  array[i+1]=$(this).children('a')[1]
+	  console.log("array is")
+	  console.log(array)
+	  
+      $(this).empty();  
+
+      for(var i=0; i < array.length; i++)
+        $(this).append(array[i]);      
+    }
+  });    
+}
+
+})(jQuery);
+
 </script>
 <style>
 	.datepicker2{

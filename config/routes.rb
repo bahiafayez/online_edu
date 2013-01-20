@@ -68,6 +68,9 @@ OnlineEdu::Application.routes.draw do
       member do
         get 'new_or_edit'
       end
+      collection do
+        post 'sort'
+      end
     end
     resources :lectures do
       member do
@@ -91,6 +94,9 @@ OnlineEdu::Application.routes.draw do
         get 'back'
         get 'pause'
         get 'getOldData'
+      end
+      collection do
+        post 'sort'
       end
     end    
   end

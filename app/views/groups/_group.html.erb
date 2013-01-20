@@ -252,11 +252,36 @@ function dosomething(caller) // called when the URL is changed since I need to u
 	}
 }
 
+function setDrag()
+{
+	$('.item_list').sortable({
+	axis: 'y',
+	dropOnEmpty: false,
+	handle: '.handle',
+	cursor: 'crosshair',
+	items: 'div.fields',
+	opacity: 0.4,
+	scroll: true,
+	update: function(){
+		$.ajax({
+			type: 'post',
+			data: $('.item_list').sortable("serialize", {key:"toSort[]", expression: /(.+)/ }),
+			dataType: 'script',
+			complete: function(request){
+				$('.item_list').effect('highlight');
+				},
+			url: '/courses/<%= @course.id %>/lectures/sort?group=<%=@group.id%>'
+		})
+	  }
+	});
+}
+
 $(document).ready(function(){
 	
 //$('.fields').children("li").each(if($(this).hasClass("item_row")){console.debug $(this)})
-updateIDs()
-loadAuthor()
+updateIDs();
+loadAuthor();
+setDrag();
 
 });
 
@@ -360,8 +385,44 @@ showURL = function(elem) {
 };
 
 $(document).ready(function(){
-  setup();
+  
+  // to reorder
+  	console.log("over here")
+	var category_sort_order = <%= raw @to_return %>
+	console.log(category_sort_order);
+	$('.item_list').reOrder(category_sort_order);
+	
+	setup();
 });
+
+
+(function($) {
+
+// to reorder when load
+$.fn.reOrder = function(array) {
+	console.log(this)
+  return this.each(function() {
+
+    if (array) {    
+      for(var i=0; i < array.length; i++) 
+        array[i] = $("#" + array[i]);
+	  
+	  // adding the two buttons.
+	  array[i]=$('.item_list').children('a')[0]
+	  array[i+1]=$('.item_list').children('a')[1]
+	  console.log("array is")
+	  console.log(array)
+	  
+      $(this).empty();  
+
+      for(var i=0; i < array.length; i++)
+        $(this).append(array[i]);      
+    }
+  });    
+}
+
+})(jQuery);
+
 </script>
 
 <style>
@@ -433,7 +494,7 @@ $(document).ready(function(){
 	
 	<!-- <%= task_form.input :name %> -->
 	<li id=<%= "lecture_#{task_form.object.id}" %> style="height=0px;margin-bottom:-10px">
-    <div class="contracted" style="display:block"><%= link_to "IMAGE TEXT" , "#" ,:onclick => "showVideo($(this),'#{group_editor_course_group_path(@course,@group,:lec =>task_form.object.id)}')", :class=>"list_header_link" , :style=> "background-color:rgb(233,233,233);text-indent: -9999em;display:block;" %><h3 class="list_header" style="line-height: 25px;"><%= best_in_place task_form.object, "name", :path => [@course, task_form.object] %><%= best_in_place task_form.object, "url", :path => [@course, task_form.object], :classes => "tabbed youtube" , :html_attrs => {:onChange =>"dosomething(this)" } %><!-- <%= link_to "Edit url", "#", :id => "activate_#{task_form.object.id}" , :class =>"btn btn-mini", :style =>"margin-top:2px;float:right;" %> --><%= link_to "X", [@course, task_form.object ] ,:confirm => "Are you sure?", :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" , :id => "removeB"%> <%= link_to "Show/Hide URL","", :remote=> true, :onclick => "showURL(this)", :style=>"float:right;font-size:10px;padding-right:5px;"%> <br><b class="title">Title: </b><b class="author">Author: </b><b class="image"></b></h3><span class="list_header_state hidden">(expanded, click to collapse)</span></div>
+    <div class="contracted" style="display:block"><%= link_to "IMAGE TEXT" , "#" ,:onclick => "showVideo($(this),'#{group_editor_course_group_path(@course,@group,:lec =>task_form.object.id)}')", :class=>"list_header_link handle" , :style=> "background-color:rgb(233,233,233);text-indent: -9999em;display:block;" %><h3 class="list_header" style="line-height: 25px;"><%= best_in_place task_form.object, "name", :path => [@course, task_form.object] %><%= best_in_place task_form.object, "url", :path => [@course, task_form.object], :classes => "tabbed youtube" , :html_attrs => {:onChange =>"dosomething(this)" } %><!-- <%= link_to "Edit url", "#", :id => "activate_#{task_form.object.id}" , :class =>"btn btn-mini", :style =>"margin-top:2px;float:right;" %> --><%= link_to "X", [@course, task_form.object ] ,:confirm => "Are you sure?", :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" , :id => "removeB"%> <%= link_to "Show/Hide URL","", :remote=> true, :onclick => "showURL(this)", :style=>"float:right;font-size:10px;padding-right:5px;"%> <br><b class="title">Title: </b><b class="author">Author: </b><b class="image"></b></h3><span class="list_header_state hidden">(expanded, click to collapse)</span></div>
     <ul class="item_section_list">
 	 
 	 <%= task_form.fields_for :online_quizzes do |t| %>
@@ -463,9 +524,9 @@ $(document).ready(function(){
 	
 	<!-- <%= task_form.input :name %> -->
 	<li id=<%= "quiz_#{task_form.object.id}" %> style="height=0px;margin-bottom:-10px">
-    <div class="contracted" style="display:block"><%= link_to "IMAGE TEXT" , "#" ,:onclick => "showQuiz($(this), '#{group_editor_course_group_path(@course,@group,:real_quiz =>task_form.object.id)}')", :class=>"list_header_link" , :style=> "background-color:rgb(233,233,233);text-indent: -9999em;display:block;" %><h3 class="list_header" style="line-height: 50px;"><%= best_in_place task_form.object, "name", :path => [@course, task_form.object] %><%= link_to "X", [@course, task_form.object ] ,:confirm => "Are you sure?", :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" , :id => "removeB"%></h3><span class="list_header_state hidden">(expanded, click to collapse)</span></div>
+    <div class="contracted" style="display:block"><%= link_to "IMAGE TEXT" , "#" ,:onclick => "showQuiz($(this), '#{group_editor_course_group_path(@course,@group,:real_quiz =>task_form.object.id)}')", :class=>"list_header_link handle" , :style=> "background-color:rgb(233,233,233);text-indent: -9999em;display:block;" %><h3 class="list_header" style="line-height: 50px;"><%= best_in_place task_form.object, "name", :path => [@course, task_form.object] %><%= link_to "X", [@course, task_form.object ] ,:confirm => "Are you sure?", :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" , :id => "removeB"%></h3><span class="list_header_state hidden">(expanded, click to collapse)</span></div>
     <ul class="item_section_list">
-    	<li class="item_row unviewed" id=<%= "quiz_details"%> >
+    	<li class="item_row unviewed" style="padding-top:8px;padding-bottom:18px" id=<%= "quiz_details"%> >
   		<div>
     	<!-- <%= best_in_place task_form.object, "instructions", :path => [@course, task_form.object]%> -->
     	Please enter quiz details on the right.

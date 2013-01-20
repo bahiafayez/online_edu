@@ -15,7 +15,8 @@ class Lecture < ActiveRecord::Base
   has_many :events
   after_destroy :clean_up
   
-  attr_accessible :course_id, :description, :name, :url, :group_id, :appearance_time, :due_date, :duration, :slides, :appearance_time_module, :due_date_module
+  attr_accessible :course_id, :description, :name, :url, :group_id, :appearance_time, :due_date, :duration, :slides, :appearance_time_module, :due_date_module, :position
+  acts_as_list :scope => :group
   
   accepts_nested_attributes_for :online_quizzes, :allow_destroy => true
 

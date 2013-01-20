@@ -413,4 +413,19 @@ class LecturesController < ApplicationController
     render json: "done"
   end
   
+  def sort #called from module_editor to sort the lectures (by dragging)
+   @lectures = Lecture.where(:group_id => params[:group])
+   @quizzes = Quiz.where(:group_id => params[:group])
+   puts params[:toSort]
+   @lectures.each do |f|
+     f.position = params['toSort'].index("lecture_#{f.id.to_s}") + 1
+     f.save
+   end
+   @quizzes.each do |f|
+     f.position = params['toSort'].index("quiz_#{f.id.to_s}") + 1
+     f.save
+   end
+   render json: {"done"=>"done"}
+   end
+  
 end

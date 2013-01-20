@@ -49,10 +49,12 @@
 <div class="accordion-inner">
 <%= link_to "All Quizzes", progress_teacher_course_path(@course, :all => "all") , :class => "quiz"%>
 </div>
-<% @course.quizzes.each do |q| %>	
+<% @course.groups.each do |g| %>
+<% g.quizzes.each do |q| %>	
 <div class="accordion-inner">
-<%= link_to q.name, progress_teacher_course_path(@course, :q => q) , :class => "quiz"%>
+<%= link_to "#{(q.group).name} : #{q.name}", progress_teacher_course_path(@course, :q => q) , :class => "quiz"%>
 </div>
+<% end %>
 <% end %>
 
 
@@ -70,7 +72,7 @@
 <div id="collapseTwo" class="accordion-body collapse">
 <% end %>
 <% @course.groups.each do |g| %>
-<% g.lectures.order(:created_at).each do |q| %>
+<% g.lectures.each do |q| %>
 <div class="accordion-inner">
 <%= link_to "#{(q.group).name} : #{q.name}", progress_teacher_course_path(@course, :l => q)  , :class => "lecture"%>
 </div>

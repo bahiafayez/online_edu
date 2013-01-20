@@ -45,10 +45,11 @@
 <% if @typeGroup == g.id %> <!-- opening the group we're in -->
 <%= div_for(g, :class =>"accordion-body collapse in" ) do %>
 <% flag=1 %>
-<% g.lectures.each do |q| %>
+<% (g.lectures + g.quizzes).sort!{|x,y| ( x.position and y.position ) ? x.position <=> y.position : ( x.position ? -1 : 1 )  }.each do |q| %>
 <% if q.appearance_time <= Time.zone.now %>		
 <% flag=0 %>
 <div class="accordion-inner">
+<% if q.class.name=="Lecture"%>
 <% if !notseen?(q.id) %>
 <%= image_tag "check7.png" , :style=> "margin-left:10px;margin-right:10px"%> 
 <% else %>
@@ -56,13 +57,7 @@
 <% end %>
 <%= link_to "Lecture: #{q.name}", courseware_course_path(@course, :l => q) , :class => "quiz", :style => "text-decoration:none"%> 
 <%= link_to "slides", q.slides, :style =>"font-size:10px;float:right;"  if q.slides!="none" and !q.slides.nil? %>
-</div>
-<% end %>
-<% end %>
-<% g.quizzes.each do |q| %>
-<% if q.appearance_time <= Time.zone.now %>	
-<% flag=0 %>
-<div class="accordion-inner">
+<% else %>
 <% if !quiznotseen?(q.id) %>
 <%= image_tag "check7.png" , :style=> "margin-left:10px;margin-right:10px"%> 
 <% else %>
@@ -70,9 +65,12 @@
 <% end %>
 
 <%= link_to "Quiz: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz" , :style => "text-decoration:none"%>
+
+<% end %>
 </div>
 <% end %>
 <% end %>
+
 <% if flag==1 %>
 <div class="accordion-inner">
 Empty
@@ -83,10 +81,11 @@ Empty
 <% else %>
 <%= div_for(g, :class =>"accordion-body collapse" ) do %> <!-- closing the groups we're not in -->
 <% flag=1 %>
-<% g.lectures.each do |q| %>
+<% (g.lectures + g.quizzes).sort!{|x,y| ( x.position and y.position ) ? x.position <=> y.position : ( x.position ? -1 : 1 )  }.each do |q| %>
 <% if q.appearance_time <= Time.zone.now %>		
 <% flag=0 %>
 <div class="accordion-inner">
+<% if q.class.name=="Lecture"%>
 <% if !notseen?(q.id) %>
 <%= image_tag "check7.png" , :style=> "margin-left:10px;margin-right:10px"%> 
 <% else %>
@@ -94,22 +93,19 @@ Empty
 <% end %>
 <%= link_to "Lecture: #{q.name}", courseware_course_path(@course, :l => q) , :class => "quiz" , :style => "text-decoration:none"%>
 <%= link_to "slides", q.slides, :style =>"font-size:10px;float:right;" if q.slides!="none" and !q.slides.nil? %>
-</div>
-<% end %>
-<% end %>
-<% g.quizzes.each do |q| %>
-<% if q.appearance_time <= Time.zone.now %>		
-<% flag=0 %>
-<div class="accordion-inner">
+<% else %>
 <% if !quiznotseen?(q.id) %>
 <%= image_tag "check7.png" , :style=> "margin-left:10px;margin-right:10px"%> 
 <% else %>
 <%= image_tag "empty7.png" , :style=> "margin-left:10px;margin-right:10px"%>
 <% end %>
 <%= link_to "Quiz: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz" , :style => "text-decoration:none"%> 
+
+<% end %>
 </div>
 <% end %>
 <% end %>
+
 <% if flag==1 %>
 <div class="accordion-inner">
 Empty

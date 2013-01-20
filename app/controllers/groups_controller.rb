@@ -166,6 +166,7 @@ class GroupsController < ApplicationController
    end
    render json: {"done"=>"done"}
    end
+   
  
    def group_editor
      #stopped here
@@ -177,6 +178,14 @@ class GroupsController < ApplicationController
      #if @quiz
      #  render :partial => "groups/coordinates"
      #end
+     
+     #getting order
+     @all = @group.lectures + @group.quizzes
+     @all.sort!{|x,y| ( x.position and y.position ) ? x.position <=> y.position : ( x.position ? -1 : 1 )  }
+     @to_return=[]
+     @all.each do |s|
+       @to_return<< "#{s.class.name.downcase}_#{s.id}"
+     end
      
      logger.debug("in here in coord yayyyy quiz issss #{params[:quiz]}")
      

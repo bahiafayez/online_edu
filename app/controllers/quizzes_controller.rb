@@ -170,4 +170,8 @@ class QuizzesController < ApplicationController
       
   end
   
+  def sort #called from module_editor to sort the quizzes (by dragging)
+    #sorting in lectures controller.. as we sort both together.
+  end
+
 end

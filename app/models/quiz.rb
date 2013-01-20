@@ -9,7 +9,10 @@ class Quiz < ActiveRecord::Base
   has_many :questions, :dependent => :destroy
   accepts_nested_attributes_for :questions, :allow_destroy => true
   
-  attr_accessible :course_id, :instructions, :name, :questions_attributes, :group_id, :due_date, :appearance_time,:appearance_time_module, :due_date_module
+  attr_accessible :course_id, :instructions, :name, :questions_attributes, :group_id, :due_date, :appearance_time,:appearance_time_module, :due_date_module, :position
+  
+  acts_as_list :scope => :group
+  
   validates :name, :appearance_time,:due_date,:course_id, :group_id, :presence => true
   validates_inclusion_of :appearance_time_module, :due_date_module, :in => [true, false]
   #validates_associated :questions
