@@ -270,11 +270,14 @@ function setup() // This method controls the accordian, makes sure the one that 
         //$('.expanded').children('.list_header_link').trigger("click")  // close all open ones first
         var linkElem = $(this).parent();
         var sectionElem = $(this).parent().next();
+        $('.edit').attr("disabled",false)
+        $('.edit').removeClass('active');
         //console.debug("sectionElem is "+JSON.stringify(sectionElem));
         if(linkElem.hasClass('expanded')){
             linkElem.removeClass('expanded');
             linkElem.addClass('contracted');
             sectionElem.slideUp();
+            $('#videospan').html(""); // remove whatever is in the parial
             linkElem.find('.list_header_state').html('(collapsed, click to expand)');
         }
         else if(linkElem.hasClass('contracted')){
@@ -291,7 +294,7 @@ function setup() // This method controls the accordian, makes sure the one that 
             linkElem.addClass('expanded');
             sectionElem.slideDown();
             linkElem.find('.list_header_state').html('(expanded, click to collapse)');
-            
+            //$('.edit').attr("disabled",false)
             //setupVideo();
         }
     });
@@ -330,6 +333,7 @@ function createnewOnlineQuiz(lecture,course)  // add an onlinequiz to the lectur
    // 	$('#best_in_place_lecture__appearance_time').text(resp["updated"])
    		$('#best_in_place_online_quiz__question').siblings('a').attr("href","/online_quizzes/"+resp["quiz"]["id"]) // adjusting the remove.
     	$('#best_in_place_online_quiz__question').siblings('a.edit').attr("onclick","showOnlineQuiz($(this),"+resp["quiz"]["id"]+", "+resp["quiz"]["lecture_id"]+")") // adjusting the remove.
+    	$('#best_in_place_online_quiz__question').siblings('a.edit').attr("id",resp["quiz"]["id"]) // adjusting the remove.
     	$('#best_in_place_online_quiz__question').siblings('a.edit').attr("href","");
     	$('#best_in_place_online_quiz__question').closest('li').attr("id", "online_quiz_"+resp["quiz"]["id"]) // setting li to correct id
     	$('#best_in_place_online_quiz__question').attr("data-url", "/online_quizzes/"+resp["quiz"]["id"])
@@ -438,7 +442,7 @@ $(document).ready(function(){
   		 
   		<%= best_in_place t.object, "question", :path => online_quiz_path(t.object.id||0) %> Time: <%= best_in_place t.object, "time", :path => online_quiz_path(t.object.id||0), :display_as => :formatted_time, :activator =>"#notthere", :html_attrs => {:onChange => "formatTime(this)"}, :classes =>"time" %>
   		<%= link_to "X", online_quiz_path(t.object.id||0) ,:confirm => "Are you sure?", :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" %>
-  		<%= link_to "Edit", "",  :class=> "btn btn-mini edit", :style=>"float:right;margin-top:2px;", :onclick => "showOnlineQuiz($(this), #{t.object.id}, #{task_form.object.id})", :remote => true %>
+  		<%= link_to "Edit", "",  :class=> "btn btn-mini edit", :style=>"float:right;margin-top:2px;", :onclick => "showOnlineQuiz($(this), #{t.object.id}, #{task_form.object.id})", :id => "#{t.object.id}" ,:remote => true %>
   		
   		<!-- </p> -->
   		</div>

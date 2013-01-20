@@ -1,3 +1,4 @@
 var x= <%= rem %>
 $(".fields#quiz_"+x).remove();
-$('#videospan').html("")
+if($("#edit_quiz_"+x).size()>=1) // if im deleting the quiz that is in the partial, will remove it from partial.
+	$('#videospan').html("")

@@ -21,6 +21,7 @@
 //= require jquery_nested_form
 
 
+// student enrollment
 add_remove = function(elem,student, url, url2) {
 	if(elem.is(":checked")) // then add it
 	{

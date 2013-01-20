@@ -27,7 +27,7 @@
 <div id="foo"></div>
 </div></center>
 
-<div style="z-index:10">
+<div id='current_lecture_<%=@lecture.id%>' style="z-index:10">
 	More Details: <br/>
 	Link to Slides: <%= best_in_place @lecture, :slides ,:path => [@course, @lecture] %><br />
 	Apperance Date Like Module: <%= best_in_place @lecture, :appearance_time_module, :type => :checkbox ,:path => [@course, @lecture], :classes => "hide_on_success" %><br />

@@ -1,3 +1,6 @@
 var x= <%= rem %>
 $(".fields#lecture_"+x).remove();
-$('#videospan').html("")
+// only remove partial if this is the lecture i'm deleting
+if($("div#current_lecture_"+x).size()>=1)
+	$('#videospan').html("")
+	

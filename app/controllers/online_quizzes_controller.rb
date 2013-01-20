@@ -80,12 +80,13 @@ class OnlineQuizzesController < ApplicationController
   # DELETE /online_quizzes/1.json
   def destroy
     @online_quiz = OnlineQuiz.find(params[:id])
+    @from_lecture=@online_quiz.lecture
     @online_quiz.destroy
 
     respond_to do |format|
       format.html { redirect_to online_quizzes_url }
       format.json { head :no_content }
-      format.js { render "delete", :locals => {:rem => params[:id]}}
+      format.js { render "delete", :locals => {:rem => params[:id], :from_lec =>@from_lecture.id }}
     end
   end
 end
