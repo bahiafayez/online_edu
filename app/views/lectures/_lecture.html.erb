@@ -55,6 +55,12 @@ textarea{
 </style>
 <div id="error"></div>
 
+<% if !@alert_messages.empty? %>
+<div class="alert">
+	<%= alert_messages.html_safe %>
+</div>
+<% end %>
+
 <p>
   <b>Name:</b>
   <%= lecture.name %>

@@ -242,6 +242,12 @@ class CoursesController < ApplicationController
       if !@first_evaluation
         @eval= Evaluation.where(:course_id => params[:id], :lecture_id => params[:l], :user_id => current_user.id).first
       end
+      
+      
+      @alert_messages=[]
+      @alert_messages<< "Due date has passed -  #{@q.due_date}" if @q.due_date <= Time.zone.now
+      
+      
       #viewed= LectureView.where(:user_id => current_user.id, :lecture_id => @q.id, :course_id => params[:id])
       #if !viewed.empty?
       #  @seen=viewed[0].percent
