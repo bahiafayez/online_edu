@@ -1,4 +1,4 @@
-<%= link_to image_tag("logo.png", :width=>"30px"), courses_path, :class => 'brand' %><%= link_to "Scalable", courses_path, :class => 'brand' %><%= link_to "Learning", courses_path, :class => 'brand', :style=>"position:relative; left:-20px; color:green;" %>
+<%= link_to image_tag("logo.png", :width=>"30px"), home_index_path, :class => 'brand' %><%= link_to "Scalable", home_index_path, :class => 'brand' %><%= link_to "Learning", home_index_path, :class => 'brand', :style=>"padding-left:0px; color:green;" %>
  
 <ul class="nav pull-right">
   <% if user_signed_in? %>
@@ -17,11 +17,11 @@
     <li>
     <%= link_to 'Edit account', edit_user_registration_path %>
     </li>
-    <% if current_user.has_role? :admin %>
+    <!-- <% if current_user.has_role? :admin %>
       <li>
       <%= link_to 'Admin', users_path %>
       </li>
-    <% end %>
+    <% end %> -->
   <% else %>
     <li>
     <%= link_to 'Sign up', new_user_registration_path %>

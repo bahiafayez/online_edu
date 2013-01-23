@@ -21,10 +21,12 @@ class CoursesController < ApplicationController
   def index
     # The course index page, with all the courses the teacher is giving OR the student is taking.
     # If this is an <tt> instructor </tt> I show the courses he's giving, else, the courses he's taking.
-    if can? :update, @course    
+    if can? :create, Course    
         @courses = current_user.subjects 
+        puts "can manage"
     else
         @courses = current_user.courses 
+        puts "cant manage"
     end
     respond_to do |format|
       format.html # index.html.erb

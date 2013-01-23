@@ -7,7 +7,9 @@ class User < ActiveRecord::Base
   has_many :courses, :through => :enrollments
   has_many :announcements
   has_many :quiz_statuses, :dependent => :destroy
-  #has_and_belongs_to_many :roles, :join_table => :users_roles  # i added this
+  has_and_belongs_to_many :roles, :join_table => :users_roles  # i added this
+  
+  validates_presence_of :role_ids
   
   rolify
   # Include default devise modules. Others available are:
@@ -17,7 +19,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :role_ids, :as => :admin  # can only update roles if i'm an admin
+  attr_accessible :role_ids #, :as => :admin  # can only update roles if i'm an admin
   attr_accessible :name, :email, :password, :password_confirmation, :remember_me#, :id
   
   accepts_nested_attributes_for :courses

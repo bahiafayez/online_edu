@@ -1,17 +1,40 @@
-<h2>Sign up</h2>
-<%= simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => {:class => 'form-vertical' }) do |f| %>
+<style>
+	.content{
+		background-color: transparent;
+		background-image: none;
+		box-shadow: none;
+	}
+</style>
+<div class="span6 offset3 well"><%= simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => {:class => 'form-horizontal' }) do |f| %>
+  <div class="control-group">
+  <div class="controls">
+  	<h3>Sign up</h3>
+  </div>
+  </div>
   <%= f.error_notification %>
   <%= f.input :name, :autofocus => true %> 
   <%= f.input :email, :required => true %>
   <%= f.input :password, :required => true %>
   <%= f.input :password_confirmation, :required => true %>
+  <%= f.association :roles,:label => "Role", :as => :radio_buttons, :collection => Role.where(:name => ["admin","user"]), :label_method => :display_name%>
   
-<!--   <% for role in Role.find(:all) %>   only admin can set roles
-    <div>
-      <%= check_box_tag "user[role_ids][]", role.id, @user.roles.include?(role) %>
-      <%= role.name %>
+   <!-- <% for role in Role.where(:name => ["user","admin"]) %>   <!-- only admin can set roles -->
+   <!--  <div>
+      <%= radio_button_tag "user[role_ids][]", role.id, @user.roles.include?(role) %>
+      <%= "Teacher" if role.name=="admin" %>
+      <%= "Student" if role.name=="user" %>
     </div>
-  <% end %> -->
+  <% end %> --> 
+  <div class="control-group">
+  	<div class="controls">
   <%= f.button :submit, 'Sign up', :class => 'btn-primary' %>
+  </div>
+  </div>
+  
+  <div class="control-group">
+  	<div class="controls">
+  		<%= render "devise/shared/links" %>
+  	</div>
+  </div>
 <% end %>
-<%= render "devise/shared/links" %>
+</div>

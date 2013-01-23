@@ -4,11 +4,12 @@ class Ability
   def initialize(user)
     user ||= User.new # guest user (not logged in)
     if user.has_role? :admin
-      can :create, Course
-      can :manage, :all
+      can :manage, [Announcement, Course, Evaluation,Event, Group, Lecture, OnlineQuiz, Quiz]
       cannot :courseware, Course
       cannot :student_show, Course
       cannot :progress, Course
+      cannot :index, Event
+      #cannot :index, User
     elsif user.has_role? :user
       can :read, Course
       can :student_show, Course
@@ -18,6 +19,7 @@ class Ability
       cannot :manage, Lecture
       cannot :manage, Quiz
       can :student_notifications, Course
+      can [:index,:show], Event
     else
       can :index, Course  #so that people without role can live until they get a role.
     end

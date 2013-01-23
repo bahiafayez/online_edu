@@ -2,6 +2,7 @@
 require "event_calendar"
  
 class EventsController < ApplicationController
+  load_and_authorize_resource
   
   before_filter :get_course
   before_filter :set_zone
