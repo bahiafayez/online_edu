@@ -49,6 +49,8 @@ OnlineEdu::Application.configure do
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
   # config.assets.precompile += %w( search.js )
+  config.assets.precompile += %w( event_calendar.css style.css youTubeEmbed-jquery-1.0.css bootstrapx-clickover.js event_calendar.js youTubeEmbed-jquery-1.0.js shortcut.js jquery.swfobject.1-1-1.min.js)
+
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
