@@ -1,6 +1,6 @@
 class OnlineQuiz < ActiveRecord::Base
   
-  belongs_to :lecture
+  belongs_to :lecture, :touch => true
   has_many :online_answers, :dependent => :destroy
   
   attr_accessible :lecture_id, :question, :time, :created_at

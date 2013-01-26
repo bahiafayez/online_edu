@@ -1,6 +1,8 @@
 <%# This view renders the course editor%>
 
 <%= render "shared/head" %>
+
+<% cache :hash => {:tag => @course.updated_at.to_i} do %>
 <h4><%= "#{@course.short_name} - #{@course.name}" %></h4>
 <div class="row">
 <div class="span12">
@@ -11,3 +13,4 @@
 </div>
 
 </div>
+<% end %>

@@ -1,5 +1,5 @@
 <%= render "shared/head2"%>
-
+<% cache @course do %>
 
 <h3> <%= @course.short_name %> - <%= @course.name %></h3>
 					<p>
@@ -22,6 +22,7 @@
 					  <%= @course.prerequisites %>
 					</p>
 
+<% end %>
 <!-- <div class="tabbable tabs-left">
 	<ul class="nav nav-tabs">
 		<li class="active">

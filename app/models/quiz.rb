@@ -1,6 +1,6 @@
 class Quiz < ActiveRecord::Base
   
-  belongs_to :course
+  belongs_to :course, :touch => true
   belongs_to :group
   has_many :events
   has_many :quiz_grades , :dependent => :destroy

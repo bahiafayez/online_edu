@@ -3,7 +3,7 @@ class Group < ActiveRecord::Base
   acts_as_list :scope => :course
   
   validates :appearance_time, :course_id, :name, :due_date, :presence => true
-  belongs_to :course
+  belongs_to :course, :touch => true
   has_many :lectures, :order => :position, :dependent => :destroy  #no dependent destroy since they are independent
   has_many :quizzes,:order => :position, :dependent => :destroy #no dependent destroy since they are independent
   has_many :events

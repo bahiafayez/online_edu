@@ -1,5 +1,5 @@
 <%= render 'shared/head' %>
-
+<% cache :hash => {:tag => User.maximum(:updated_at).to_i, :count => User.count} do %>
 <style>
 .pagination a, .pagination span {
     float: none;
@@ -114,7 +114,7 @@ change = function(val)
 
 
 
-
+<% end %>
 
 
 

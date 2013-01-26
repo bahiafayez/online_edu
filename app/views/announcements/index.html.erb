@@ -18,6 +18,7 @@
 }
 </style>
 <%= render "shared/head"%>
+<% cache :hash => {:tag => Announcement.where(:course_id => @course.id).maximum('updated_at').to_i, :num => Announcement.where(:course_id => @course.id).count} do %>
 <h3><%= @course.name %> Announcements</h3>
 <table id="announce" class="table table-striped down">
 
@@ -34,3 +35,4 @@
 
 <div id="error"></div>
 <%= render "form" %>
+<% end %>

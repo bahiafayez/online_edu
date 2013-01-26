@@ -1,10 +1,12 @@
 <%# Shows course information for the teacher to see.%>
+<%= render 'shared/head' %>
+
+<% cache @course do %>
 <style>
 	.table th, .table td{
 		border: none
 	}
 </style>
-<%= render 'shared/head' %>
 
 <div class="row">
 <div class="span6">
@@ -43,3 +45,4 @@
 </div>
 
 </div> 
+<% end %>

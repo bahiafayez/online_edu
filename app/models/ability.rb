@@ -16,6 +16,7 @@ class Ability
       can :progress, Course
       can :courseware, Course
       can :student_quiz, Course
+      cannot :show, Course
       cannot :manage, Lecture
       cannot :manage, Quiz
       can :student_notifications, Course

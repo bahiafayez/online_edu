@@ -10,7 +10,7 @@ class Lecture < ActiveRecord::Base
   has_many :lecture_questions, :dependent => :destroy
   has_many :lecture_views, :dependent => :destroy
   has_many :online_quiz_grades, :dependent => :destroy
-  belongs_to :course
+  belongs_to :course, :touch => true
   belongs_to :group
   has_many :events
   after_destroy :clean_up

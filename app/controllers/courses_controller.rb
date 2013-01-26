@@ -2,6 +2,12 @@ class CoursesController < ApplicationController
   load_and_authorize_resource   #cancan to check if user is allowed to perform an action. checks from ability.rb
   before_filter :correct_user, :except => [:index, :new, :create]
   before_filter :set_zone , :except => [:index, :new, :create]
+  
+  cache_sweeper :course_sweeper
+  caches_action :new,:edit, :layout => false
+  caches_action :index, :layout => false , :cache_path => proc { |c|
+  { :tag => current_user.id } #so when change signed in user, then cache is stale.
+  }
   # GET /courses
   # GET /courses.json
   def correct_user

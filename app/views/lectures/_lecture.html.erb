@@ -1,6 +1,6 @@
 <script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script>
-<script src="/assets/jquery.swfobject.1-1-1.min.js"></script>
-<script src="/assets/youTubeEmbed-jquery-1.0.js"></script>
+<!-- <script src="/assets/jquery.swfobject.1-1-1.min.js"></script>
+<script src="/assets/youTubeEmbed-jquery-1.0.js"></script> -->
 
 <style>
 #page{
@@ -61,6 +61,8 @@ textarea{
 </div>
 <% end %>
 
+<%  cache :hash => {:tag => lecture.updated_at.to_i, :lecture => lecture.id} do %>
+
 <p>
   <b>Name:</b>
   <%= lecture.name %>
@@ -87,6 +89,7 @@ textarea{
 	<!-- <div id="checkButton" style="margin-top:-70px; position:absolute; margin-left:150px"></div> -->
 	
 </div>
+<% end %>
 	<div id="evaluation" style='width:800px;'></div>
 
 
@@ -96,6 +99,7 @@ textarea{
 
     
 <!-- Modal -->    
+
 <div style="display: none;width:1200px;max-height:555px;margin-left:-600px;margin-right:-600px;" id="myModal2" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <!-- <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -120,6 +124,7 @@ textarea{
 
 
 <script>
+
 var pop, last,flag;
 var currentID=""
 //var player=document.getElementById("video_youVideo");

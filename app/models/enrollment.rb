@@ -1,7 +1,7 @@
 class Enrollment < ActiveRecord::Base
   
   belongs_to :course
-  belongs_to :user
+  belongs_to :user, :touch => true #so when enrollments change, it affect the associated user. (updated_at column)
   
   attr_accessible :course_id, :user_id
   

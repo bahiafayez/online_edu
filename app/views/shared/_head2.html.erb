@@ -1,4 +1,5 @@
 <% content_for :extra do %>
+	<% puts "over hereeeeee" %>
     <ul class="nav nav-pills">
     <!-- <li class=<%= (current_page?(student_notifications_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Notifications", student_notifications_course_path(@course)%></li> -->
     <li class=<%= (current_page?(course_event_path(@course)) ? 'active' : nil)  %>><%= link_to "Notifications", course_event_path(@course)%></li>
