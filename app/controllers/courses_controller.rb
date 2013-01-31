@@ -6,7 +6,7 @@ class CoursesController < ApplicationController
   cache_sweeper :course_sweeper
   caches_action :new,:edit, :layout => false
   caches_action :index, :layout => false , :cache_path => proc { |c|
-  { :tag => current_user.id } #so when change signed in user, then cache is stale.
+  { :tag => current_user.id, :update => Course.our(current_user.id).maximum(:updated_at).to_i, :num => Course.our(current_user.id).count } #so when change signed in user, then cache is stale.
   }
   # GET /courses
   # GET /courses.json

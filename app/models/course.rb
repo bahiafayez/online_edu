@@ -19,6 +19,14 @@ class Course < ActiveRecord::Base
   attr_accessible :users_attributes, :groups_attributes, :lectures_attributes
   #attr_accessible :enrollment_attributes
   
+  def self.our(user)
+    if User.find(user).has_role? :admin
+      return User.find(user).subjects
+    else
+      return User.find(user).courses
+    end
+  end
+  
   def enrolled_students #returns scope (relation)
     return User.joins(:courses).where("course_id = ?", id)
   end
