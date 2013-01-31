@@ -252,9 +252,10 @@ function remove(elem)
 	// This method called controller action to remove answer from DB
 	// It also removes it from the screen and the storedData hash
 	$.getJSON('<%= remove_answer_course_lecture_path(@course,@lecture) %>',{"answer":elem }, function(resp){
+		$("#"+elem).remove()     // put them inside so they are executed after answer is removed from DB
+		delete storedData[elem];
 	});
-	$("#"+elem).remove()
-	delete storedData[elem];	
+		
 }
 function save(elem)
 {

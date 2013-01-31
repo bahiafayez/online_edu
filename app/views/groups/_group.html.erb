@@ -207,10 +207,17 @@ function loadAuthor() // calls setAuthor on each of the youtube videos
 function dosomething(caller) // called when the URL is changed since I need to update the duration
 {
 	
+	
 	id=$(caller).val().split("v=")[1]
 	text_field=$(caller).parent().parent()
 	elem_id= $(caller).closest("li").attr("id").split("_")[1]
 	console.log(elem_id)
+	
+	if($("div#current_lecture_"+elem_id).size()>=1) // this video is currently showing so want to reload it.
+	{
+		console.log(window.location.pathname)
+		$.ajax({ url: window.location.pathname+'?lec='+elem_id, type: 'get', dataType:'script' });	
+	}
 	
 	if(id!=null && typeof id != 'undefined')
 	{
