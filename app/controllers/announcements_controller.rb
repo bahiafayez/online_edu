@@ -21,9 +21,11 @@ class AnnouncementsController < ApplicationController
     @announcementN.user_id=current_user.id
     @announcementN.date=Time.zone.now
     @announcementN.announcement.gsub!(/\r\n/," ")
+    @users_emails= @course.users.pluck(:email)
     
     respond_to do |format|
       if @announcementN.save
+        UserMailer.announcement_email(@users_emails,@announcementN,@course).deliver if !@users_emails.empty?
         format.html { redirect_to [@course,@announcementN], notice: 'Announcement was successfully created.' }
         format.json { render json: @announcementN, status: :created, location: @announcementN }
         format.js{render "create",  :locals =>{:status => "success"}}

@@ -112,5 +112,11 @@ OnlineEdu::Application.routes.draw do
   
   root :to => "home#index"
   devise_for :users
-  resources :users
+  resources :users do
+    member do
+      get "enroll"
+      post "enroll_to_course"
+    end
+  end
+  
 end

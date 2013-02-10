@@ -1,1 +1,5 @@
-$('#invited_students').html("<table class='table table-striped' width='100%'><tr><th>Enrolled</th><th>Student Name</th><th>Student Email</th></tr><%= escape_javascript(render :partial => 'student', :collection => @students , :locals=> {:remove=> true}) %></table><center><%= escape_javascript(paginate @students) %></center>");
+<!-- When teachers used to enroll -->
+<!-- $('#invited_students').html("<table class='table table-striped' width='100%'><tr><th>Enrolled</th><th>Student Name</th><th>Student Email</th></tr><%= escape_javascript(render :partial => 'student', :collection => @students , :locals=> {:remove=> true}) %></table><center><%= escape_javascript(paginate @students) %></center>");-->
+
+
+$('#invited_students').html("<table class='table table-striped' width='100%'><tr><th>Student Name</th><th>Student Email</th></tr><%= escape_javascript(render :partial => 'student', :collection => @students , :locals=> {:remove=> true}) %></table><center><%= escape_javascript(paginate @students) %></center>");

@@ -22,5 +22,7 @@
 
 <% if can? :create, Course %>
 <%= link_to 'New Course', new_course_path %>
+<% else %>
+<%= link_to 'Add Course', enroll_user_path(current_user) %>
 <% end %>
 

@@ -21,6 +21,8 @@ class Ability
       cannot :manage, Quiz
       can :student_notifications, Course
       can [:index,:show], Event
+      can :enroll, User
+      can :enroll_to_course, User
     else
       can :index, Course  #so that people without role can live until they get a role.
     end

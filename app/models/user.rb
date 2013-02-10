@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   has_many :quiz_grades, :dependent=> :destroy#, :conditions => :user kda its like im defining a method called quiz grades, which returns something when user = ... not what i want.
   has_many :online_quiz_grades, :dependent => :destroy
   has_many :enrollments, :dependent => :delete_all
-  has_many :courses, :through => :enrollments
+  has_many :courses, :through => :enrollments, :uniq => true
   has_many :announcements
   has_many :quiz_statuses, :dependent => :destroy
   has_and_belongs_to_many :roles, :join_table => :users_roles  # i added this

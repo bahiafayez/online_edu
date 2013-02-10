@@ -13,6 +13,12 @@
   <h4> <%= @course.short_name %> - <%= @course.name %></h4>
 
 <table class="table">
+
+<tr>
+  <td><b>Course Enrollment Key:</b></td>
+  <td><%= @course.unique_identifier %></td>
+</tr>
+
 <tr>
   <td><b>Start date:</b></td>
   <td><%= @course.start_date %></td>

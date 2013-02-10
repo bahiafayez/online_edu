@@ -2,7 +2,7 @@ class Course < ActiveRecord::Base
   belongs_to :user
   has_many :quizzes, :dependent => :destroy
   has_many :enrollments, :dependent => :delete_all
-  has_many :users, :through => :enrollments
+  has_many :users, :through => :enrollments, :uniq => true
   has_many :lectures, :dependent => :destroy
   has_many :groups, :order => "position", :dependent => :destroy
   has_many :events
@@ -18,6 +18,16 @@ class Course < ActiveRecord::Base
   accepts_nested_attributes_for :groups, :allow_destroy => true
   attr_accessible :users_attributes, :groups_attributes, :lectures_attributes
   #attr_accessible :enrollment_attributes
+  
+  before_create :create_unique_identifier
+
+  def create_unique_identifier
+    begin
+      self. unique_identifier = SecureRandom.hex(5) # or whatever you chose like UUID tools
+    end while self.class.exists?(:unique_identifier => unique_identifier)
+  end
+
+
   
   def self.our(user)
     if User.find(user).has_role? :admin

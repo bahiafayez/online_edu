@@ -31,10 +31,11 @@
 
 <div class="row">
 	  <!-- This is obtrusive javascript-->
-<div class="span6"> 
+<!-- to search enrolled or not.. removed because teacher doesn't enroll students anymore.-->
+<!-- <div class="span6"> 
 <select style="display:inline;height:25px;font-size:12px;" id='type' onchange="change(this.value)"><option value="all">All</option><option value="enrolled">Enrolled</option><option value="not">Not Enrolled</option></select>
-</div>
-<div class="span6">
+</div> -->
+<div class="span12">
 <%= form_tag enrolled_students_course_path(@course), :method => 'get', :id => "students_search", :style=>"display:inline;float:right" do %>
   <p style="display:inline">
     <%= search_field_tag :search, params[:search], :style => "height:15px;" %>
@@ -47,16 +48,16 @@
 
 <!-- <%= link_to "Students Enrolled", course_path(@course) , :onclick => "$('#invited_students').toggle()", :remote => true,  :id=>"show_now" %> -->
 <div id="invited_students", width="100%", style="overflow: auto;position:absolute:width:80%;height:500px;">
-	<table class="table table-striped" width="100%"><tr><th>Enrolled</th><th>Student Name</th><th>Student Email</th></tr><%= render :partial => "student", :collection => @students , :locals=> {:remove=> true} %></table>
+	<table class="table table-striped" width="100%">
+		<tr>
+			<!-- <th>Enrolled</th> -->
+			<th>Student Name</th>
+			<th>Student Email</th>
+		</tr>
+	<%= render :partial => "student", :collection => @students , :locals=> {:remove=> true} %></table>
 	<center><%= paginate @students %></center>
 </div>
 <br />
-<!-- <%= link_to "Invite students?", course_path(@course) , :onclick => "$('#show_students').toggle()", :remote => true,  :id=>"show_now" %>
-<div id="show_students", width="100%", style="display: none; overflow: auto">
-	<table height="100px", width="100%"><%= render :partial => "student", :collection => @students , :locals=> {:remove=> false} %></table>
-	<%= paginate @students %>
-</div> -->
-
 </div>
 
 

@@ -278,6 +278,9 @@ class CoursesController < ApplicationController
   end
   def enrolled_students
      @course = Course.find(params[:id])
+     #because no longer have type
+     params[:type]=nil
+     
      
     all_users2= @course.not_enrolled_students #not enrolled
     @students2 = @course.enrolled_students #enrolled
@@ -288,7 +291,9 @@ class CoursesController < ApplicationController
       @students =  @students2.order(:name).search(params[:search]).page(params[:page]).per(10) if params[:type]=="enrolled"
       @students =  all_users2.order(:name).search(params[:search]).page(params[:page]).per(10) if params[:type]=="not"
     else
-      @students =  User.order(:name).search(params[:search]).page(params[:page]).per(10)
+      # default was all.. but now only see enrolled students.
+      # @students =  User.order(:name).search(params[:search]).page(params[:page]).per(10)
+      @students =  @students2.order(:name).search(params[:search]).page(params[:page]).per(10)
     end
 
     
@@ -758,5 +763,7 @@ class CoursesController < ApplicationController
      
      @to_return = @to_return.to_json 
   end
+  
+  
   
 end
