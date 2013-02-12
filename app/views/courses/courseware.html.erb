@@ -70,7 +70,7 @@
 <%= image_tag "empty7.png" , :style=> "margin-left:10px;margin-right:10px"%>
 <% end %>
 
-<%= link_to "Quiz: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz" , :style => "text-decoration:none"%>
+<%= link_to "#{q.present_quiz_type}: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz" , :style => "text-decoration:none"%>
 
 <% end %>
 </div>
@@ -105,7 +105,7 @@ Empty
 <% else %>
 <%= image_tag "empty7.png" , :style=> "margin-left:10px;margin-right:10px"%>
 <% end %>
-<%= link_to "Quiz: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz" , :style => "text-decoration:none"%> 
+<%= link_to "#{q.present_quiz_type}: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz" , :style => "text-decoration:none"%> 
 
 <% end %>
 </div>

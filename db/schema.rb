@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130209110140) do
+ActiveRecord::Schema.define(:version => 20130210185433) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string    "resource_id",   :null => false
@@ -269,8 +269,9 @@ ActiveRecord::Schema.define(:version => 20130209110140) do
   create_table "questions", :force => true do |t|
     t.integer   "quiz_id"
     t.text      "content"
-    t.timestamp "created_at", :null => false
-    t.timestamp "updated_at", :null => false
+    t.timestamp "created_at",    :null => false
+    t.timestamp "updated_at",    :null => false
+    t.string    "question_type"
   end
 
   add_index "questions", ["quiz_id"], :name => "index_questions_on_quiz_id"
@@ -315,6 +316,7 @@ ActiveRecord::Schema.define(:version => 20130209110140) do
     t.boolean   "appearance_time_module"
     t.boolean   "due_date_module"
     t.integer   "position"
+    t.string    "quiz_type"
   end
 
   add_index "quizzes", ["course_id"], :name => "index_quizzes_on_course_id"

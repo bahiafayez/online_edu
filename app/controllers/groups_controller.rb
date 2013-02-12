@@ -222,5 +222,13 @@ class GroupsController < ApplicationController
       
       end
    end
+   
+   def statistics
+     @group_new= Group.find(params[:id])
+     #render json: {"group"=>@group_new}
+     respond_to do |format|
+      format.js{}
+      end
+   end
  
 end

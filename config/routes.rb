@@ -59,6 +59,7 @@ OnlineEdu::Application.routes.draw do
       member do
         get 'new_or_edit'
         get 'group_editor'
+        get 'statistics'
       end
       collection do
         post 'sort'

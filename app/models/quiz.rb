@@ -9,7 +9,7 @@ class Quiz < ActiveRecord::Base
   has_many :questions, :dependent => :destroy
   accepts_nested_attributes_for :questions, :allow_destroy => true
   
-  attr_accessible :course_id, :instructions, :name, :questions_attributes, :group_id, :due_date, :appearance_time,:appearance_time_module, :due_date_module, :position
+  attr_accessible :course_id, :instructions, :name, :questions_attributes, :group_id, :due_date, :appearance_time,:appearance_time_module, :due_date_module, :position, :quiz_type
   
   acts_as_list :scope => :group
   
@@ -20,6 +20,35 @@ class Quiz < ActiveRecord::Base
   
   def has_not_appeared
     appearance_time >= Time.zone.now
+  end
+  
+  def present_quiz_type
+     return (quiz_type||"quiz").capitalize
+  end
+  
+  def get_survey_data
+    @data=[]
+    questions.each do |question|
+      answers={}
+      answers[question]=[]
+      question.answers.each do |answer|
+        answers[question]<<{answer.content => QuizGrade.where(:answer_id => answer.id).count}
+      end
+      @data<<answers
+    end
+    return @data
+  end
+  
+  def get_survey_categories
+    @data=[]
+    questions.each do |question|
+      answers=[]
+      question.answers.each do |answer|
+        answers<< answer.content 
+      end
+      @data<<answers
+    end
+    return @data
   end
   
   private

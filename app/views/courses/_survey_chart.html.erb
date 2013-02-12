@@ -1,0 +1,210 @@
+<!-- <div id="container2" style="min-width: 400px; height: 400px; margin: 0 auto"></div><br><br /> -->
+<center><b><%= @surveychart.name %></b></center><br />
+<div id="all_charts"></div>
+<button style="margin-bottom:8px" class="btn" id="export">Export all</button> <select id="image_type"><option value='application/pdf'>PDF</option value='png'><option>PNG</option></select>
+
+<script>
+$(function () {
+    
+    var chart
+    var all=[]
+    $(document).ready(function() {
+    	
+    	/**
+ * Create a global exportCharts method that takes an array of charts as an argument,
+ * and exporting options as the second argument
+ */
+/**
+ * Create a global getSVG method that takes an array of charts as an argument
+ */
+Highcharts.getSVG = function(charts) {
+    var svgArr = [],
+        top = 0,
+        width = 0;
+
+    $.each(charts, function(i, chart) {
+        var svg = chart.getSVG();
+        svg = svg.replace('<svg', '<g transform="translate(0,' + top + ')" ');
+        svg = svg.replace('</svg>', '</g>');
+
+        top += chart.chartHeight;
+        width = Math.max(width, chart.chartWidth);
+
+        svgArr.push(svg);
+    });
+
+    return '<svg height="'+ top +'" width="' + width + '" version="1.1" xmlns="http://www.w3.org/2000/svg">' + svgArr.join('') + '</svg>';
+};
+
+
+Highcharts.exportCharts = function(charts, options) {
+    var form
+        svg = Highcharts.getSVG(charts);
+
+    // merge the options
+    options = Highcharts.merge(Highcharts.getOptions().exporting, options);
+
+    // create the form
+    form = Highcharts.createElement('form', {
+        method: 'post',
+        action: options.url
+    }, {
+        display: 'none'
+    }, document.body);
+
+    // add the values
+    Highcharts.each(['filename', 'type', 'width', 'svg'], function(name) {
+        Highcharts.createElement('input', {
+            type: 'hidden',
+            name: name,
+            value: {
+                filename: options.filename || 'chart',
+                type: options.type,
+                width: options.width,
+                svg: svg
+            }[name]
+        }, null, form);
+    });
+    //console.log(svg); return;
+    // submit
+    form.submit();
+
+    // clean up
+    form.parentNode.removeChild(form);
+};
+
+
+    	var colors = Highcharts.getOptions().colors,
+    	name = 'Browser brands';
+    	
+    	for(var count=0; count<getCount(); count++)
+    	{
+    		
+    	$("#all_charts").append("<div style='min-width: 300px; height: 300px; margin: 0 auto' id=container_"+count+"></div><br>")	
+    		
+    		
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'container_'+count,
+                type: 'column',
+                marginLeft:300,
+            },
+            title: {
+                text: "Question "+(count+1), //null 
+                style:{
+                	fontSize: '12px'
+                }
+            },
+            xAxis: {
+                categories: getCategories(count)
+            },
+            yAxis: {
+                title: {
+                    text: 'Number of Students'
+                },
+                allowDecimals:false
+            },
+            legend: {
+	            align:'left',
+	            verticalAlign: 'top',
+	            width:200,
+	            maxHeight:1000,
+	            style:{
+	            	fontSize: '10px'
+	            },
+	            itemStyle: {
+	                width: 150, // or whatever
+	                fontSize: '10px'
+	            },
+	    	},
+            plotOptions: {
+                column: {
+                    //cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        color: colors[0],
+                        style: {
+                            fontWeight: 'bold'
+                        },
+                        formatter: function() {
+                            return this.y;// +'%';
+                        }
+                    }
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    var point = this.point,
+                        s = this.x +':<b>'+ this.y;// +'% market share</b><br/>';
+                   
+                    return s;
+                }
+            },
+            series: [{
+                name: getName(count),
+                data: getSeries(count, colors),
+                color: 'white'
+            }],
+            exporting: {
+                enabled: true
+            }
+        });
+        all.push(chart)
+        }
+        $('#export').click(function() {
+        	console.log(all);
+        	type=$('#image_type').val();
+    		Highcharts.exportCharts(all,{type:type, filename:'<%= @surveychart.name %>'}); //filename: 'my-pdf'
+		});
+    });
+
+    
+});
+      
+  function getCategories(count)
+  {
+  	var studentProgress= <%= raw @survey_categories.to_json %>
+  	return studentProgress[count]
+  	
+  }
+  function getCount()
+  {
+  	var studentProgress= <%= raw @survey_questions.to_json %>
+  	console.log("here"+studentProgress.length)
+  	return studentProgress.length
+  }
+  function getName(count)
+  {
+  	var studentProgress= <%= raw @survey_questions.to_json %>
+  	return studentProgress[count]
+        
+  }
+ function getSeries(count,colors)
+	{
+		
+	var studentProgress= <%= raw @survey_data.to_json %>
+       // x=[{"name":'Correct', "data":[], "color":[]}, {"name":'Incorrect', "data":[], "color":[]}]
+        x=[]
+        chart_data= studentProgress[count]
+        for(var key in chart_data)  // only once // key here is the json key (not number like with array)
+        {	
+        	var z= chart_data[key]
+        	for(var v in z)
+        	{
+        		x[v]={color: colors[v],"y":0}
+        		for(var key2 in z[v])
+        		{	
+        			console.log(key2)
+        			//x[v].name=key2
+        			x[v]["y"]=(z[v][key2])
+        		}
+        	}
+        	
+        }
+        
+        console.debug(x)
+        return x
+	}     
+
+
+            </script>

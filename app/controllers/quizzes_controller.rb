@@ -156,8 +156,11 @@ class QuizzesController < ApplicationController
   
   def new_or_edit   #called from course_editor / module editor to add a new quiz
     @course = Course.find(params[:course_id])
-    @quiz = @course.quizzes.build(:name => "New Quiz", :instructions => "Please choose the correct answer(s)", :appearance_time => Group.find(params[:group]).appearance_time, :due_date => Group.find(params[:group]).due_date ,:appearance_time_module => true, :due_date_module => true, :group_id => params[:group])
-    
+    if params[:type]=="quiz"
+      @quiz = @course.quizzes.build(:name => "New Quiz", :instructions => "Please choose the correct answer(s)", :appearance_time => Group.find(params[:group]).appearance_time, :due_date => Group.find(params[:group]).due_date ,:appearance_time_module => true, :due_date_module => true, :group_id => params[:group], :quiz_type =>"quiz")
+    else
+      @quiz = @course.quizzes.build(:name => "New Survey", :instructions => "Please fill in the survey.", :appearance_time => Group.find(params[:group]).appearance_time, :due_date => Group.find(params[:group]).due_date ,:appearance_time_module => true, :due_date_module => true, :group_id => params[:group], :quiz_type => "survey")
+    end
     
       if @quiz.save
         @updated = @quiz.appearance_time.strftime('%d %b (%a)')

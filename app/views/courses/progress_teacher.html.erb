@@ -1,113 +1,246 @@
+<style type='text/css'>
+/* --------
+  The CSS rules offered here are just an example. You can style the 'accordion' in any way you like.
+  The styles for the Page Structure are needed just for the purpose of this demo page.
+  If you decide to use the CSS rules in 'Accordion' (see below) as a base, 
+  be sure to rename the selectors as to satisfy the elements in your site.
+ --------- */
+
+/* --- Page Structure  --- */
+
+
+
+#acc1{margin:0px; padding: 0px;}
+
+
+p {margin: 0 10px 1em}
+.strong{font-weight:700}
+.clear {clear:both}
+img{border:0 none}
+
+/* --- Headings --- */
+h1 {font-family:georgia,'times new roman',times,serif; font-size:2.5em; font-weight:normal; color:#f60}
+
+h5, h6{margin-top:1px; margin-bottom:0px;}
+
+h1, h2, h3, h4 {margin-bottom:1em}
+
+h2, h3, h4 a, h5 a, h6 a {padding:3px 10px}
+
+h2, h3, h4, h5, h6 a {font-size:1em}
+
+h2 {background-color:#f0f0f0}
+
+
+/* --- Links --- */
+#acc1 .last-child a{border-width: 0px 0px;}
+
+#acc1 a {border:1px solid #e0e0e0; color:#05b}
+
+#acc1 a:hover, #acc1 a:focus, #acc1 a:active {border-color:#bcd; text-decoration:none; outline:0 none}
+
+
+
+/* --- Accordion --- */
+.js .accordion {visibility:hidden}
+
+.accordion {margin:0; padding:0 10px}
+
+.accordion li {list-style-type:none}
+
+.accordion li.last-child {margin-left:19px; list-style-type:disc}
+
+ul.accordion ul {margin:0; padding:0 0 0 20px;}
+
+.accordion .outer {border:1px solid #dadada; border-width:0 1px 1px; background: #fff}
+
+.accordion .inner {margin-bottom:0; padding:.5em 20px 1em; position:relative; overflow:hidden}
+
+.accordion .inner .inner {padding-bottom:0}
+
+.accordion .h {padding-top:.3em} /* vertical padding instead of vertical margin (ie8) */
+
+.accordion p {margin:.5em 1px 1em}
+
+/*  
+  Add styles for all links in the 'accordion':
+.accordion a {...}
+*/    
+
+a.trigger {padding-left:20px; background-image: url('/assets/plus.gif'); background-repeat: no-repeat; background-position: 1px 50%;  font-weight:700}
+
+a.trigger.open {background-image: url('/assets/minus.gif');background-repeat: no-repeat; background-position: 1px 50%;  font-weight:700}
+
+.last-child a.trigger{padding-left:1px; background-image:none; font-weight:normal}
+
+a.trigger {background-color:#f0f0f0}
+
+a.trigger.open {border-color:#dadada; background-color:#e7e7e7}
+
+a:hover.trigger.open, a:focus.trigger.open, a:active.trigger.open {border-color:#bcd}
+
+
+
+
+</style>
+
 <script src="/assets/highcharts.js"></script>
 <script src="/assets/modules/exporting.js"></script>
+<script type="text/javascript" src="/assets/jquery.nestedAccordion.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+$("html").addClass("js");
+$.fn.accordion.defaults.container = false; 
+$.fn.accordion.defaults.initShow='<%= "##{@type}" if @type %>';
+$(function() {
+  $("#acc3").accordion({initShow : "#current"});
+  $("#acc1").accordion({
+      el: ".h", 
+      head: "h5, h6", 
+      next: "div", 
+      //initShow : "div.outer:eq(0)"
+  });
+  $("#acc2").accordion({
+      obj: "div", 
+      wrapper: "div", 
+      el: ".h", 
+      head: "h5, h6", 
+      next: "div", 
+      showMethod: "slideFadeDown",
+      hideMethod: "slideFadeUp",
+      initShow : "div.shown",
+      elToWrap: "sup, img"
+    });
+  $("html").removeClass("js");
+});
+//--><!]]>
+</script>
+<!--<![endif]-->
+
+<!-- This is NOT a part of the example code (Google Analytics) -->
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-1761759-2']);
+_gaq.push(['_setDomainName', 'www.adipalaz.com']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+//--><!]]>
+</script>
+
 <%= render 'shared/head' %>
 
 <div class="row">
 <div class="span3">
 
-
-<div class="accordion" id="accordion2">
-	
-<div class="accordion-group">
-<div class="accordion-heading">
-<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseZero">
-<center>Modules</center>
-</a>
-</div>
-<% if @type == "group"%>
-<div id="collapseZero" class="accordion-body collapse in">
-<% else %>
-<div id="collapseZero" class="accordion-body collapse">
-<% end %>
-
-<div class="accordion-inner">
-<%= link_to "All Modules", progress_teacher_course_path(@course, :all_modules => "all") , :class => "group"%>	
-</div>
-<% @course.groups.each do |q| %>	
-<div class="accordion-inner">
-<%= link_to q.name, progress_teacher_course_path(@course, :g => q) , :class => "group"%>
-</div>
-<% end %>
-
-
-</div>
-</div>	
-	
-	
-<div class="accordion-group">
-<div class="accordion-heading">
-<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-<center>Quizzes</center>
-</a>
-</div>
-<% if @type == "quiz"%>
-<div id="collapseOne" class="accordion-body collapse in">
-<% else %>
-<div id="collapseOne" class="accordion-body collapse">
-<% end %>
-
-<div class="accordion-inner">
-<%= link_to "All Quizzes", progress_teacher_course_path(@course, :all => "all") , :class => "quiz"%>
-</div>
-<% @course.groups.each do |g| %>
-<% g.quizzes.each do |q| %>	
-<div class="accordion-inner">
-<%= link_to "#{(q.group).name} : #{q.name}", progress_teacher_course_path(@course, :q => q) , :class => "quiz"%>
-</div>
-<% end %>
-<% end %>
-
-
-</div>
-</div>
-<div class="accordion-group">
-<div class="accordion-heading">
-<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
-<center>Lectures</center>
-</a>
-</div>
-<% if @type == "lecture"%>
-<div id="collapseTwo" class="accordion-body collapse in">
-<% else %>
-<div id="collapseTwo" class="accordion-body collapse">
-<% end %>
-<% @course.groups.each do |g| %>
-<% g.lectures.each do |q| %>
-<div class="accordion-inner">
-<%= link_to "#{(q.group).name} : #{q.name}", progress_teacher_course_path(@course, :l => q)  , :class => "lecture"%>
-</div>
-<% end %>
-<% end %>
-</div>
-</div>
-
-
-<div class="accordion-group">
-<div class="accordion-heading">
-<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">
-<center>Progress</center>
-</a>
-</div>
-<% if @type == "Progress"%>
-<div id="collapseThree" class="accordion-body collapse in">
-<% else %>
-<div id="collapseThree" class="accordion-body collapse">
-<% end %>
-
-<div class="accordion-inner">
-<%= link_to "Progress Chart", progress_teacher_course_path(@course, :p => "p")  , :class => "lecture"%>
-</div>
-
-</div>
-</div>
-
-</div>
-
+<ul id="acc1" class="accordion">
+					<li>
+                        <h5>Modules </h5>
+                        <div class="inner" id="modules">
+                          <ul>
+                            <li class="last-child">
+                              <%= link_to "All Modules", progress_teacher_course_path(@course, :all_modules => "all", :type => "modules") , :class => "group"%>
+                            </li>
+                            <% @course.groups.each do |q| %>	
+								<li class="last-child">	
+									<%= link_to q.name, progress_teacher_course_path(@course, :g => q, :type => "modules") , :class => "group"%>
+								</li>
+							<% end %>
+                            
+                          </ul>
+                        </div>
+                      </li>
+                      <li>
+                        <h5>Lectures</h5>
+                        <div class="inner">
+                          <ul>
+                          	<% @course.groups.each do |g| %>
+                            <li>
+                              <h6><%= g.name %></h6>
+                              <div class="inner" id="lecture_<%=g.id%>">
+                                  <ul>
+                                  	<% g.lectures.each do |q| %>
+									<li class="last-child">
+										<%= link_to "#{q.name}", progress_teacher_course_path(@course, :l => q, :type => "lecture_#{g.id}")  , :class => "lecture"%>
+									</li>
+                                  	<% end %>
+                                  </ul>
+                              </div>
+                            </li>
+                            <% end %>
+                          </ul>
+                        </div>
+                      </li>
+                      <li>
+                        <h5>Quizzes</h5>
+                        <div class="inner" id="quizzes">
+                          <ul>
+                          	<li class="last-child">
+                          		<%= link_to "All Quizzes", progress_teacher_course_path(@course, :all => "all", :type => "quizzes") , :class => "quiz"%>
+                          	</li>
+                          	<% @course.groups.each do |g| %>
+                            <li>
+                              <h6><%= g.name %></h6>
+                              <div class="inner" id="quiz_<%=g.id%>">
+                                  <ul>
+                                  	<% g.quizzes.where("quiz_type != 'survey'").each do |q| %>
+									<li class="last-child">
+										<%= link_to "#{q.name}", progress_teacher_course_path(@course, :q => q, :type => "quiz_#{g.id}") , :class => "quiz"%>
+									</li>
+                                  	<% end %>
+                                  </ul>
+                              </div>
+                            </li>
+                            <% end %>
+                          </ul>
+                        </div>
+                      </li>
+                      <li>
+                        <h5>Progress</h5>
+                        <div class="inner" id="progress">
+                          <ul>
+                          	<li class="last-child">
+                          		<%= link_to "Progress Chart", progress_teacher_course_path(@course, :p => "p", :type => "progress")  , :class => "lecture"%>
+                          	</li>
+                          </ul>
+                        </div>
+                      </li>
+                      <li>
+                        <h5>Surveys</h5>
+                        <div class="inner" id="surveys">
+                          <ul>
+                          	<% @course.groups.each do |g| %>
+                            <li>
+                              <h6><%= g.name %></h6>
+                              <div class="inner" id="survey_<%=g.id%>">
+                                  <ul>
+                                  	<% g.quizzes.where(:quiz_type => "survey").each do |q| %>
+									<li class="last-child">
+										<%= link_to "#{q.name}", progress_teacher_course_path(@course, :sur => q, :type => "survey_#{g.id}") , :class => "quiz"%>
+									</li>
+                                  	<% end %>
+                                  </ul>
+                              </div>
+                            </li>
+                            <% end %>
+                          </ul>
+                        </div>
+                      </li>
+                      
+                    </ul> <!-- end accordion 1 -->
+                    
 </div>
 
 <div class="span9">
 <% if @quizchart %>
 	<%= render 'chart2' %>
+<% end %>
+<% if @survey_data %>
+	<%= render 'survey_chart' %>
 <% end %>
 <% if @modulechart %>
 	<%= render 'chartModule' %>

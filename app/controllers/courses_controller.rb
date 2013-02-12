@@ -197,9 +197,10 @@ class CoursesController < ApplicationController
         @disable=true
       end
       
+      type=@q.quiz_type
       @alert_messages=[]
       @alert_messages<< "Due date has passed -  #{@q.due_date}" if @q.due_date <= Time.zone.now
-      @alert_messages<<"You've already submitted the quiz" if !status.empty? and status.first.status=="Submitted"
+      @alert_messages<<"You've already submitted the #{type.capitalize}" if !status.empty? and status.first.status=="Submitted"
       
       @answers.each do |a|
         if @out[a.question_id].nil?
@@ -369,6 +370,7 @@ class CoursesController < ApplicationController
     @students=@course.users
     @quizzes=@course.quizzes
     @student_names=[]
+    @type = params[:type]||"nothing"
     @course.lectures.each do |l|
       puts l.name
       puts l.group
@@ -376,7 +378,7 @@ class CoursesController < ApplicationController
    
    if params[:all_modules]  #when click on the modules - all modules, progress of each student in each module (done/not done/done but not on time)
      @matrix={}
-     @type="group"
+     #@type="group"
      @students.each do |s|
        @matrix[s.name]=s.grades(@course)  #returns for each module in the course, whether student finished r not and on time or not.
        puts @matrix
@@ -388,7 +390,7 @@ class CoursesController < ApplicationController
       if @modulechart.nil?
         redirect_to progress_teacher_course_path(params[:id]), :alert => "No such Module"
       end
-      @type="group"
+      #@type="group"
       
       @chart_data={}   #only count those that submitted their answers
       #exactly like lecture.. but all lectures on one graph... and make it bar i think.
@@ -469,7 +471,7 @@ class CoursesController < ApplicationController
       
    end 
    if params[:all]  #show all the quizzes
-     @type="quiz"
+     #@type="quiz"
      @data=[]
     @quizScores=[]
       @quizzes.each do |q|
@@ -496,7 +498,7 @@ class CoursesController < ApplicationController
       if @quizchart.nil?
         redirect_to progress_teacher_course_path(params[:id]), :alert => "No such quiz"
       end
-      @type="quiz"
+      #@type="quiz"
       
       @chart_data={}   #only count those that submitted their answers
       QuizStatus.where(:quiz_id => @quizchart.id, :course_id => params[:id], :status => "Submitted").pluck(:user_id).each do |student|
@@ -513,6 +515,18 @@ class CoursesController < ApplicationController
       @chart_data=@chart_data.to_json
       puts "chart data issssss #{@chart_data}"
     end
+    ################ if survey ###################
+    if params[:sur]
+      @surveychart=Quiz.where(:id => params[:sur], :course_id => params[:id], :quiz_type => "survey").first
+      if @surveychart.nil?
+        redirect_to progress_teacher_course_path(params[:id]), :alert => "No such survey"
+      end
+      
+      @survey_data=@surveychart.get_survey_data
+      @survey_categories=@surveychart.get_survey_categories
+      @survey_questions= @surveychart.questions.map{|obj| obj=obj.content}
+      print "survey is #{@survey_questions}"
+    end
     ################## if lecture ###########
     if params[:l]   #requesting lecture
       #@q= Lecture.find(params[:l])
@@ -520,7 +534,7 @@ class CoursesController < ApplicationController
       if @q.nil?
         redirect_to progress_teacher_course_path(params[:id]), :alert => "No such lecture"
       end
-      @type="lecture"
+      #@type="lecture"
        
       @correct=[] 
       @chart_data={} 
@@ -599,7 +613,7 @@ class CoursesController < ApplicationController
      
      #if progress chart
      if params[:p]  #progress chart, shows each students progress in quizzes/lectures and online quizzes
-       @type="Progress"
+       #@type="Progress"
        @p="Progress Chart"
        @student_progress={}
        @students.each do |s|
@@ -709,9 +723,14 @@ class CoursesController < ApplicationController
       end
       #QuizGrade.create(:user_id => @user_id, :quiz_id => @quiz_id, :question_id => a[0], :answer_id => a[1], :grade => 0  )
     #end
-     if params[:commit]=="Submit" and (@answers.empty? or @answers.keys.count < Quiz.find(@quiz_id).questions.count)  #there qere unanswered questions.
+    type=Quiz.find(@quiz_id).quiz_type || "quiz"
+    
+ 
+     if type=="quiz" and params[:commit]=="Submit" and (@answers.empty? or @answers.keys.count < Quiz.find(@quiz_id).questions.count)  #there qere unanswered questions.
       redirect_to courseware_course_path(params[:id], :q=>@quiz_id), :alert => "There are unanswered questions"
     else 
+      
+    
     
     
     if params[:commit]=="Submit"
@@ -719,9 +738,9 @@ class CoursesController < ApplicationController
     end
     
     if params[:commit]=="Submit"
-      msg="Quiz was successfully submitted"
+      msg="#{type.capitalize} was successfully submitted"
     else
-      msg="Quiz was successfully saved"
+      msg="#{type.capitalize} was successfully saved"
     end
     
     respond_to do |format|

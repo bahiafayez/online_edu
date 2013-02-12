@@ -24,6 +24,14 @@ class Group < ActiveRecord::Base
     return count
   end
   
+  def total_quiz_questions #doesn't count survey questions.
+    count=0;
+    quizzes.each do |l|
+      count+= (l.questions.count) if l.quiz_type!="survey"
+    end
+    return count
+  end
+  
   def total_time
     count=0;
     lectures.each do |l|

@@ -14,13 +14,16 @@
   <tr>
   <td> <%= question_counter + 1%>) </td>
   <td> <%= question.content %></td>
-  <td><% if !@correct[question.id].nil? and @correct[question.id]==1 %>
-  	<b style="color:green">Correct</b>
-  	<% elsif !@correct[question.id].nil? and @correct[question.id]==0 %>
-  	<b style="color:red">Incorrect</b>
- 	<% else%>
- 	<b></b>
-  	<% end %>
+  <td>
+  	<% if question.quiz.quiz_type!="survey"%>
+	  	<% if !@correct[question.id].nil? and @correct[question.id]==1 %>
+	  	<b style="color:green">Correct</b>
+	  	<% elsif !@correct[question.id].nil? and @correct[question.id]==0 %>
+	  	<b style="color:red">Incorrect</b>
+	 	<% else%>
+	 	<b></b>
+	  	<% end %>
+	 <% end %>
   </td>
   </tr>
  

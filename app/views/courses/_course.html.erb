@@ -78,9 +78,30 @@ $(document).ready(function(){
 		$($($(this).children('li')[0]).children('.item_section_list')[0]).reOrder(category_sort_order[index]);
 	});
 	
+	setup_quiz_button();
+	setup_lecture_button();
 	
   setup();
 });
+
+
+setup_quiz_button= function()
+{
+	$(document).on('nested:fieldAdded:quizzes', function(event){
+		console.log("in nested event");
+		var field = event.field; 
+  		moveElement(field,0)
+	});
+};
+
+setup_lecture_button= function()
+{
+	$(document).on('nested:fieldAdded:lectures', function(event){	
+  		var field = event.field; 
+  		console.log("in nested event"+field);
+  		moveElement(field,0)
+	});
+};
 </script>
 
 
@@ -133,24 +154,25 @@ function createnewLecture(group) // when add a lecture, I save it with a control
    // 	setup();
     	
     	updateIDs();
-    	moveElement($('.fields#lecture_'+resp["lecture"]["id"]))
+    	//moveElement($('.fields#lecture_'+resp["lecture"]["id"]),0)
     });
 	
 }
 
-function moveElement(elem)
+function moveElement(elem,pos)
 {
 	console.log(elem.siblings('a'));
 	//elem.remove().insertBefore(elem.siblings('a'));
-	elem.insertBefore($(elem.siblings('a')[0]))
+	elem.insertBefore($(elem.siblings('a')[pos]))
 }
 
-function createnewQuiz(group) // when add a quiz, I save it with a controller method then change the existing fields
+function createnewQuiz(group, quiz_type) // when add a quiz, I save it with a controller method then change the existing fields
 {
 	console.debug("group isssssssss "+group.attr("id"))
 	$('#best_in_place_quiz__name').text("New Quiz")
+	type= quiz_type
 	//$('#best_in_place_group__appearance_time').text("05 Nov (Tue)")
-    $.getJSON("<%= new_or_edit_course_quiz_path(@course)%>",{"group":group.attr("id")}, function(resp){
+    $.getJSON("<%= new_or_edit_course_quiz_path(@course)%>",{"group":group.attr("id"), "type":type}, function(resp){
     	
     	$('#best_in_place_quiz__name').text(resp["quiz"]["name"])
     	
@@ -168,6 +190,7 @@ function createnewQuiz(group) // when add a quiz, I save it with a controller me
    // 	setup();
     	
     	updateIDs();
+    	//moveElement($('.fields#quiz_'+resp["quiz"]["id"]),0)
     });
 	
 }
@@ -218,6 +241,8 @@ $.fn.reOrder = function(array) {
 	  // adding the two buttons.
 	  array[i]=$(this).children('a')[0]
 	  array[i+1]=$(this).children('a')[1]
+	  //array[i+2]=$(this).children('#btn-arrow')[0]
+	  array[i+2]=$(this).children('a')[2]
 	  console.log("array is")
 	  console.log(array)
 	  
@@ -257,8 +282,8 @@ $.fn.reOrder = function(array) {
 	
 	<!-- <%= task_form.input :name %> -->
 	<li id=<%= task_form.object.id %> style="height=0px;margin-bottom:-10px">
-    <div class="contracted" style="display:block"><a href="#" class="list_header_link handle" style="background-color:rgb(233,233,233);text-indent: -9999em;display:block;">IMAGE TEXT</a><h3 class="list_header" style="line-height: 50px;"><%= best_in_place task_form.object, "name", :path => [@course, task_form.object]%><p class="left-space">Appears: </p><%= best_in_place task_form.object, "appearance_time", :path => [@course, task_form.object],:type => :date, :classes => "datepicker2"%> <p class="left-space">Due: </p><%= best_in_place task_form.object, "due_date", :path => [@course, task_form.object],:type => :date, :classes => "datepicker2"%><%= link_to "X", [@course, task_form.object ] ,:confirm => "Are you sure?", :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" , :id => "removeB"%><%= link_to "Editor", group_editor_course_group_path(@course,task_form.object.id||0), :id => "editB", :class => "btn btn-mini", :style => "float:right;margin-top:2px;" %></h3><span class="list_header_state hidden">(expanded, click to collapse)</span></div>
-    <ul class="item_section_list">
+    <div class="contracted" style="display:block"><a href="#" class="list_header_link handle" style="background-color:rgb(233,233,233);text-indent: -9999em;display:block;">IMAGE TEXT</a><h3 class="list_header" style="line-height: 50px;"><%= best_in_place task_form.object, "name", :path => [@course, task_form.object]%><p class="left-space">Appears: </p><%= best_in_place task_form.object, "appearance_time", :path => [@course, task_form.object],:type => :date, :classes => "datepicker2"%> <p class="left-space">Due: </p><%= best_in_place task_form.object, "due_date", :path => [@course, task_form.object],:type => :date, :classes => "datepicker2"%><%= link_to "X", [@course, task_form.object ] ,:confirm => "Are you sure?", :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" , :id => "removeB"%><%= link_to "Edit", group_editor_course_group_path(@course,task_form.object.id||0), :id => "editB", :class => "btn btn-mini", :style => "float:right;margin-top:2px;" %></h3><span class="list_header_state hidden">(expanded, click to collapse)</span></div>
+    <ul class="item_section_list" style="min-height:100px">
     	
 	
   		<%= task_form.fields_for :lectures do |t| %>
@@ -279,8 +304,17 @@ $.fn.reOrder = function(array) {
   			</li>
   		<% end %>
   		
-  		<%= task_form.link_to_add "Add a Quiz", :quizzes , :onclick => "createnewQuiz($(this).closest('li'))",:class =>"btn btn-small btn-primary", :style => "float:right;margin-bottom:10px;margin-right:10px;display:inline;"%>
-  		<%= task_form.link_to_add "Add a Lecture", :lectures , :onclick => "createnewLecture($(this).closest('li'))",:class =>"btn btn-small btn-primary", :style => "float:right;margin-bottom:10px;margin-right:10px;display:inline;"%>
+  		<!-- dropdown button-->
+  		<!-- <div id="btn-arrow" class="btn-group dropup" style="float:right;margin-bottom:10px;margin-right:10px;margin-top:60px;">
+                <button class="btn btn-small btn-primary dropdown-toggle" data-toggle="dropdown">Add a Quiz <span class="caret"></span></button>
+                <ul style="z-index:10" class="dropdown-menu">
+                  <li style="z-index:10"><%= task_form.link_to_add "Add a Quiz", :quizzes , :onclick => "createnewQuiz($(this).closest('li'))" %></li>
+                  <li style="z-index:10"><%= task_form.link_to_add "Add a Survey", :quizzes , :onclick => "createnewQuiz($(this).closest('li'))"%></li>
+             	</ul>
+         </div> -->
+  		<%= task_form.link_to_add "Add a Survey", :quizzes , :onclick => "createnewQuiz($(this).closest('li'), 'survey')",:class =>"btn btn-small btn-primary", :style => "float:right;margin-bottom:10px;margin-right:10px;display:inline"%>
+  		<%= task_form.link_to_add "Add a Quiz", :quizzes , :onclick => "createnewQuiz($(this).closest('li'), 'quiz')",:class =>"btn btn-small btn-primary", :style => "float:right;margin-bottom:10px;margin-right:10px;display:inline"%>
+  		<%= task_form.link_to_add "Add a Lecture", :lectures , :onclick => "createnewLecture($(this).closest('li'))",:class =>"btn btn-small btn-primary", :style => "float:right;margin-bottom:10px;margin-right:10px;display:inline"%>
 	 
 	</ul>
   	</li>

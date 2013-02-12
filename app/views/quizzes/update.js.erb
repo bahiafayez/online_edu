@@ -1,5 +1,5 @@
 $('#videospan').html("<%= escape_javascript(render :partial => 'groups/quiz') %>");
-$('#notify').html("<div id='fading' class='alert alert-success'>Quiz Saved.</div>")
+$('#notify').html("<div id='fading' class='alert alert-success'><%= @quiz.quiz_type.capitalize %> Saved.</div>")
 $("#fading").fadeOut(5000);
 
 $('#quiz_appearance_time_module').click(function (event) {  

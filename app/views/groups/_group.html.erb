@@ -19,7 +19,7 @@ function updateIDs()
 
 function createnewLecture(group) // when add a lecture, this is called which calls a controller method to add the lecture to the database and then updates the view
 {
-	
+	//moveElement("none")	
 	$('#best_in_place_lecture__name').text("New Lecture")
 	//$('#best_in_place_group__appearance_time').text("05 Nov (Tue)")
     $.getJSON("<%= new_or_edit_course_lecture_path(@course)%>",{"group":group}, function(resp){
@@ -41,26 +41,29 @@ function createnewLecture(group) // when add a lecture, this is called which cal
     	setup();
     	
     	updateIDs();
-    	moveElement($('.fields#lecture_'+resp["lecture"]["id"]))
+    	//moveElement($('.fields#lecture_'+resp["lecture"]["id"]))
     });
 	
 }
 
 function moveElement(elem)
 {
-	console.log(elem.siblings('a'));
+	//console.log(elem.siblings('a'));
 	//elem.remove().insertBefore(elem.siblings('a'));
-	elem.insertBefore($(elem.siblings('a')[0]))
+	//elem.insertBefore($(elem.siblings('a')[0]))
+	$('.item_list').append($('.item_list').children('a'));
+	console.log("done")
 }
 
 
-function createnewQuiz(group) // to add a new quiz (like lecture)
+function createnewQuiz(group, quiz_type) // to add a new quiz (like lecture)
 {
-	
+	//moveElement("none");
+	type=quiz_type
 	$('#best_in_place_quiz__name').text("New Quiz")
 	$('#best_in_place_quiz__instructions').text("Please choose the correct answer(s)")
 	//$('#best_in_place_group__appearance_time').text("05 Nov (Tue)")
-    $.getJSON("<%= new_or_edit_course_quiz_path(@course)%>",{"group":group}, function(resp){
+    $.getJSON("<%= new_or_edit_course_quiz_path(@course)%>",{"group":group, "type":type}, function(resp){
     	
     	$('#best_in_place_quiz__name').parent().siblings('.list_header_link').attr("onclick","showQuiz($(this),'/courses/"+resp["quiz"]["course_id"]+"/groups/"+resp["quiz"]["group_id"]+"/group_editor?real_quiz="+resp["quiz"]["id"]+"')");
     	$('#best_in_place_quiz__name').text(resp["quiz"]["name"])
@@ -82,6 +85,7 @@ function createnewQuiz(group) // to add a new quiz (like lecture)
     	setup();
     	
     	updateIDs();
+    	//moveElement($('.fields#quiz_'+resp["quiz"]["id"]))
     });
 	
 }
@@ -398,10 +402,30 @@ $(document).ready(function(){
 	var category_sort_order = <%= raw @to_return %>
 	console.log(category_sort_order);
 	$('.item_list').reOrder(category_sort_order);
-	
+	$( "#statistics" ).ajaxStop(function() { // when anything changes update statistics
+		console.log("in reload part")
+		$.ajax({url:"<%= statistics_course_group_path(@course,@group)%>",type:'get', dataType:'script', global:false});
+	});
+	setup_quiz_button();
+	setup_lecture_button();
 	setup();
 });
 
+setup_quiz_button= function()
+{
+	$(document).on('nested:fieldAdded:quizzes', function(event){
+		console.log("in nested event");
+  		moveElement("none")
+	});
+};
+
+setup_lecture_button= function()
+{
+	$(document).on('nested:fieldAdded:lectures', function(event){
+		console.log("in nested event");
+  		moveElement("none")
+	});
+};
 
 (function($) {
 
@@ -417,6 +441,7 @@ $.fn.reOrder = function(array) {
 	  // adding the two buttons.
 	  array[i]=$('.item_list').children('a')[0]
 	  array[i+1]=$('.item_list').children('a')[1]
+	  array[i+2]=$('.item_list').children('a')[2]
 	  console.log("array is")
 	  console.log(array)
 	  
@@ -490,6 +515,10 @@ $.fn.reOrder = function(array) {
 	}
 </style>
 
+<div id="statistics">  <!-- want to update it with every ajax request.  -->
+<%= render "statistics", :group2 => @group%>
+</div>
+
 <%= simple_nested_form_for([@course,@group], :remote => true)  do |f| %>
   <%= f.error_notification %>
 
@@ -536,7 +565,7 @@ $.fn.reOrder = function(array) {
     	<li class="item_row unviewed" style="padding-top:8px;padding-bottom:18px" id=<%= "quiz_details"%> >
   		<div>
     	<!-- <%= best_in_place task_form.object, "instructions", :path => [@course, task_form.object]%> -->
-    	Please enter quiz details on the right.
+    	Please enter details on the right.
     	</div>
     	</li>
 	</ul>
@@ -544,7 +573,8 @@ $.fn.reOrder = function(array) {
   	
 	<% end %>
 	
-	<%= f.link_to_add "Add a Quiz", :quizzes, :onclick => "createnewQuiz(#{@group.id})" ,:class =>"btn btn-primary", :style => "float:right;margin-bottom:20px;margin-top:20px;margin-right:10px;"%>
+	<%= f.link_to_add "Add a Survey", :quizzes , :onclick => "createnewQuiz(#{@group.id}, 'survey')",:class =>"btn btn-primary", :style => "float:right;margin-bottom:20px;margin-right:10px;margin-top:20px;"%>
+	<%= f.link_to_add "Add a Quiz", :quizzes, :onclick => "createnewQuiz(#{@group.id},'quiz')" ,:class =>"btn btn-primary", :style => "float:right;margin-bottom:20px;margin-top:20px;margin-right:10px;"%>
 	<%= f.link_to_add "Add a Lecture", :lectures, :onclick => "createnewLecture(#{@group.id})" ,:class =>"btn btn-primary", :style => "float:right;margin-bottom:20px;margin-top:20px;margin-right:10px;"%>
 	
   </div>
