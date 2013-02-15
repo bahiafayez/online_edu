@@ -94,22 +94,22 @@ class LecturesController < ApplicationController
     @lecture.events.where(:quiz_id => nil, :group_id => @lecture.group.id).destroy_all
     
     #if same as module, then i will change the due date/ appearance date to be like the module.
-    if params[:lecture][:due_date_module] and params[:lecture][:due_date_module]=="true"
+    if params[:lecture][:due_date_module] #and params[:lecture][:due_date_module]=="true"
       params[:lecture][:due_date]=@lecture.group.due_date
     end 
     
-    if params[:lecture][:appearance_time_module] and params[:lecture][:appearance_time_module]=="true"
+    if params[:lecture][:appearance_time_module] #and params[:lecture][:appearance_time_module]=="true"
       params[:lecture][:appearance_time]=@lecture.group.appearance_time
     end 
     
     #can't change due_date/ appearance_time if boolean is true (take from module)
-    if params[:lecture][:due_date] and @lecture.due_date_module==true
-      params[:lecture][:due_date]=@lecture.group.due_date
-    end
+ #   if params[:lecture][:due_date] and @lecture.due_date_module==true
+ #     params[:lecture][:due_date]=@lecture.group.due_date
+ #   end
     
-    if params[:lecture][:appearance_time] and @lecture.appearance_time_module==true
-      params[:lecture][:appearance_time]=@lecture.group.appearance_time
-    end
+ #   if params[:lecture][:appearance_time] and @lecture.appearance_time_module==true
+ #     params[:lecture][:appearance_time]=@lecture.group.appearance_time
+ #   end
     
     respond_to do |format|
       if @lecture.update_attributes(params[:lecture])
@@ -123,6 +123,8 @@ class LecturesController < ApplicationController
         print @lecture.due_date != @lecture.group.due_date
         print @lecture.appearance_time != @lecture.group.appearance_time
         
+        @type= "lecture_#{@lecture.id}"
+        
         #comparing without the fractional part of the second.
         if @lecture.due_date.to_formatted_s(:number) != @lecture.group.due_date.to_formatted_s(:number) or @lecture.appearance_time.to_formatted_s(:number) != @lecture.group.appearance_time.to_formatted_s(:number)
           print @lecture.due_date.to_formatted_s(:number)
@@ -131,6 +133,7 @@ class LecturesController < ApplicationController
         end
         format.html { redirect_to [@course, @lecture], notice: 'Lecture was successfully updated.' }
         format.json { head :no_content }
+        format.js{}
       else
         format.html { render action: "edit" }
         format.json { render json: @lecture.errors, status: :unprocessable_entity }
@@ -211,7 +214,7 @@ class LecturesController < ApplicationController
   def add_answer #creating an online answer, and associating it with an online quiz.
     logger.debug("in add answer!!!#{params[:flag]}")
     if params[:flag]!="false"
-      @current=OnlineAnswer.create(:online_quiz_id => params[:quiz], :xcoor => params[:left], :ycoor => params[:top])
+      @current=OnlineAnswer.create(:online_quiz_id => params[:quiz], :xcoor => params[:left], :ycoor => params[:top], :correct => false)
     end
     @answers= OnlineAnswer.where(:online_quiz_id => params[:quiz])#.pluck(:time)
     @course= Course.find(params[:course_id])
@@ -384,8 +387,14 @@ class LecturesController < ApplicationController
     
       if @lecture.save
         @updated = @lecture.appearance_time.strftime('%d %b (%a)')
+        @type="lecture_#{@lecture.id}"
         logger.debug("appearance time isssss #{@updated}")
-        render json: {"lecture" => @lecture, "updated"=>@updated}, status: :created 
+        respond_to do |format|
+          format.html {}
+          format.json {}
+          format.js { render "reload_editor", :locals => {:type => "lecture_#{@lecture.id}"}}
+        end
+        #render json: {"lecture" => @lecture, "updated"=>@updated}, status: :created 
       else
        
         render json: @lecture.errors, status: :unprocessable_entity 
@@ -399,11 +408,25 @@ class LecturesController < ApplicationController
     
     
       if @quiz.save
-        render json: {"quiz" => @quiz}, status: :created 
+        #render json: {"quiz" => @quiz}, status: :created 
+        respond_to do |format|
+          format.js{}
+          format.json{}
+        end
       else
        
         render json: @quiz.errors, status: :unprocessable_entity 
       end
+  end
+  
+  def reload_invideo_quizzes
+    @lecture= Lecture.find(params[:id])
+  
+    respond_to do |format|
+      format.js{render "new_quiz"}
+      format.json{}
+    end
+  
   end
   
   def save_duration
@@ -426,6 +449,23 @@ class LecturesController < ApplicationController
      f.save
    end
    render json: {"done"=>"done"}
+   end
+   
+   def middle
+     @lecture = Lecture.find(params[:id])
+     respond_to do |format|
+     format.js { 
+          render "videoquiz", :locals => {:lec => @lecture}
+        }
+        
+     end
+   end
+   
+   def details
+     @lecture = Lecture.find(params[:id])
+     respond_to do |format|
+      format.js{}
+      end
    end
   
 end

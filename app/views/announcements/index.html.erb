@@ -25,9 +25,9 @@
 <% @announcements.each do |a| %>
 	
 <tr id=<%="announce_#{a.id}" %> >
-	<td><%= best_in_place a, "announcement", :path => [@course, a], :classes => "small", :type => :textarea %></td>
-	<td><%= best_in_place a, "date", :path => [@course, a] ,:type =>:date, :classes => "small" %></td>	
-	<td><%= link_to "X", [@course, a ] ,:data => {:confirm => "Are you sure?"}, :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" %></td>	
+	<td><%= best_in_place a, "announcement", :path => [@course, a], :classes => "small", :type => :textarea , :data => {:id => a.id} %></td>
+	<td class='updated' id=<%= "time_#{a.id}"%>><%= a.updated_at %></td>	
+	<td><%= link_to (image_tag "trash3.png"), [@course, a ] ,:data => {:confirm => "Are you sure you want to delete this announcement?"}, :method => :delete, :remote=> true, :style=>"float:right;margin-top:2px;" %></td>	
 </tr>
 	
 <% end %>
@@ -36,3 +36,17 @@
 <div id="error"></div>
 <%= render "form" %>
 <% end %>
+
+<script>
+	$(document).ready(function(){
+		$('.best_in_place').bind("ajax:success", function () {
+			var id=$(this).data('id');
+			$.ajax({url:"/courses/<%=@course.id%>/announcements/"+id+"/reload", type:'get', dataType:'script'}); 
+		});
+		
+		$('#post_announce').click(function(event){
+			$("#sending").addClass("alert")
+			$("#sending").html("<b>Sending Emails...</b>");
+		});
+	});
+</script>

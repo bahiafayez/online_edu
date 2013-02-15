@@ -1,260 +1,131 @@
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css" />
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+$("html").addClass("js");
+$.fn.accordion.defaults.container = false; 
+
+$(function() {
+	$.fn.accordion.defaults.initShow='<%= "##{@type}" if @type %>';
+  $("#acc1").accordion({
+      el: ".h", 
+      head: "h5, h6", 
+      next: "div", 
+      //initShow : "div.outer:eq(0)"
+  });
+  $("html").removeClass("js");
+});
+//--><!]]>
+</script>
+<!--<![endif]-->
+
 <script>
 
-function updateIDs()
-{
-	$('.item_list').children(".fields").each(function(index) {
-	
-    $(this).attr("id", "group_"+$(this).children("li").attr("id"))
-    });
-    
-    
-    $('.item_section_list').children('.fields').each(function(index)
-    {
-    $(this).attr("id", $(this).children("li").attr("id"))
-    });
 
-}
 //for dragging
 $(document).ready(function(){
 
 	
 //$('.fields').children("li").each(if($(this).hasClass("item_row")){console.debug $(this)})
-updateIDs()
+//updateIDs()
 	
-$('.item_list').sortable({
+$('#acc1').sortable({
 axis: 'y',
 dropOnEmpty: false,
 handle: '.handle',
 cursor: 'crosshair',
-items: 'div.fields',
+items: 'li.modules',
 opacity: 0.4,
 scroll: true,
 update: function(){
+console.log(this)
 $.ajax({
 type: 'post',
-data: $('.item_list').sortable('serialize'),
+data: $('#acc1').sortable('serialize'),
 dataType: 'script',
 complete: function(request){
-$('.item_list').effect('highlight');
+$('#acc1').effect('highlight');
 },
 url: '/courses/<%= @course.id %>/groups/sort'})
 }
 });
+
+
+
+$('ul.items').sortable({
+axis: 'y',
+dropOnEmpty: false,
+handle: '.handle2',
+cursor: 'crosshair',
+items: 'li.last-child',
+opacity: 0.4,
+scroll: true,
+update: function(){
+console.log(this)
+var id_group=parseInt($(this).attr("id").split("_")[2]);
+$.ajax({
+	type: 'post',
+	data: $(this).sortable("serialize", {key:"toSort[]", expression: /(.+)/ }),
+	dataType: 'script',
+	complete: function(request){
+	$('ul.items').effect('highlight');
+	},
+	url: '/courses/<%= @course.id %>/lectures/sort?group='+id_group});
+}
+});
 });
 
-function setup()
-{
-	 $('.contracted').next().hide();
 
-    $('.list_header_link').click(function(event){
-        event.preventDefault();
-        var linkElem = $(this).parent();
-        var sectionElem = $(this).parent().next();
-        //console.debug("sectionElem is "+JSON.stringify(sectionElem));
-        if(linkElem.hasClass('expanded')){
-            linkElem.removeClass('expanded');
-            linkElem.addClass('contracted');
-            sectionElem.slideUp();
-            linkElem.find('.list_header_state').html('(collapsed, click to expand)');
-        }
-        else if(linkElem.hasClass('contracted')){
-            linkElem.removeClass('contracted');
-            linkElem.addClass('expanded');
-            sectionElem.slideDown();
-            linkElem.find('.list_header_state').html('(expanded, click to collapse)');
-        }
-    });
-}
 $(document).ready(function(){
 	
-	// reorder lectures and quizzes.
-	console.log("over here")
-	var category_sort_order = <%= raw @to_return %>
-	console.log(category_sort_order);
-	//$('.item_list').reOrder(category_sort_order);
-	
-	$('.item_list').children('.fields').each(function( index , element) {
-		$($($(this).children('li')[0]).children('.item_section_list')[0]).reOrder(category_sort_order[index]);
-	});
-	
-	setup_quiz_button();
-	setup_lecture_button();
-	
-  setup();
+	setup_module_path();  // when click on module show statistics and details
+	setup_item_path(); // show quiz or lecture details.
 });
 
-
-setup_quiz_button= function()
+setup_module_path = function()
 {
-	$(document).on('nested:fieldAdded:quizzes', function(event){
-		console.log("in nested event");
-		var field = event.field; 
-  		moveElement(field,0)
+	$('.trigger').click(function(event){
+		var group_id=$(this).closest('li').attr('id').split("_")[1]
+		$('#current_viewed').data('item',"group");
+		$('#current_viewed').data('id',group_id);
+		$.ajax({url:"/courses/<%=@course.id%>/groups/"+group_id+"/statistics", type:'get', dataType:'script'}); //statistics
+		$.ajax({url:"/courses/<%=@course.id%>/groups/"+group_id+"/details", type:'get', dataType:'script'}); //details
 	});
-};
+	
+}
 
-setup_lecture_button= function()
+setup_item_path = function()
 {
-	$(document).on('nested:fieldAdded:lectures', function(event){	
-  		var field = event.field; 
-  		console.log("in nested event"+field);
-  		moveElement(field,0)
+	$('.trigger2').click(function(event){
+		var item= $(this).parents("li:eq(0)").attr('id').split("_")[0];
+		var item_id= $(this).parents("li:eq(0)").attr('id').split("_")[1];
+		var group_id=$(this).parents("li:eq(1)").attr('id').split("_")[1];
+		$('#current_viewed').data('item',item);
+		$('#current_viewed').data('id',item_id);
+		$.ajax({url:"/courses/<%=@course.id%>/"+item.pluralize()+"/"+item_id+"/details", type:'get', dataType:'script'}); //statistics
+		$.ajax({url:"/courses/<%=@course.id%>/"+item.pluralize()+"/"+item_id+"/middle", type:'get', dataType:'script',complete: function(request){
+			//console.log("done");
+			//pop = Popcorn.youtube( "#youtube", "http://www.youtube.com/watch?v=OVLZ6tCOa1w" ,{ width: 400, controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
+			//pop.controls( false );                          
+			//pop.play();
+			//console.log(pop);
+			
+			
+				//THIS IS WORKING NOW.. MAKE SURE BUTTON WORKS TOO AND CONTINUE,
+			
+			
+			
+		}
+		}); //middle
+		
 	});
+	
+}
+
+setup_module= function()
+{
+	
+		$.ajax({ url: "<%= new_or_edit_course_group_path(@course)%>", type: 'get', dataType:'script' });
+	
 };
-</script>
-
-
-
-<script>
-function update()
-{
-  
-    // we just need to add the key/value pair for the DELETE method
-    // as the second argument to the JQuery $.post() call
-    //$.post(this.href, { _method: 'delete' }, null, "script");
-    //return false;
-    //$('.simple_form').submit();
-    
-	
-    setTimeout(function (){ 
-    $('.simple_form').submit();
-    }, 1000); // in milliseconds
-    
-    
-
-  
-}
-function removeModule()
-{
-	alert("Are you sure?")
-}
-
-
-function createnewLecture(group) // when add a lecture, I save it with a controller method then change the existing fields
-{
-	console.debug("group isssssssss "+group.attr("id"))
-	$('#best_in_place_lecture__name').text("New Lecture")
-	//$('#best_in_place_group__appearance_time').text("05 Nov (Tue)")
-    $.getJSON("<%= new_or_edit_course_lecture_path(@course)%>",{"group":group.attr("id")}, function(resp){
-    	console.debug("group id is "+resp["lecture"]["id"])
-    	$('#best_in_place_lecture__name').text(resp["lecture"]["name"])
-    	$('#best_in_place_lecture__url').text(resp["lecture"]["url"])
-   // 	$('#best_in_place_lecture__appearance_time').text(resp["updated"])
-   		$('#best_in_place_lecture__name').siblings('a').attr("href","/courses/"+resp["lecture"]["course_id"]+"/lectures/"+resp["lecture"]["id"]) // adjusting the remove.
-    	$('#best_in_place_lecture__name').closest('li').attr("id", "lecture_"+resp["lecture"]["id"]) // setting li to correct id
-    	$('#best_in_place_lecture__name').attr("data-url", "/courses/"+resp["lecture"]["course_id"]+"/lectures/"+resp["lecture"]["id"])
-    	$('#best_in_place_lecture__name').attr("id","best_in_place_lecture_"+resp["lecture"]["id"]+"_name")
-   		$('#best_in_place_lecture__url').attr("data-url", "/courses/"+resp["lecture"]["course_id"]+"/lectures/"+resp["lecture"]["id"])
-    	$('#best_in_place_lecture__url').attr("id","best_in_place_lecture_"+resp["lecture"]["id"]+"_url")
-   // 	$('#best_in_place_lecture__appearance_time').attr("data-url", "/courses/"+resp["lecture"]["course_id"]+"/lectures/"+resp["lecture"]["id"])
-    //	$('#best_in_place_lecture__appearance_time').attr("id","best_in_place_lecture_"+resp["lecture"]["id"]+"_appearance_time")
-    	
-   // 	$('.list_header_link').unbind();
-   // 	setup();
-    	
-    	updateIDs();
-    	//moveElement($('.fields#lecture_'+resp["lecture"]["id"]),0)
-    });
-	
-}
-
-function moveElement(elem,pos)
-{
-	console.log(elem.siblings('a'));
-	//elem.remove().insertBefore(elem.siblings('a'));
-	elem.insertBefore($(elem.siblings('a')[pos]))
-}
-
-function createnewQuiz(group, quiz_type) // when add a quiz, I save it with a controller method then change the existing fields
-{
-	console.debug("group isssssssss "+group.attr("id"))
-	$('#best_in_place_quiz__name').text("New Quiz")
-	type= quiz_type
-	//$('#best_in_place_group__appearance_time').text("05 Nov (Tue)")
-    $.getJSON("<%= new_or_edit_course_quiz_path(@course)%>",{"group":group.attr("id"), "type":type}, function(resp){
-    	
-    	$('#best_in_place_quiz__name').text(resp["quiz"]["name"])
-    	
-   // 	$('#best_in_place_lecture__appearance_time').text(resp["updated"])
-   		$('#best_in_place_quiz__name').siblings('a').attr("href","/courses/"+resp["quiz"]["course_id"]+"/quizzes/"+resp["quiz"]["id"]) // adjusting the remove.
-    	$('#best_in_place_quiz__name').closest('li').attr("id", "quiz_"+resp["quiz"]["id"]) // setting li to correct id
-    	$('#best_in_place_quiz__name').attr("data-url", "/courses/"+resp["quiz"]["course_id"]+"/quizzes/"+resp["quiz"]["id"])
-    	$('#best_in_place_quiz__name').attr("id","best_in_place_quiz_"+resp["quiz"]["id"]+"_name")
-   		
-    	
-   // 	$('#best_in_place_lecture__appearance_time').attr("data-url", "/courses/"+resp["lecture"]["course_id"]+"/lectures/"+resp["lecture"]["id"])
-    //	$('#best_in_place_lecture__appearance_time').attr("id","best_in_place_lecture_"+resp["lecture"]["id"]+"_appearance_time")
-    	
-   // 	$('.list_header_link').unbind();
-   // 	setup();
-    	
-    	updateIDs();
-    	//moveElement($('.fields#quiz_'+resp["quiz"]["id"]),0)
-    });
-	
-}
-
-
-function createnewModule() // when add a module, I save it with a controller method then change the existing fields
-{
-	$('#best_in_place_group__name').text("New Module")
-	//$('#best_in_place_group__appearance_time').text("05 Nov (Tue)")
-    $.getJSON("<%= new_or_edit_course_group_path(@course)%>", function(resp){
-    	console.debug("group id is "+resp["group"]["id"])
-    	$('#best_in_place_group__name').text(resp["group"]["name"])
-    	$('#best_in_place_group__appearance_time').text(resp["updated"])
-    	$('#best_in_place_group__due_date').text(resp["updatedDue"])
-    	$('#best_in_place_group__name').closest('li').attr("id", resp["group"]["id"]) // setting li to correct id
-    	$('#best_in_place_group__name').closest('li').attr("style","height=0px;margin-bottom:-10px")
-    	$('#best_in_place_group__name').attr("data-url", "/courses/"+resp["group"]["course_id"]+"/groups/"+resp["group"]["id"])
-    	$('#best_in_place_group__name').siblings('a#removeB').attr("href","/courses/"+resp["group"]["course_id"]+"/groups/"+resp["group"]["id"]) // for remove button
-    	$('#best_in_place_group__name').siblings('a#editB').attr("href","/courses/"+resp["group"]["course_id"]+"/groups/"+resp["group"]["id"]+"/group_editor") // for editor button
-    	$('#best_in_place_group__name').attr("id","best_in_place_group_"+resp["group"]["id"]+"_name")
-    	$('#best_in_place_group__appearance_time').attr("data-url", "/courses/"+resp["group"]["course_id"]+"/groups/"+resp["group"]["id"])
-    	$('#best_in_place_group__appearance_time').attr("id","best_in_place_group_"+resp["group"]["id"]+"_appearance_time")
-     	$('#best_in_place_group__due_date').attr("data-url", "/courses/"+resp["group"]["course_id"]+"/groups/"+resp["group"]["id"])
-    	$('#best_in_place_group__due_date').attr("id","best_in_place_group_"+resp["group"]["id"]+"_due_date")
-     	
-     	// unbind event and bind again (so new elements are included)
-    	 $('.list_header_link').unbind();
-    	 setup();
-    	
-    	
-    	updateIDs() // nedd to update li id first.
-    });
-	
-	
-}
-
-(function($) {
-
-// to reorder when load
-$.fn.reOrder = function(array) {
-	console.log(this)
-  return this.each(function() {
-
-    if (array) {    
-      for(var i=0; i < array.length; i++) 
-        array[i] = $("#" + array[i]);
-	  
-	  // adding the two buttons.
-	  array[i]=$(this).children('a')[0]
-	  array[i+1]=$(this).children('a')[1]
-	  //array[i+2]=$(this).children('#btn-arrow')[0]
-	  array[i+2]=$(this).children('a')[2]
-	  console.log("array is")
-	  console.log(array)
-	  
-      $(this).empty();  
-
-      for(var i=0; i < array.length; i++)
-        $(this).append(array[i]);      
-    }
-  });    
-}
-
-})(jQuery);
 
 </script>
 <style>
@@ -270,58 +141,40 @@ $.fn.reOrder = function(array) {
 		color:red;
 		font-style: italic;
 	}
+	.handle:hover, .handle2:hover{
+		cursor: crosshair;
+		vertical-align: top;
+	}
+	.handle, .handle2{
+		vertical-align: top;
+	}
 </style>
-<%= simple_nested_form_for(@course, :remote => true)  do |f| %>
-  <%= f.error_notification %>
 
-	<div class="item_list">
-		
-		
-    
-	<%= f.fields_for :groups do |task_form| %>
-	
-	<!-- <%= task_form.input :name %> -->
-	<li id=<%= task_form.object.id %> style="height=0px;margin-bottom:-10px">
-    <div class="contracted" style="display:block"><a href="#" class="list_header_link handle" style="background-color:rgb(233,233,233);text-indent: -9999em;display:block;">IMAGE TEXT</a><h3 class="list_header" style="line-height: 50px;"><%= best_in_place task_form.object, "name", :path => [@course, task_form.object]%><p class="left-space">Appears: </p><%= best_in_place task_form.object, "appearance_time", :path => [@course, task_form.object],:type => :date, :classes => "datepicker2"%> <p class="left-space">Due: </p><%= best_in_place task_form.object, "due_date", :path => [@course, task_form.object],:type => :date, :classes => "datepicker2"%><%= link_to "X", [@course, task_form.object ] ,:confirm => "Are you sure?", :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" , :id => "removeB"%><%= link_to "Edit", group_editor_course_group_path(@course,task_form.object.id||0), :id => "editB", :class => "btn btn-mini", :style => "float:right;margin-top:2px;" %></h3><span class="list_header_state hidden">(expanded, click to collapse)</span></div>
-    <ul class="item_section_list" style="min-height:100px">
-    	
-	
-  		<%= task_form.fields_for :lectures do |t| %>
-  		<li class="item_row unviewed" id=<%= "lecture_#{t.object.id}" %> >
-  		<div> 
-  		<%= best_in_place t.object, "name", :path => [@course, t.object] %> <!-- <p style="margin-left:50px;display:inline;color:red;font-style:italic">video-url:</p> <%= best_in_place t.object, "url", :path => [@course, t.object] , :classes => 'red'%> -->
-  		<%= link_to "X", [@course, t.object ] ,:data => {:confirm => "Are you sure?"}, :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" %>
-  		</div>
-  		</li>
-  		<% end %>
-  		
-  		<%= task_form.fields_for :quizzes do |t| %>
-  			<li class="item_row unviewed" id=<%= "quiz_#{t.object.id}" %> >
-  				<div>
-  					<%= best_in_place t.object, "name", :path => [@course, t.object] %> 
-  					<%= link_to "X", [@course, t.object ] ,:data => {:confirm => "Are you sure?"}, :method => :delete, :remote=> true, :class=> "btn btn-mini btn-danger", :style=>"float:right;margin-top:2px;" %>
-  				</div>
-  			</li>
-  		<% end %>
-  		
-  		<!-- dropdown button-->
-  		<!-- <div id="btn-arrow" class="btn-group dropup" style="float:right;margin-bottom:10px;margin-right:10px;margin-top:60px;">
-                <button class="btn btn-small btn-primary dropdown-toggle" data-toggle="dropdown">Add a Quiz <span class="caret"></span></button>
-                <ul style="z-index:10" class="dropdown-menu">
-                  <li style="z-index:10"><%= task_form.link_to_add "Add a Quiz", :quizzes , :onclick => "createnewQuiz($(this).closest('li'))" %></li>
-                  <li style="z-index:10"><%= task_form.link_to_add "Add a Survey", :quizzes , :onclick => "createnewQuiz($(this).closest('li'))"%></li>
-             	</ul>
-         </div> -->
-  		<%= task_form.link_to_add "Add a Survey", :quizzes , :onclick => "createnewQuiz($(this).closest('li'), 'survey')",:class =>"btn btn-small btn-primary", :style => "float:right;margin-bottom:10px;margin-right:10px;display:inline"%>
-  		<%= task_form.link_to_add "Add a Quiz", :quizzes , :onclick => "createnewQuiz($(this).closest('li'), 'quiz')",:class =>"btn btn-small btn-primary", :style => "float:right;margin-bottom:10px;margin-right:10px;display:inline"%>
-  		<%= task_form.link_to_add "Add a Lecture", :lectures , :onclick => "createnewLecture($(this).closest('li'))",:class =>"btn btn-small btn-primary", :style => "float:right;margin-bottom:10px;margin-right:10px;display:inline"%>
-	 
-	</ul>
-  	</li>
-	<% end %>	
-	<%= f.link_to_add "Add a module", :groups, :onclick => "createnewModule()" ,:class =>"btn btn-primary", :style => "float:right;margin-bottom:20px;margin-top:20px;margin-right:10px;"%>
-
-  </div>
-  
-<% end %>
-
+<ul id="acc1" class="accordion">
+	<% @course.groups.each do |group| %>
+					<li id=<%= "group_#{group.id}"%> class="modules">
+                        <h5><%=image_tag "move2.png", :class => 'handle', :title => "Drag to reorder modules" %><%= group.name %><%= link_to image_tag("trash3.png") , [@course, group ],:title =>"delete" ,:confirm => "Are you sure you want to delete #{group.name} and all of its contents?", :method => :delete, :remote=> true, :style=>"float:right;" , :id => "removeB"%></h5>
+                        <div class="inner" id="modules">
+                          <ul class="items" id=<%="group_items_#{group.id}"%>>
+                          	<% group.get_items.each do |item| %>
+                            <li id=<%= "#{item.class.name.downcase}_#{item.id}"%> class="last-child">
+                              <%=image_tag "move2.png", :class => 'handle2', :title => "Drag to reorder items" %><div class="trigger2"><%= item.name %></div><%= link_to image_tag("trash3.png") , [@course, item ],:title =>"delete" ,:confirm => "Are you sure you want to delete #{item.name} and all of its contents?", :method => :delete, :remote=> true, :style=>"float:right;display:inline-table;" , :id => "removeB"%>
+                            </li>
+                            <% end %>
+                            <li class="item-buttons">
+                            <center>
+                            <%=link_to "Add Lecture",new_or_edit_course_lecture_path(@course, :group =>group.id), :class=>"btn btn-mini", :remote => true%>
+                            <%=link_to "Add Quiz",new_or_edit_course_quiz_path(@course, :group =>group.id, :type =>"quiz"), :class=>"btn btn-mini", :remote => true%>
+                            <%=link_to "Add Survey",new_or_edit_course_quiz_path(@course, :group =>group.id, :type =>"survey"), :class=>"btn btn-mini", :remote => true%>
+                            </center>
+                            </li>
+                          </ul>
+	                        
+	                			
+                        </div>
+                      </li>
+                 
+ 				<% end %>
+ 			</ul>
+ 			<%= button_tag "Add a module",:onclick =>"setup_module();" ,:class =>"btn", :style => "float:right;margin-bottom:20px;margin-top:20px;margin-right:10px;"%>
+ 

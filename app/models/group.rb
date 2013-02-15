@@ -40,6 +40,10 @@ class Group < ActiveRecord::Base
     return (Time.at(count).utc.strftime("%H:%M:%S"))
   end
   
+  def get_items
+    all=(quizzes+lectures).sort{|a,b| a.position <=> b.position}
+  end
+  
   private
   def clean_up
     self.events.where(:lecture_id => nil, :quiz_id => nil).destroy_all

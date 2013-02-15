@@ -1,5 +1,5 @@
 <%= render "shared/head2"%>
-<% cache @course do %>
+<% cache do %>
 
 <h3> <%= @course.short_name %> - <%= @course.name %></h3>
 					<p>
@@ -9,7 +9,7 @@
 					
 					<p>
 					  <b>Duration:</b>
-					  <%= @course.duration %>
+					  <%= @course.duration %> Weeks
 					</p>
 					
 					<p>

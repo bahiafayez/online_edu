@@ -21,25 +21,12 @@ label{
 	font-size:12px !important;
 }
 </style>
-
+<center><h3><%= @quiz.name %></h3></center>
 <div id="notify"></div>
-<%= simple_nested_form_for([@course,@real_quiz], :html => { :class => 'form-horizontal' }, :remote=> true)  do |f| %>
-  <%= f.error_notification %>
-  
 
-  <div class="form-inputs">
-   
-    <%= f.input :name %>
-    <%= f.input :instructions , :input_html => {:style => 'width: 250px; height: 50px'} %>
-  	<%= f.input :due_date_module , :label => "Due date like module?", :input_html => {:style => 'width:100px;'}%>
-    <%= f.input :appearance_time_module ,:label => "Appearance date like module?", :input_html => {:style => 'width:100px;'} %>
-  	<div class="to_hide_due">
-    	<%= f.input :due_date , :input_html => {:style => 'width:100px;'}%>
-    </div>
-    <div class="to_hide_appear">
-    	<%= f.input :appearance_time , :input_html => {:style => 'width:100px;'}%>
-    </div>
-  </div>
+<%= simple_nested_form_for([@course,@quiz], :url => {:action => :update_questions}, :html => { :class => 'form-horizontal' }, :remote=> true)  do |f| %>
+  <%= f.error_notification %>
+ 
 	
 	<%= f.fields_for :questions do |task_form| %>
   	<%= task_form.input :content, :label => "Question", :input_html => {:style => 'width: 250px; height: 50px'} %>
@@ -48,7 +35,7 @@ label{
   		<%= task_form.fields_for :answers do |t| %>
   		<!-- <p style="background-color: #eeffff; margin-left: 40px; width: 400px">  <!-- style this better with css --> 
   		<%= t.input :content ,:label => "Answer", :label_html =>{:style => 'margin-left: 40px;' },:input_html => {:style => 'margin-left: 40px; width: 250px; height: 50px'} %>
-  		<% if @real_quiz.quiz_type!="survey" %> 
+  		<% if @quiz.quiz_type!="survey" %> 
   			<%= t.input :correct ,:label => "Correct Answer?", :label_html =>{:style => 'margin-left: 40px;' }, :input_html => {:style => 'margin-left: 40px;'} %><br>
   		<% end %>
   		<%= t.link_to_remove "Remove this answer" %>
@@ -67,32 +54,3 @@ label{
   </div>
 <% end %>
 
-
-<script>
-	
-function hide_appear(elem)
-{
-	if($(elem).is(":checked"))
-		$('.to_hide_appear').hide();
-	else
-		$('.to_hide_appear').show();
-		
-		
-	
-}
-
-function hide_due(elem)
-{
-	if($(elem).is(":checked"))
-		$('.to_hide_due').hide();
-	else
-		$('.to_hide_due').show();
-		
-}
-
-$(document).ready(function() {
-  hide_appear($('#quiz_appearance_time_module'));
-  hide_due($('#quiz_due_date_module'));
-});
-
-</script>

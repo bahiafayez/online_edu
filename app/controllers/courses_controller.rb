@@ -4,7 +4,7 @@ class CoursesController < ApplicationController
   before_filter :set_zone , :except => [:index, :new, :create]
   
   cache_sweeper :course_sweeper
-  caches_action :new,:edit, :layout => false
+  caches_action :new, :layout => false  #removed edit.. because content for doesn't work with caching action.
   caches_action :index, :layout => false , :cache_path => proc { |c|
   { :tag => current_user.id, :update => Course.our(current_user.id).maximum(:updated_at).to_i, :num => Course.our(current_user.id).count } #so when change signed in user, then cache is stale.
   }

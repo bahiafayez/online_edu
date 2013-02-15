@@ -9,8 +9,8 @@
   <tr>
     <% if can? :create, Course %>
     	<td><%= link_to "#{course.short_name} #{course.name}", course_editor_course_path(course) %></td>
-    	<td><%= link_to 'Edit', edit_course_path(course) %></td>
-    	<td><%= link_to 'Destroy', course, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    	<!-- <td><%= link_to 'Edit', edit_course_path(course) %></td> -->
+    	<td><%= link_to (image_tag "trash3.png"), course,:title =>"Delete Course" , method: :delete, data: { confirm: "Are you sure you want to delete #{course.name} and all of its content?" } %></td>
     <% else %> 
     	<td><%= link_to "#{course.short_name} #{course.name}", course_event_path(course) %></td>
    <% end %>

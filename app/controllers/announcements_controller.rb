@@ -63,5 +63,10 @@ class AnnouncementsController < ApplicationController
     end
   end
 
-
+  def reload
+    @announcement = @course.announcements.find(params[:id])
+    respond_to do |format|
+      format.js {}
+    end
+  end
 end

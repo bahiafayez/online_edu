@@ -115,10 +115,17 @@ class GroupsController < ApplicationController
           q.save
         end
         
+        @course= @group.course
+        @group_new=@group
         
+        #@type="group_#{@group.id}"
+        if !@group.get_items.empty?
+          @type= "#{@group.get_items[0].class.name.downcase}_#{@group.get_items[0].id}"
+        end
         
         format.html { redirect_to [@course,@group], notice: 'Group was successfully updated.' }
         format.json { head :no_content }
+        format.js{}
       else
         format.html { render action: "edit" }
         format.json { render json: @group.errors, status: :unprocessable_entity }
@@ -130,12 +137,15 @@ class GroupsController < ApplicationController
   # DELETE /online_answers/1.json
   def destroy
     @group = @course.groups.find(params[:id])
+    group_lectures=@group.lectures.pluck(:id)
+    group_quizzes=@group.quizzes.pluck(:id)
     @group.destroy
 
+    
     respond_to do |format|
       format.html { redirect_to course_editor_course_url(@course) }
       format.json { head :no_content }
-      format.js { render "delete", :locals => {:rem => params[:id]}}
+      format.js { render "delete", :locals => {:rem => params[:id], :group_lectures =>group_lectures, :group_quizzes => group_quizzes }}
     end
   end
   
@@ -149,7 +159,13 @@ class GroupsController < ApplicationController
         @updated = @group.appearance_time.strftime('%d %b (%a)')
         @updatedDue = @group.due_date.strftime('%d %b (%a)')
         logger.debug("appearance time isssss #{@updated}")
-        render json: {"group" => @group, "updated"=>@updated, "updatedDue"=>@updatedDue}, status: :created 
+        respond_to do |format|
+          format.html {}
+          format.json {}
+          format.js { render "reload_editor", :locals => {:rem => @course}}
+        end
+         
+      
       else
        logger.debug(@group.errors.full_messages)
         render json: @group.errors, status: :unprocessable_entity 
@@ -226,6 +242,13 @@ class GroupsController < ApplicationController
    def statistics
      @group_new= Group.find(params[:id])
      #render json: {"group"=>@group_new}
+     respond_to do |format|
+      format.js{}
+      end
+   end
+   
+   def details
+     @group_new = Group.find(params[:id])
      respond_to do |format|
       format.js{}
       end

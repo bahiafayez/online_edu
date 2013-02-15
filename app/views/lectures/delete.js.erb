@@ -1,6 +1,11 @@
 var x= <%= rem %>
-$(".fields#lecture_"+x).remove();
+$("#lecture_"+x).remove();
 // only remove partial if this is the lecture i'm deleting
-if($("div#current_lecture_"+x).size()>=1)
-	$('#videospan').html("")
-	
+//if($("div#current_lecture_"+x).size()>=1)
+//	$('#videospan').html("")
+
+if($("#current_viewed").data("item")=="lecture" && $("#current_viewed").data("id")==""+x)
+{
+	$("#middle").html("");
+	$("#details").html("");
+}

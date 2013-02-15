@@ -1,11 +1,3 @@
-$('#videospan').html("<%= escape_javascript(render :partial => 'groups/quiz') %>");
-$('#notify').html("<div id='fading' class='alert alert-success'><%= @quiz.quiz_type.capitalize %> Saved.</div>")
-$("#fading").fadeOut(5000);
-
-$('#quiz_appearance_time_module').click(function (event) {  
-	hide_appear(this);
-});
-
-$('#quiz_due_date_module').click(function (event) {  
-	hide_due(this);
-});
+<!-- Reloading 3 partials, and opening tree at correct position. -->
+$('#tree').html("<%= escape_javascript(raw render("courses/course"))%>");
+$('#middle').html("<%= escape_javascript(render :partial => 'groups/quiz') %>");

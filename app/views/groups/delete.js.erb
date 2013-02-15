@@ -1,2 +1,33 @@
 var x= <%= rem %>
 $("#group_"+x).remove();
+
+ // if viewing the module.. remove it from partials
+if($("#current_viewed").data("item")=="group" && $("#current_viewed").data("id")==""+x)
+{
+	$("#middle").html("");
+	$("#details").html("");
+}
+
+
+// if viewing lectures or quizzes in the module, also remove from partials.
+
+var lectures= <%= group_lectures.to_json %>
+var quizzes= <%= group_quizzes.to_json %>
+
+for(var i=0; i<lectures.length; i++)
+{
+	if($("#current_viewed").data("item")=="lecture" && $("#current_viewed").data("id")==""+lectures[i])
+	{
+		$("#middle").html("");
+		$("#details").html("");
+	}
+}
+
+for(var i=0; i<quizzes.length; i++)
+{
+	if($("#current_viewed").data("item")=="quiz" && $("#current_viewed").data("id")==""+quizzes[i])
+	{
+		$("#middle").html("");
+		$("#details").html("");
+	}
+}

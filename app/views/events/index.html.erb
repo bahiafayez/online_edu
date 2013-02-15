@@ -12,10 +12,10 @@
 <thead>
 	<th>Announcements</th><th></th><th></th>
 </thead>
-<% @announcements.each do |a| %>
+<% @announcements.order(:updated_at).each do |a| %>
 <tr>
 	<td><%= a.announcement %></td>
-	<td><%= a.date %></td>
+	<td><%= a.updated_at %></td>
 	<td><%= a.user.name %></td>
 </tr>	 
 <% end %>

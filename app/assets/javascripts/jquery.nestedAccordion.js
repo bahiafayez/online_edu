@@ -34,9 +34,9 @@ $.fn.accordion = function(options) {
       $(El).each(function(){
           var $node = $(this);
           if ($node.find(o.next).length || $node.next(o.next).length) {
-            if ($node.find('> a').length) {
-                $node.find('> a').addClass("trigger").css('display', "block");
-            } else {
+            //if ($node.find('> a').length) {
+            //    $node.find('> a').addClass("trigger").css('display', "block");
+            //} else {
                 var anchor = '<a class="trigger" style="display:block" href="#" />'
                 if (o.elToWrap) {
                   var $t = $node.orphans(), $s = $node.find(o.elToWrap);
@@ -44,7 +44,7 @@ $.fn.accordion = function(options) {
                 } else {
                   $node.orphans().wrap(anchor);
                 }
-            }
+           // }
           } else {
             $node.addClass('last-child');
             if (o.lastChild && $node.find('> a').length) {$node.find('> a').addClass("trigger").css('display', "block");}

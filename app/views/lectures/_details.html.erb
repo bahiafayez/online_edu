@@ -1,0 +1,130 @@
+<script>
+function setAuthor(element) // get the author of the youtube video and display it.
+{
+	id=element.val().split("v=")[1]
+	
+	if(id!=null && typeof id != 'undefined')
+	{
+		id= id.split("&")[0]
+		var title="";
+		var duration;
+		var author;
+		var url="http://gdata.youtube.com/feeds/api/videos/"+id+"?alt=json"
+		console.debug(url)
+		$.ajax({
+                url: url,
+                dataType: "jsonp",
+                success: function (data) {
+			        title = data.entry.title.$t;
+			        author = data.entry.author[0].name.$t;
+			        duration = data.entry.media$group.yt$duration.seconds
+			        $("#title").val(title);
+			        $("#author").val(author);
+			        $("#thumbnail").html("<img class=bigimg src="+data.entry.media$group.media$thumbnail[0].url+" />");
+			        saveDuration(duration);
+			        }
+	    });
+	}
+}
+
+saveDuration = function(duration){
+	$.getJSON("/courses/"+<%=@course.id %>+"/lectures/"+<%= lecture.id%>+"/save_duration",{"duration":duration}, function(resp){
+					        
+					        });
+}
+appearance_date_setup = function(element){
+	if((element).is(":checked")){
+			$('#lecture_appearance_time_3i').attr("disabled","disabled");
+			$('#lecture_appearance_time_2i').attr("disabled","disabled")
+			$('#lecture_appearance_time_1i').attr("disabled","disabled")
+		}
+		else{
+			$('#lecture_appearance_time_3i').attr("disabled",false);
+			$('#lecture_appearance_time_2i').attr("disabled",false)
+			$('#lecture_appearance_time_1i').attr("disabled",false)
+		}
+}
+
+due_date_setup = function(element){
+		if((element).is(":checked")){
+			$('#lecture_due_date_3i').attr("disabled","disabled");
+			$('#lecture_due_date_2i').attr("disabled","disabled")
+			$('#lecture_due_date_1i').attr("disabled","disabled")
+		}
+		else{
+			$('#lecture_due_date_3i').attr("disabled",false);
+			$('#lecture_due_date_2i').attr("disabled",false)
+			$('#lecture_due_date_1i').attr("disabled",false)
+		}
+}
+
+setVideo = function()
+{
+$.ajax({url:"/courses/<%=@course.id%>/lectures/<%=lecture.id%>/middle", type:'get', dataType:'script'}); //middle
+}
+$(document).ready(function(){
+	
+	appearance_date_setup($('#lecture_appearance_time_module'));
+	due_date_setup($('#lecture_due_date_module'));
+	setAuthor($("#lecture_url"));
+	
+	$('#lecture_appearance_time_module').click(function(event){
+		console.log("here")
+		appearance_date_setup($(this));
+	});	
+	$('#lecture_due_date_module').click(function(event){
+		due_date_setup($(this));
+	});
+	$('#lecture_url').change(function(event){
+		setAuthor($(this));
+		//setVideo();
+	});
+	
+	
+});
+
+
+</script>
+<style>
+	.bigimg{
+		width:150px;
+	}
+</style>
+
+<center>
+<h3>Details</h3>
+<%= form_for([@course,lecture], :remote => true) do |f| %>
+<table class="table table-striped table-bordered" style="width:90%;font-size:12px;text-align: center">
+<tr>
+<td>Lecture Title:</td><td> <%= f.text_field :name, :size => 15, :style => "height:17px;width:140px;font-size:12px;"%></td>
+</tr>
+<tr>
+<td>Lecture URL:</td><td> <%= f.text_field :url, :size => 15, :style => "height:17px;width:140px;font-size:12px;"%></td>
+</tr>
+<tr>
+<td>Thumbnail:</td><td id="thumbnail"> </td>
+</tr>
+<tr>
+<td>Author:</td><td> <%= text_field_tag :author,'', :style => "height:17px;width:140px;font-size:12px;", :disabled => true%></td>
+</tr>
+<tr>
+<td>Title:</td><td> <%= text_field_tag :title, '',:style => "height:17px;width:140px;font-size:12px;", :disabled => true%></td>
+</tr>
+<tr>
+<td>Use Module's Appearance Date? </td><td> <%= f.check_box :appearance_time_module %><br /> <%= f.date_select :appearance_time , {:order => [:day,:month, :year]},:style => "height:25px;width: 120px;font-size:12px;" %></td>
+</tr>
+<tr>
+<td>Use Module's Due Date? </td><td> <%= f.check_box :due_date_module %><br /><%= f.date_select :due_date  , {:order => [:day,:month, :year]},:style => "height:25px;width: 120px;font-size:12px;"%></td>
+</tr>
+<tr>
+<td>Slides:</td><td><%= f.text_field :slides, :size => 15, :style => "height:17px;width:140px;font-size:12px;"%></td>
+</tr>
+<tr>
+<td>Description:</td><td><%= f.text_area :description,:size=>15 ,:style => "width:140px;font-size:12px;height:80px;" %></td>
+</tr>
+</table>
+<%= f.submit "Save Lecture", :class => "btn"%>
+<% end %>
+</center>
+
+

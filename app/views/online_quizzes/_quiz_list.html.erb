@@ -1,0 +1,112 @@
+<table class="table">
+<tr><td>Question</td><td>Time</td><td></td></tr>
+<% @lecture.online_quizzes.each do |quiz|%>
+<tr id=<%="online_quiz_#{quiz.id}"%>>
+	<td><%= link_to quiz.question, "", :remote => true, :onclick => "showOnlineQuiz('#{quiz.time}', '#{quiz.id}', '#{@lecture.id}')" %></td>
+	<td><%= Time.seconds_to_time(quiz.time) %></td>
+	<td><%= link_to image_tag("trash2.png"), quiz, :method => :delete, :remote => true, :confirm => "Are you sure you want to delete quiz #{quiz.question}", :style => "float:right"%>
+		<a class="edit_question" href="#myModal" data-toggle="modal" data-time="<%= quiz.time %>" data-id="<%= quiz.id %>" data-question="<%= quiz.question %>" style="float:right;"><img src="/assets/pencil3.png"/></a>
+	</td>
+</tr>
+<% end %>
+</table>
+
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel">Edit Quiz</h3>
+	</div>
+	<div class="modal-body">
+		<input type="hidden" id="quiz_id"/>
+		<table class="table">
+		<tr>
+		<td>Question: </td><td><input id="question" /></td>
+		</tr>
+		<tr>
+		<td>Time: </td><td><input id="time" disabled="disabled"/><%=check_box_tag "change_time" %> Change Time?</td>
+		</tr>
+		</table>
+		<div id="vid">
+		<div style="width:200px;" id="snapshot"></div>
+		<p>Drag to new position to change time</p>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		<button id="save_quiz" class="btn btn-primary">Save changes</button>
+	</div>
+</div>
+
+<script>
+showOnlineQuiz= function(seconds,q,l){
+	$("#current_invideo_viewed").data("id", q); //setting current quiz
+	$("#editing").html("<div class='alert'><b>You are now viewing the quiz at "+formatSecondsAsTime(seconds)+"</b> <a class='btn' id='done' style='float:right;margin-top:-5px;' onclick='done_editing()'>Done</a></div>")
+	$('#invideo_quizzes').children('table').children('tbody').children('tr').css("background-color","transparent")
+	$('#online_quiz_'+q).css("background-color","rgb(252,248,227)");
+	document.getElementById("ontop").innerHTML=""
+	pop.currentTime(seconds);
+	pop.pause();
+	$('.ontop').css("min-height","312px");
+	storedData={};
+	getOldData(q,l);
+	addDoubleClickBind(q,l);
+	//$('.edit').attr("disabled","disabled")
+	//elem.addClass('active');
+	//elem.attr("disabled",false)
+}	
+done_editing = function()
+{
+	document.getElementById("ontop").innerHTML="" // empty questions.
+	$('#invideo_quizzes').children('table').children('tbody').children('tr').css("background-color","transparent")
+	$('.ontop').css("min-height","278px");
+	//elem.removeClass('active');
+	$('.ontop').unbind();
+	$("#editing").html("");
+	//$('.edit').attr("disabled",false)
+}
+
+$(document).ready(function(){
+	$(document).on("click", ".edit_question", function () {
+	 done_editing();
+     var question = $(this).data('question');
+     var time = $(this).data('time');
+     var id= $(this).data('id');
+     $("#question").val( question );
+     $("#time").val( formatSecondsAsTime(time) );
+     $("#quiz_id").val(id)
+     $('#snapshot').html("");
+     $('#vid').hide();
+     pop2 = Popcorn.youtube( "#snapshot", "<%= @lecture.url %>" ,{ width: 200, controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
+  	 pop2.pause();
+  	 pop2.currentTime(parseInt(time));
+  	 console.log(pop2);
+  	 console.log(pop2.currentTime());
+    //$('#mymodal').modal('show');
+});
+
+	$('#change_time').click(function(event){
+		if($(this).is(":checked")){
+			$('#vid').show();
+			var time=$(this).siblings("#time").val()
+			tt=time.split(":");
+			sec=tt[0]*3600+tt[1]*60+tt[2]*1;
+			console.log("time is "+sec)
+			pop2.currentTime(sec);
+			console.log(pop2);
+		}else{
+			$('#vid').hide();
+		}
+	});
+	
+	$("#save_quiz").click(function(event){
+		id= $("#quiz_id").val()
+		$('#myModal').modal('hide');
+		if($('#change_time').is(":checked"))
+			$.ajax({url:"/online_quizzes/"+id, type:'put',data: { online_quiz: {time: pop2.currentTime(), question:$("#question").val()}}, dataType:'script'}); //save with time
+		else
+			$.ajax({url:"/online_quizzes/"+id, type:'put',data: { online_quiz:{question:$("#question").val()}}, dataType:'script'}); //save without time
+		
+	});	
+});
+	
+</script>

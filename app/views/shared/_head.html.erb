@@ -1,7 +1,11 @@
 <% content_for :extra do %>
     <ul class="nav nav-pills">
+    <li class=<%= (current_page?(progress_teacher_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Progress", progress_teacher_course_path(@course)%></li>
+    <li class=<%= (current_page?(course_announcements_path(@course)) ? 'active' : nil)  %>><%= link_to "Announcements", course_announcements_path(@course)%></li>
+    <li class=<%= (current_page?(course_editor_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Content", course_editor_course_path(@course)%></li>
+    <li class=<%= (current_page?(enrolled_students_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Enrolled Students", enrolled_students_course_path(@course)%></li>
     <li class=<%= (current_page?(course_path(@course)) ? 'active' : nil)  %>>
-    <%= link_to "Course Information", course_path(@course)%>
+    <%= link_to "Information", course_path(@course)%>
     </li>
     <!-- <li class=<%= (current_page?(courseware_teacher_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Courseware", courseware_teacher_course_path(@course)%></li> -->
     
@@ -13,10 +17,7 @@
 			<%= link_to "Quizzes" , course_quizzes_path(@course) %> 
 		</ul>
 	</li> -->
-    <li class=<%= (current_page?(course_editor_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Course Editor", course_editor_course_path(@course)%></li>
-    <li class=<%= (current_page?(course_announcements_path(@course)) ? 'active' : nil)  %>><%= link_to "Announcements", course_announcements_path(@course)%></li>
-    <li class=<%= (current_page?(enrolled_students_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Enrolled Students", enrolled_students_course_path(@course)%></li>
-    <li class=<%= (current_page?(progress_teacher_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Progress", progress_teacher_course_path(@course)%></li>
+   
     <li style="float:right"><b><%="#{@course.short_name} - #{@course.name}"%></b></li>
     </ul>
 <% end %>

@@ -103,7 +103,7 @@ class QuizzesController < ApplicationController
   # PUT /quizzes/1.json
   def update
     @quiz = Quiz.find(params[:id])
-    @real_quiz=@quiz
+    #@real_quiz=@quiz
      @course = Course.find(params[:course_id])
     #Time.zone=ActiveSupport::TimeZone[@course.time_zone]
     puts "Due date beforeee issssss #{params[:quiz][:due_date]}" 
@@ -112,9 +112,11 @@ class QuizzesController < ApplicationController
     puts "Due date issssss #{params[:quiz][:due_date]}"
     @quiz.events.where(:lecture_id => nil, :group_id => @quiz.group.id).destroy_all
     
+    @type= "quiz_#{@quiz.id}"
     
     respond_to do |format|
       if @quiz.update_attributes(params[:quiz])
+        
         #@quiz.due_date = @quiz.due_date.end_of_day
         #@quiz.save
           #if same as module, then i will change the due date/ appearance date to be like the module.
@@ -165,7 +167,13 @@ class QuizzesController < ApplicationController
       if @quiz.save
         @updated = @quiz.appearance_time.strftime('%d %b (%a)')
         logger.debug("appearance time isssss #{@updated}")
-        render json: {"quiz" => @quiz, "updated"=>@updated}, status: :created 
+        #render json: {"quiz" => @quiz, "updated"=>@updated}, status: :created
+        @type="quiz_#{@quiz.id}"
+        respond_to do |format|
+          format.html {}
+          format.json {}
+          format.js { render "courses/reload_editor"}
+        end 
       else
        
         render json: @quiz.errors, status: :unprocessable_entity 
@@ -176,5 +184,31 @@ class QuizzesController < ApplicationController
   def sort #called from module_editor to sort the quizzes (by dragging)
     #sorting in lectures controller.. as we sort both together.
   end
+  
+  def details
+     @quiz = Quiz.find(params[:id])
+     respond_to do |format|
+      format.js{}
+      end
+   end
+   
+   def middle
+     @quiz = Quiz.find(params[:id])
+     respond_to do |format|
+     format.js {}
+     end
+   end
 
+  def update_questions
+    @course= Course.find(params[:course_id])
+    @quiz = Quiz.find(params[:id])
+    respond_to do |format|
+      if params[:quiz]
+          @quiz.update_attributes(params[:quiz])
+          format.js{}
+      else
+          format.js{}
+      end
+    end
+  end
 end

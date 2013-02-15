@@ -1,7 +1,7 @@
 <%# Shows course information for the teacher to see.%>
 <%= render 'shared/head' %>
 
-<% cache @course do %>
+<% cache do %>
 <style>
 	.table th, .table td{
 		border: none
@@ -46,8 +46,8 @@
 
 </table>
 
-<%= link_to 'Edit', edit_course_path(@course) %> |
-<%= link_to 'Back', courses_path %>
+<%= link_to (image_tag "pencil3.png"), edit_course_path(@course), :title => "Edit Course Information" %>
+<!-- <%= link_to 'Back', courses_path %> -->
 </div>
 
 </div> 

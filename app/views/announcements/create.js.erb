@@ -2,6 +2,15 @@
 $('#error').html("<div id='error_m' class='alert alert-danger'><%= errors %></div>")
 $('#error_m').fadeOut(2000);
 <% else %>
-$('#announce').append("<tr id='announce_<%=@announcementN.id %>' ><td><%= best_in_place @announcementN, 'announcement', :path => [@course, @announcementN]%></td><td><%= best_in_place @announcementN, 'date', :path => [@course, @announcementN] ,:type =>:date %></td><td><a href='<%=course_announcement_path(@course,@announcementN)%>' class='btn btn-mini btn-danger' data-confirm='Are you sure?' data-method='delete' data-remote='true' rel='nofollow' style='float:right;margin-top:2px;'>X</a></td></tr>")
+$('#announce').append("<tr id='announce_<%=@announcementN.id %>' ><td><%= best_in_place @announcementN, 'announcement', :path => [@course, @announcementN] , :classes => 'small', :type => :textarea %></td><td class='updated' id='time_<%= @announcementN.id %>'><%= @announcementN.updated_at %></td><td><a href='<%= course_announcement_path(@course,@announcementN)%>' data-confirm='Are you sure you want to delete this announcement?' data-method='delete' data-remote='true' rel='nofollow' style='float:right;margin-top:2px;'><img src='/assets/trash3.png' /></a></td></tr>")
 $('#announcement_announcement').val("")
+$('#best_in_place_announcement_'+<%= @announcementN.id%>+'_announcement').data("id",<%= @announcementN.id %>)
+$("#sending").html("")
+$("#sending").removeClass("alert")
 <% end %>
+
+$('.best_in_place').unbind();
+$('.best_in_place').bind("ajax:success", function () {
+			var id=$(this).data('id');
+			$.ajax({url:"/courses/<%=@course.id%>/announcements/"+id+"/reload", type:'get', dataType:'script'}); 
+});

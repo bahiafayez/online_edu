@@ -54,12 +54,17 @@ OnlineEdu::Application.routes.draw do
   end
     match '/events(/:year(/:month))' => 'events#index', :as => :event, :constraints => {:year => /\d{4}/, :month => /\d{1,2}/}
     match "events/:id" => "events#show"
-    resources :announcements
+    resources :announcements do
+      member do
+        get 'reload'
+      end
+    end
     resources :groups do #at first had it over quizzes and lectures, but then a lecture/quiz might not be part of a module! so shouldn't need module to access lecture.. could create lectures and then put them part of a group.
       member do
         get 'new_or_edit'
         get 'group_editor'
         get 'statistics'
+        get 'details'
       end
       collection do
         post 'sort'
@@ -68,6 +73,9 @@ OnlineEdu::Application.routes.draw do
     resources :quizzes do
       member do
         get 'new_or_edit'
+        get 'middle'
+        get 'details'
+        put 'update_questions'
       end
       collection do
         post 'sort'
@@ -95,6 +103,9 @@ OnlineEdu::Application.routes.draw do
         get 'back'
         get 'pause'
         get 'getOldData'
+        get 'middle'
+        get 'details'
+        get 'reload_invideo_quizzes'
       end
       collection do
         post 'sort'

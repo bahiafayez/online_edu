@@ -1,16 +1,8 @@
-var x= <%= rem %>
-var from=<%= from_lec %>
+var x=<%= rem %>
+$("#online_quiz_"+x).remove();
 
-// remove partial only if i'm deleting the quiz im editing.
-if($("a.edit.active").attr("id")==""+x)
+if($("#current_invideo_viewed").data("id")==x)
 {
-	//$('#videospan').html("") // won't remove partial.. only remove quiz.
-	$('.edit').attr("disabled",false)
-	document.getElementById("ontop").innerHTML="" // empty questions.
-	$('.ontop').css("min-height","278px");
-	$('.ontop').unbind();
-	
+	done_editing();
 }
-
-$(".fields#online_quiz_"+x).remove();
 
