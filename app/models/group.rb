@@ -13,7 +13,7 @@ class Group < ActiveRecord::Base
   accepts_nested_attributes_for :quizzes, :allow_destroy => true
   
   def has_not_appeared
-    appearance_time >= Time.zone.now
+    appearance_time > Time.zone.now.to_date
   end
   
   def total_questions

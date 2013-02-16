@@ -5,4 +5,4 @@ require File.expand_path('../application', __FILE__)
 OnlineEdu::Application.initialize!
 
 Time::DATE_FORMATS.merge!({:default => '%d %b (%a)'})
-Date::DATE_FORMATS.merge!({:default => '%d %b (%a)'})
+#Date::DATE_FORMATS.merge!({:default => '%d %b (%a)'})

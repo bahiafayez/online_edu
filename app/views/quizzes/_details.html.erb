@@ -2,27 +2,19 @@
 
 appearance_date_setup = function(element){
 	if((element).is(":checked")){
-			$('#quiz_appearance_time_3i').attr("disabled","disabled");
-			$('#quiz_appearance_time_2i').attr("disabled","disabled")
-			$('#quiz_appearance_time_1i').attr("disabled","disabled")
+			$('#quiz_appearance_time').attr("disabled","disabled");
 		}
 		else{
-			$('#quiz_appearance_time_3i').attr("disabled",false);
-			$('#quiz_appearance_time_2i').attr("disabled",false)
-			$('#quiz_appearance_time_1i').attr("disabled",false)
+			$('#quiz_appearance_time').attr("disabled",false);
 		}
 }
 
 due_date_setup = function(element){
 		if((element).is(":checked")){
-			$('#quiz_due_date_3i').attr("disabled","disabled");
-			$('#quiz_due_date_2i').attr("disabled","disabled")
-			$('#quiz_due_date_1i').attr("disabled","disabled")
+			$('#quiz_due_date').attr("disabled","disabled")
 		}
 		else{
-			$('#quiz_due_date_3i').attr("disabled",false);
-			$('#quiz_due_date_2i').attr("disabled",false)
-			$('#quiz_due_date_1i').attr("disabled",false)
+			$('#quiz_due_date').attr("disabled",false);
 		}
 }
 
@@ -59,10 +51,10 @@ $(document).ready(function(){
 <td><%=quiz.quiz_type.capitalize%> Title:</td><td> <%= f.text_field :name, :size => 15, :style => "height:17px;width:140px;font-size:12px;"%></td>
 </tr>
 <tr>
-<td>Use Module's Appearance Date? </td><td> <%= f.check_box :appearance_time_module %><br /> <%= f.date_select :appearance_time , {:order => [:day,:month, :year]},:style => "height:25px;width: 120px;font-size:12px;" %></td>
+<td>Use Module's Appearance Date? </td><td> <%= f.check_box :appearance_time_module %><br /> <%= f.text_field :appearance_time , :class => "date_picker",:style => "height:25px;width: 120px;font-size:12px;" %></td>
 </tr>
 <tr>
-<td>Use Module's Due Date? </td><td> <%= f.check_box :due_date_module %><br /><%= f.date_select :due_date  , {:order => [:day,:month, :year]},:style => "height:25px;width: 120px;font-size:12px;"%></td>
+<td>Use Module's Due Date? </td><td> <%= f.check_box :due_date_module %><br /><%= f.text_field :due_date  , :class => "date_picker",:style => "height:25px;width: 120px;font-size:12px;"%></td>
 </tr>
 <tr>
 <td>Instructions:</td><td><%= f.text_area :instructions,:size=>15 ,:style => "width:140px;font-size:12px;height:80px;" %></td>
@@ -72,4 +64,9 @@ $(document).ready(function(){
 <% end %>
 </center>
 
+<script>
+	$(function (){
+ $('.date_picker').datepicker();
+ });
+</script>
 

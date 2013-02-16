@@ -43,3 +43,4 @@ gem 'jquery_datepicker'
 gem 'event-calendar', :require => 'event_calendar'
 #gem "will_paginate", :git => "https://github.com/p7r/will_paginate.git", :branch => "rails3"
 gem "kaminari"
+#gem 'bootstrap-datepicker-rails'

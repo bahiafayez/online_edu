@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css" />
 <%# This form is for creating a new or editing an existing course - used by the teacher only. %>
 
 <%= simple_nested_form_for(@course, :html => { :class => 'form-horizontal' }) do |f| %>
@@ -6,7 +7,7 @@
   <div class="form-inputs">
     <%= f.input :short_name %>
     <%= f.input :name %>
-    <%= f.input :start_date %>
+    <%= f.input :start_date, :as => :string, :input_html => { :class => 'date_picker' } %>
     <%= f.input :duration, :label => "Duration (weeks)" %>
     <%= f.input :description, :input_html => {:style => 'width: 210px; height: 100px'} %>
     <%= f.input :prerequisites, :input_html => {:style => 'width: 210px; height: 100px'} %>
@@ -23,3 +24,10 @@
   </div>
 <% end %>
 
+<script>
+	$(function (){
+ $('.date_picker').datepicker();
+ });
+
+
+</script>

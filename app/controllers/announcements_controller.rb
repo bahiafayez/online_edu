@@ -10,7 +10,7 @@ class AnnouncementsController < ApplicationController
   
   def index
     # existing
-    @announcements=@course.announcements.where(:user_id => current_user.id)
+    @announcements=@course.announcements.where(:user_id => current_user.id).order(:updated_at)
     # new
     @announcement=@course.announcements.build()
   end

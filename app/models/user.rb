@@ -59,16 +59,17 @@ class User < ActiveRecord::Base
     max_late=lecture.due_date
       lecture.online_quizzes.each do |q|
         g=self.online_quiz_grades.where(:online_quiz_id => q.id)[0]
-        if g.created_at > lecture.due_date  #solved after lecture due date
-           max_late=g.created_at if g.created_at>max_late  #if for any lecture, any quiz was not solved, then he has not finished the lectures.
+        if g.created_at.to_date > lecture.due_date  #solved after lecture due date
+           max_late=g.created_at.to_date if g.created_at.to_date>max_late  #if for any lecture, any quiz was not solved, then he has not finished the lectures.
         end 
       end
       viewed=LectureView.where(:user_id => id, :lecture_id => lecture.id, :percent => 75)[0]
-      if viewed.updated_at > lecture.due_date
-        max_late=viewed.updated_at if viewed.updated_at>max_late
+      if viewed.updated_at.to_date > lecture.due_date
+        max_late=viewed.updated_at.to_date if viewed.updated_at.to_date>max_late
       end
     
-    return ((max_late - lecture.due_date)/60/60/24).round(1)  #from seconds to days
+    #return ((max_late - lecture.due_date)/60/60/24).round(1)  #from seconds to days
+    return (max_late - lecture.due_date).to_i
   end
   
   def finished_lecture_group?(lecture)
@@ -114,7 +115,7 @@ class User < ActiveRecord::Base
     finished=true
     quizzes.each do |q|
       inst=QuizStatus.where(:user_id => self.id, :quiz_id => q.id, :status => "Submitted")[0]
-      if inst.updated_at > q.due_date  #solved after lecture due date
+      if inst.updated_at.to_date > q.due_date  #solved after lecture due date
         return false
       end
     end
@@ -140,12 +141,12 @@ class User < ActiveRecord::Base
     lectures.each do |l|
       l.online_quizzes.each do |q|
         g=self.online_quiz_grades.where(:online_quiz_id => q.id)[0]
-        if g.created_at > l.due_date  #solved after lecture due date
+        if g.created_at.to_date > l.due_date  #solved after lecture due date
           return false  #if for any lecture, any quiz was not solved, then he has not finished the lectures.
         end 
       end
       viewed=LectureView.where(:user_id => id, :lecture_id => l.id, :percent => 75)[0]
-      return false if viewed.updated_at > l.due_date
+      return false if viewed.updated_at.to_date > l.due_date
     end
     return finished
   end
@@ -167,12 +168,12 @@ class User < ActiveRecord::Base
     finished=true
       lecture.online_quizzes.each do |q|
         g=self.online_quiz_grades.where(:online_quiz_id => q.id)[0]
-        if g.created_at > lecture.due_date  #solved after lecture due date
+        if g.created_at.to_date > lecture.due_date  #solved after lecture due date
           return false  #if for any lecture, any quiz was not solved, then he has not finished the lectures.
         end 
       end
       viewed=LectureView.where(:user_id => id, :lecture_id => lecture.id, :percent => 75)[0]
-      return false if viewed.updated_at > lecture.due_date
+      return false if viewed.updated_at.to_date > lecture.due_date
     
     return finished
   end

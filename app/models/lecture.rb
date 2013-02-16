@@ -21,7 +21,7 @@ class Lecture < ActiveRecord::Base
   accepts_nested_attributes_for :online_quizzes, :allow_destroy => true
 
   def has_not_appeared
-    return appearance_time >= Time.zone.now
+    return appearance_time > Time.zone.now.to_date
   end
   
   def done?(user_asking) #marks lecture as done IF all quizzes solved AND passed all 25/50/75 marks.

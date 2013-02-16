@@ -179,7 +179,7 @@ class CoursesController < ApplicationController
     if params[:q]   #requesting quiz
       #@q= Quiz.find(params[:q]) 
       @q= Quiz.where(:id => params[:q], :course_id => params[:id]).first
-      if @q.nil? || @q.appearance_time >= Time.zone.now || @q.group.nil?
+      if @q.nil? || @q.appearance_time > Time.zone.now.to_date || @q.group.nil?
         #params[:q]=nil
         redirect_to courseware_course_path(params[:id]), :alert => "No such quiz"
         puts "here redirecting to #{courseware_course_path(params[:id])}"
@@ -199,7 +199,8 @@ class CoursesController < ApplicationController
       
       type=@q.quiz_type
       @alert_messages=[]
-      @alert_messages<< "Due date has passed -  #{@q.due_date}" if @q.due_date <= Time.zone.now
+      day= 'day'.pluralize((Time.zone.now.to_date - @q.due_date).to_i)
+      @alert_messages<< "Due date has passed -  #{@q.due_date.strftime("%d %b")} (#{(Time.zone.now.to_date - @q.due_date).to_i} #{day} ago)" if @q.due_date < Time.zone.now.to_date #if due date 5 april (night) then i have until 6 april..
       @alert_messages<<"You've already submitted the #{type.capitalize}" if !status.empty? and status.first.status=="Submitted"
       
       @answers.each do |a|
@@ -231,7 +232,7 @@ class CoursesController < ApplicationController
     if params[:l]   #requesting lecture
       #@q= Lecture.find(params[:l])
       @q= Lecture.where(:id => params[:l], :course_id => params[:id]).first
-      if @q.nil? || @q.appearance_time >= Time.zone.now || @q.group.nil?
+      if @q.nil? || @q.appearance_time > Time.zone.now.to_date || @q.group.nil?
         redirect_to courseware_course_path(params[:id]), :alert => "No such lecture"
       else
       @type="lecture" 
@@ -252,9 +253,9 @@ class CoursesController < ApplicationController
         @eval= Evaluation.where(:course_id => params[:id], :lecture_id => params[:l], :user_id => current_user.id).first
       end
       
-      
+      day= 'day'.pluralize((Time.zone.now.to_date - @q.due_date).to_i)
       @alert_messages=[]
-      @alert_messages<< "Due date has passed -  #{@q.due_date}" if @q.due_date <= Time.zone.now
+      @alert_messages<< "Due date has passed -  #{@q.due_date.strftime("%d %b")} (#{(Time.zone.now.to_date - @q.due_date).to_i} #{day} ago)" if @q.due_date < Time.zone.now.to_date
       
       
       #viewed= LectureView.where(:user_id => current_user.id, :lecture_id => @q.id, :course_id => params[:id])
@@ -356,7 +357,7 @@ class CoursesController < ApplicationController
     end
     
     #Now loop on weeks
-    @groups=@course.groups.where("appearance_time<= ?", Time.zone.now)
+    @groups=@course.groups.where("appearance_time<= ?", Time.zone.now.to_date)
     #@quizGrades={}
     @lectureGrades={}
     current_user.online_quiz_grades.each do |o|
@@ -752,8 +753,8 @@ class CoursesController < ApplicationController
   def student_notifications
     #want to show all quiz deadlines
     @deadlines={}
-    Quiz.where("course_id = ? and appearance_time < ?", params[:id], Time.zone.now).order("appearance_time desc").each do |q|
-      if !q.group.nil? and q.group.appearance_time < Time.zone.now
+    Quiz.where("course_id = ? and appearance_time <= ?", params[:id], Time.zone.now.to_date).order("appearance_time desc").each do |q|
+      if !q.group.nil? and q.group.appearance_time <= Time.zone.now.to_date
         if @deadlines[q.appearance_time.to_formatted_s(:long_ordinal)].nil?
           @deadlines[q.appearance_time.to_formatted_s(:long_ordinal)]= [q.id]
         else

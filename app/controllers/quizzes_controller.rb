@@ -127,6 +127,8 @@ class QuizzesController < ApplicationController
         if params[:quiz][:appearance_time_module]=="1"
           @quiz.appearance_time=@quiz.group.appearance_time
         end 
+        
+        @quiz.save
         #comparing without the seconds.
         if @quiz.due_date.to_formatted_s(:long) != @quiz.group.due_date.to_formatted_s(:long) or @quiz.appearance_time.to_formatted_s(:long) != @quiz.group.appearance_time.to_formatted_s(:long)
           @quiz.events << Event.new(:name => "#{@quiz.name} due", :start_at => @quiz.due_date, :end_at => @quiz.due_date, :all_day => false, :color => "red", :course_id => @course.id, :group_id => @quiz.group.id)

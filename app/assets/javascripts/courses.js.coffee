@@ -5,7 +5,8 @@
 
 jQuery ->
   $('.best_in_place').best_in_place()
-  $.datepicker.setDefaults({ dateFormat: 'dd M (D)' });
+  #$.datepicker.setDefaults({ dateFormat: 'dd M (D)' });
+  $.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' });
   
 # jQuery ->
    # $.extend($.fn.datepicker.defaults, { format: 'dd M D' });

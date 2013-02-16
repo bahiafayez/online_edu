@@ -6,10 +6,10 @@
 <td>Module Name:</td><td> <%= f.text_field :name, :size => 15, :style => "height:17px;width:140px;font-size:12px;"%></td>
 </tr>
 <tr>
-<td>Appearance Date: </td><td> <%= f.date_select :appearance_time , {:order => [:day,:month, :year]},:style => "height:25px;width: 120px;font-size:12px;" %></td>
+<td>Appearance Date: </td><td> <%= f.text_field :appearance_time ,:class => "date_picker",:style => "height:25px;width: 120px;font-size:12px;" %></td>
 </tr>
 <tr>
-<td>Due Date:</td><td><%= f.date_select :due_date  , {:order => [:day,:month, :year]},:style => "height:25px;width: 120px;font-size:12px;"%></td>
+<td>Due Date:</td><td><%= f.text_field :due_date  , :class =>"date_picker" ,:style => "height:25px;width: 120px;font-size:12px;"%></td>
 </tr>
 <tr>
 <td>Description:</td><td><%= f.text_area :description,:size=>15 ,:style => "width:140px;font-size:12px;height:80px;" %></td>
@@ -18,3 +18,28 @@
 <%= f.submit "Save Module", :class => "btn"%>
 <% end %>
 </center>
+
+<!-- Trying a new date and time picker-->
+<!-- <div class="well">
+  <div id="datetimepicker2" class="input-append">
+    <input data-format="yyyy-MM-dd HH:mm:ss PP" type="text"></input>
+    <span class="add-on">
+      <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+      </i>
+    </span>
+  </div>
+</div>
+<script type="text/javascript">
+  $(function() {
+    $('#datetimepicker2').datetimepicker({
+      language: 'en',
+      pick12HourFormat: true
+    });
+  });
+</script> -->
+
+<script>
+	$(function (){
+ $('.date_picker').datepicker();
+ });
+</script>

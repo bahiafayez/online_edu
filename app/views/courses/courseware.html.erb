@@ -30,7 +30,7 @@
 
 <% @course.groups.each do |g| %>	
 
-<% if g.appearance_time <= Time.zone.now %>	
+<% if g.appearance_time <= Time.zone.now.to_date %>	
 <div class="accordion-group">
 <div class="accordion-heading">
 	<%= link_to g.name, "#group_#{g.id}", :class =>"accordion-toggle", "data-toggle"=> "collapse", "data-parent"=>"#accordian2", :style => "text-decoration:none;display:inline;vertical-align:center" %>
@@ -52,7 +52,7 @@
 <%= div_for(g, :class =>"accordion-body collapse in" ) do %>
 <% flag=1 %>
 <% (g.lectures + g.quizzes).sort!{|x,y| ( x.position and y.position ) ? x.position <=> y.position : ( x.position ? -1 : 1 )  }.each do |q| %>
-<% if q.appearance_time <= Time.zone.now %>		
+<% if q.appearance_time <= Time.zone.now.to_date %>		
 <% flag=0 %>
 <div class="accordion-inner">
 <% if q.class.name=="Lecture"%>
@@ -88,7 +88,7 @@ Empty
 <%= div_for(g, :class =>"accordion-body collapse" ) do %> <!-- closing the groups we're not in -->
 <% flag=1 %>
 <% (g.lectures + g.quizzes).sort!{|x,y| ( x.position and y.position ) ? x.position <=> y.position : ( x.position ? -1 : 1 )  }.each do |q| %>
-<% if q.appearance_time <= Time.zone.now %>		
+<% if q.appearance_time <= Time.zone.now.to_date %>		
 <% flag=0 %>
 <div class="accordion-inner">
 <% if q.class.name=="Lecture"%>

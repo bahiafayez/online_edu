@@ -19,7 +19,7 @@ class Quiz < ActiveRecord::Base
   after_destroy :clean_up
   
   def has_not_appeared
-    appearance_time >= Time.zone.now
+    appearance_time > Time.zone.now.to_date
   end
   
   def present_quiz_type

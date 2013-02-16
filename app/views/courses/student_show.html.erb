@@ -4,7 +4,7 @@
 <h3> <%= @course.short_name %> - <%= @course.name %></h3>
 					<p>
 					  <b>Start date:</b>
-					  <%= @course.start_date %>
+					  <%= @course.start_date.strftime("%d %B %Y") %>
 					</p>
 					
 					<p>

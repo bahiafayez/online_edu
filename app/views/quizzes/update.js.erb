@@ -1,3 +1,4 @@
 <!-- Reloading 3 partials, and opening tree at correct position. -->
 $('#tree').html("<%= escape_javascript(raw render("courses/course"))%>");
 $('#middle').html("<%= escape_javascript(render :partial => 'groups/quiz') %>");
+$('#details').html("<%= escape_javascript(raw render("details", :quiz => @quiz))%>");

@@ -15,9 +15,9 @@ class Event < ActiveRecord::Base
  
   def self.appeared?(course)
     #returns all the events that have appeared.. since these are the ones we'll add to the calendar (the due dates)
-    @m=Group.where("course_id = ? and appearance_time <= ?",course.id,Time.zone.now)
-    @l=Lecture.where("course_id = ? and appearance_time <= ?",course.id,Time.zone.now)
-    @q=Quiz.where("course_id = ? and appearance_time <= ?",course.id,Time.zone.now)
+    @m=Group.where("course_id = ? and appearance_time <= ?",course.id,Time.zone.now.to_date)
+    @l=Lecture.where("course_id = ? and appearance_time <= ?",course.id,Time.zone.now.to_date)
+    @q=Quiz.where("course_id = ? and appearance_time <= ?",course.id,Time.zone.now.to_date)
     
     
     return self.where("lecture_id IS NULL and quiz_id IS NULL and group_id IN (?)", @m) +

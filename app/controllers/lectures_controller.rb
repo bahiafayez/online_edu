@@ -94,11 +94,11 @@ class LecturesController < ApplicationController
     @lecture.events.where(:quiz_id => nil, :group_id => @lecture.group.id).destroy_all
     
     #if same as module, then i will change the due date/ appearance date to be like the module.
-    if params[:lecture][:due_date_module] #and params[:lecture][:due_date_module]=="true"
+    if params[:lecture][:due_date_module]=="1" #and params[:lecture][:due_date_module]=="true"
       params[:lecture][:due_date]=@lecture.group.due_date
     end 
     
-    if params[:lecture][:appearance_time_module] #and params[:lecture][:appearance_time_module]=="true"
+    if params[:lecture][:appearance_time_module]=="1" #and params[:lecture][:appearance_time_module]=="true"
       params[:lecture][:appearance_time]=@lecture.group.appearance_time
     end 
     
@@ -114,8 +114,8 @@ class LecturesController < ApplicationController
     respond_to do |format|
       if @lecture.update_attributes(params[:lecture])
         
-        @lecture.due_date = @lecture.due_date.end_of_day
-        @lecture.save
+        #@lecture.due_date = @lecture.due_date.next_day #end_of_day
+        #@lecture.save
         print "lecture due date is #{@lecture.due_date.to_formatted_s(:db) }"
         print "lecture appearance date is #{@lecture.appearance_time.to_formatted_s(:db) }"
         print "group due_date is #{@lecture.group.due_date.to_formatted_s(:db) }"

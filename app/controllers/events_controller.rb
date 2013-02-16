@@ -60,7 +60,7 @@ class EventsController < ApplicationController
     logger.debug("events areee #{@events}")
     @event_strips = Event.create_event_strips(start_d, end_d, @events)
     
-    @announcements=Announcement.where(:course_id => @course.id).order(:date)
+    @announcements=Announcement.where(:course_id => @course.id).order("updated_at DESC")
   end
     
   def show
