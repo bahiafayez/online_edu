@@ -188,9 +188,15 @@ class CoursesController < ApplicationController
       @type="quiz"
       @typeGroup=@q.group.id
       @answers= QuizGrade.select("question_id, answer_id").where(:user_id=>current_user.id , :quiz_id=> params[:q])
+      free_answers_list= FreeAnswer.select("question_id, answer").where(:user_id=>current_user.id , :quiz_id=> params[:q])
       @correct_answers= QuizGrade.where(:user_id=>current_user.id , :quiz_id=> params[:q]).select("distinct(question_id), grade")
       @out={}
       @correct={}
+      
+      @free_answers={}
+      free_answers_list.each do |f|
+        @free_answers[f.question_id]=f.answer
+      end
       
       status = QuizStatus.where(:user_id => current_user.id, :quiz_id => @q.id, :course_id => params[:id])
       if (!status.empty? and status.first.status=="Submitted") #@q.due_date <= Time.zone.now or #won't disable if due date passed, but will know that submitted late.
@@ -523,10 +529,14 @@ class CoursesController < ApplicationController
         redirect_to progress_teacher_course_path(params[:id]), :alert => "No such survey"
       end
       
+      #MCQ charts
       @survey_data=@surveychart.get_survey_data
       @survey_categories=@surveychart.get_survey_categories
-      @survey_questions= @surveychart.questions.map{|obj| obj=obj.content}
+      @survey_questions= @surveychart.questions.where("question_type != 'Free Text Question'").map{|obj| obj=obj.content}
       print "survey is #{@survey_questions}"
+      
+      #FREE TEXT Questions
+      @survey_free= @surveychart.get_survey_free_text
     end
     ################## if lecture ###########
     if params[:l]   #requesting lecture
@@ -688,66 +698,85 @@ class CoursesController < ApplicationController
     @answers=params[:answer] || []
     @quiz_id=params[:quiz]
     @user_id=current_user.id
+    @free = params[:free]
     
-   #saving quiz status
+    if QuizStatus.where(:user_id => current_user.id, :quiz_id => params[:quiz], :course_id => params[:id], :status => "Submitted").empty? #if not already submitted
    
-    @status=QuizStatus.create(:user_id => current_user.id, :quiz_id => params[:quiz], :course_id => params[:id], :status => "Saved") if QuizStatus.where(:user_id => current_user.id, :quiz_id => params[:quiz], :course_id => params[:id]).empty? 
-    @status||= QuizStatus.where(:user_id => current_user.id, :quiz_id => params[:quiz], :course_id => params[:id])[0] 
-     #delete old ones
-     a=QuizGrade.where(:user_id => @user_id, :quiz_id => @quiz_id)
-     a.destroy_all
-    
-
-    #@answers.each do |a|
-      #print "answers are #{@answers}"
-      #print "keys #{@answers.keys}"
-      @answers.each do |k,v|
-        print "question: #{k}"
-        print "answers: #{v}"
-        if Answer.where(:question_id => k, :correct => true).pluck(:id).sort == v.keys.map{|f| f.to_i}.sort
-              g=1 #?? HOW!!
-         else
-              g=0
-         end
+         #saving quiz status
          
-         print "g isssss #{Answer.where(:question_id => k, :correct => true).pluck(:id).sort} and #{v.keys.map{|f| f.to_i}.sort}"
-         #should find better way to record results, now put same number in all answers
-         
-        #@answers[b].keys.each do |k|
-          v.keys.each do |p|
-            #delete old ones first!!
-            #plus need to handle radio or checkbox!!
+          @status=QuizStatus.create(:user_id => current_user.id, :quiz_id => params[:quiz], :course_id => params[:id], :status => "Saved") if QuizStatus.where(:user_id => current_user.id, :quiz_id => params[:quiz], :course_id => params[:id]).empty? 
+          @status||= QuizStatus.where(:user_id => current_user.id, :quiz_id => params[:quiz], :course_id => params[:id])[0] 
+           #delete old ones
+           a=QuizGrade.where(:user_id => @user_id, :quiz_id => @quiz_id)
+           a.destroy_all
+          
+           # save free questions if they exist
+           
+           
+           if @free
+             @free.each do |k,v|  #first_or_create, checks to see if record exist, will return it.. if not will create it. not what we want.
+               #FreeAnswer.where(:user_id => current_user.id, :quiz_id => @quiz_id, :question_id => k).first_or_create( :answer => v)
+               @to_update=FreeAnswer.where(:user_id => current_user.id, :quiz_id => @quiz_id, :question_id => k).first
+               if @to_update.nil?
+                 FreeAnswer.create(:user_id => current_user.id, :quiz_id => @quiz_id, :question_id => k, :answer => v)
+               else
+                 @to_update.update_attributes(:answer => v)
+               end
+             end
+           end
+          #@answers.each do |a|
+            #print "answers are #{@answers}"
+            #print "keys #{@answers.keys}"
+            @answers.each do |k,v|
+              print "question: #{k}"
+              print "answers: #{v}"
+              if Answer.where(:question_id => k, :correct => true).pluck(:id).sort == v.keys.map{|f| f.to_i}.sort
+                    g=1 #?? HOW!!
+               else
+                    g=0
+               end
+               
+               print "g isssss #{Answer.where(:question_id => k, :correct => true).pluck(:id).sort} and #{v.keys.map{|f| f.to_i}.sort}"
+               #should find better way to record results, now put same number in all answers
+               
+              #@answers[b].keys.each do |k|
+                v.keys.each do |p|
+                  #delete old ones first!!
+                  #plus need to handle radio or checkbox!!
+                  
+                  QuizGrade.create(:user_id => @user_id, :quiz_id => @quiz_id, :question_id => k, :answer_id => p, :grade => g  )
+                end
+              #end
+            end
+            #QuizGrade.create(:user_id => @user_id, :quiz_id => @quiz_id, :question_id => a[0], :answer_id => a[1], :grade => 0  )
+          #end
+          type=Quiz.find(@quiz_id).quiz_type || "quiz"
+          
+       
+           if type=="quiz" and params[:commit]=="Submit" and (@answers.empty? or @answers.keys.count < Quiz.find(@quiz_id).questions.count)  #there qere unanswered questions.
+            redirect_to courseware_course_path(params[:id], :q=>@quiz_id), :alert => "There are unanswered questions"
+          else 
             
-            QuizGrade.create(:user_id => @user_id, :quiz_id => @quiz_id, :question_id => k, :answer_id => p, :grade => g  )
+          
+          
+          
+          if params[:commit]=="Submit"
+            @status.update_attributes(:status => "Submitted")
           end
-        #end
-      end
-      #QuizGrade.create(:user_id => @user_id, :quiz_id => @quiz_id, :question_id => a[0], :answer_id => a[1], :grade => 0  )
-    #end
-    type=Quiz.find(@quiz_id).quiz_type || "quiz"
-    
- 
-     if type=="quiz" and params[:commit]=="Submit" and (@answers.empty? or @answers.keys.count < Quiz.find(@quiz_id).questions.count)  #there qere unanswered questions.
-      redirect_to courseware_course_path(params[:id], :q=>@quiz_id), :alert => "There are unanswered questions"
-    else 
-      
-    
-    
-    
-    if params[:commit]=="Submit"
-      @status.update_attributes(:status => "Submitted")
-    end
-    
-    if params[:commit]=="Submit"
-      msg="#{type.capitalize} was successfully submitted"
-    else
-      msg="#{type.capitalize} was successfully saved"
-    end
-    
-    respond_to do |format|
-      format.html {redirect_to courseware_course_path(params[:id], :q => @quiz_id), notice: msg}
-    end
-    end
+          
+          if params[:commit]=="Submit"
+            msg="#{type.capitalize} was successfully submitted"
+          else
+            msg="#{type.capitalize} was successfully saved"
+          end
+          
+          respond_to do |format|
+            format.html {redirect_to courseware_course_path(params[:id], :q => @quiz_id), notice: msg}
+          end
+          end
+     else
+       redirect_to courseware_course_path(params[:id], :q=>@quiz_id)
+     end
   end
   
   def student_notifications

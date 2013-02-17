@@ -30,6 +30,11 @@ label{
 	
 	<%= f.fields_for :questions do |task_form| %>
   	<%= task_form.input :content, :label => "Question", :input_html => {:style => 'width: 250px; height: 50px'} %>
+  	<% if @quiz.quiz_type == "survey" %>
+  		<%= task_form.input :question_type,  collection: ["Multiple Choice Question","Free Text Question"], :include_blank => false, :input_html => {:class => "type"} %>
+  	<% end %>
+  	
+  	
   	<%= task_form.link_to_remove "Remove this question" %>
 	<!-- <%= task_form.full_error :content %> -->	
   		<%= task_form.fields_for :answers do |t| %>
@@ -54,3 +59,91 @@ label{
   </div>
 <% end %>
 
+
+<script>
+	$(document).ready(function(){
+	//	window.nestedFormEvents.insertFields = function(content, assoc, link) {
+	//		console.log(content);
+  	//		return $(link).closest('form').find(assoc + '_fields').append($(content));
+	//	}
+
+
+	// so now upto saving.. all good
+	// when saving.
+	// if free question, then delete all its answers (if already existed)!!!!!
+	// Test again!
+
+
+
+	$(".type").each(function(){
+	if($(this).val()=="Free Text Question")
+	{
+		//$(this).closest(".fields").children("p").children(".fields").remove();
+	    $(this).closest(".fields").children("p").hide();
+	    $(this).closest(".fields").children(".fields").hide();
+	    //$(this).closest(".fields").children(".fields").hide();
+	}
+	});
+	
+	$(".type").change(function(event){
+		if($(this).val()== "Free Text Question"){
+			//$(this).closest(".fields").children("p").children(".fields").remove();
+			$(this).closest(".fields").children("p").hide();
+			$(this).closest(".fields").children(".fields").hide();
+		}else{
+			$(this).closest(".fields").children("p").show();
+			$(this).closest(".fields").children(".fields").show();
+			}
+	});
+	
+	$(document).on("nested:fieldAdded:questions", function(event){
+		$(".type").unbind();
+		console.log("in here question");
+		$(".type").change(function(event){
+		if($(this).val()== "Free Text Question"){
+			//$(this).closest(".fields").children("p").children(".fields").remove();
+			$(this).closest(".fields").children("p").hide();
+			$(this).closest(".fields").children(".fields").hide();
+		}else{
+			$(this).closest(".fields").children("p").show();
+			$(this).closest(".fields").children(".fields").hide();
+			}
+		});
+	
+	});
+	
+	
+	$(document).on('nested:fieldAdded:answers', function(event){
+	  // this field was just inserted into your form
+	  var field = event.field; 
+	  console.log(field)
+	  // it's a jQuery object already! Now you can find date input
+	  //var dateField = field.find('.date');
+	  // and activate datepicker on it
+	  //dateField.datepicker();
+//	  var newO=document.createElement('input');
+//newO.setAttribute('type','password');
+//newO.setAttribute('name',obj.getAttribute('name'));
+//obj.parentNode.replaceChild(newO,obj);
+//newO.focus();
+	// var select=$(field).parents('.fields').children(".select").children(".controls").children("select").val()
+	// if(select=="Single Correct Answer")
+	// {
+	// var checkbox= $(field).children(".boolean").children(".controls").children(".checkbox").children()[0]
+	// var radio = document.createElement('input');
+	// radio.setAttribute('type','radio');
+	// radio.setAttribute('id', checkbox.getAttribute("id"));
+	// radio.setAttribute('class', checkbox.getAttribute("class"));
+	// radio.setAttribute('value', checkbox.getAttribute("value"));
+	// radio.setAttribute('style', checkbox.getAttribute("style"));
+	// radio.setAttribute('name', checkbox.getAttribute("name"));
+	// checkbox.parentNode.replaceChild(radio,checkbox);
+	// }
+	// })
+	
+	// radio buttons all selected bardo :s cause different name..
+	
+	});
+	
+	});
+</script>

@@ -28,9 +28,15 @@
   </tr>
  
 
-  	
+  <% if question.question_type == "Free Text Question"%>
+  	<tr>
+		<td><%= image_tag "spacer.gif", :height => "1px" , :width=>"1px"%></td>
+		<td><%= text_area_tag "free[#{question.id}]", @free_answers[question.id], :style => "width:500px;height:100px;"%></td>
+		<td></td>
+	</tr>
+  <% else %>	
   <%= render :partial => question.answers, :locals => {:question => question} %>
-  
+  <% end %>
   
   
   <tr><td colspan="3"><hr /></td></tr>

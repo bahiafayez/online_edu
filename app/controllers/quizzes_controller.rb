@@ -207,6 +207,14 @@ class QuizzesController < ApplicationController
     respond_to do |format|
       if params[:quiz]
           @quiz.update_attributes(params[:quiz])
+          
+          #now delete the answers of the free questions
+          @quiz.questions.each do |question|
+            if question.question_type == "Free Text Question"
+              question.answers.destroy_all
+            end
+          end
+          
           format.js{}
       else
           format.js{}

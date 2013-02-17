@@ -28,7 +28,7 @@ class Quiz < ActiveRecord::Base
   
   def get_survey_data
     @data=[]
-    questions.each do |question|
+    questions.where("question_type != 'Free Text Question'").each do |question|
       answers={}
       answers[question]=[]
       question.answers.each do |answer|
@@ -41,12 +41,20 @@ class Quiz < ActiveRecord::Base
   
   def get_survey_categories
     @data=[]
-    questions.each do |question|
+    questions.where("question_type != 'Free Text Question'").each do |question|
       answers=[]
       question.answers.each do |answer|
         answers<< answer.content 
       end
       @data<<answers
+    end
+    return @data
+  end
+  
+  def get_survey_free_text
+    @data={}
+    questions.where(:question_type =>"Free Text Question").each do |question|
+      @data[question]= FreeAnswer.where(:quiz_id => id, :question_id => question.id)
     end
     return @data
   end

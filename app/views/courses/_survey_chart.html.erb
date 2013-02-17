@@ -3,6 +3,23 @@
 <div id="all_charts"></div>
 <button style="margin-bottom:8px" class="btn" id="export">Export all</button> <select id="image_type"><option value='application/pdf'>PDF</option value='png'><option>PNG</option></select>
 
+<div>
+	<center><h3>Free Text Questions</h3></center>
+	<table style="background-color:white" class="table">
+		<tr><td><b>Question</b></td><td><b>Answers</b></td></tr>
+		<% @survey_free.each do |q,a| %>
+			<tr>
+				<td><%= q.content %></td>
+				<td>
+					<% a.each do |answer| %>
+						<%= answer.answer %>
+					<% end %>
+				</td>
+			</tr>
+		<% end %>
+	</table>
+</div>
+
 <script>
 $(function () {
     
