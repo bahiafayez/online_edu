@@ -375,7 +375,7 @@ class CoursesController < ApplicationController
   def progress_teacher
     @course=Course.find(params[:id])
     @students=@course.users
-    @quizzes=@course.quizzes
+    @quizzes=@course.quizzes.where("quiz_type IS NULL or quiz_type != 'survey'")
     @student_names=[]
     @type = params[:type]||"nothing"
     @course.lectures.each do |l|
@@ -383,21 +383,27 @@ class CoursesController < ApplicationController
       puts l.group
     end
    
-   if params[:all_modules]  #when click on the modules - all modules, progress of each student in each module (done/not done/done but not on time)
-     @matrix={}
-     #@type="group"
-     @students.each do |s|
-       @matrix[s.name]=s.grades(@course)  #returns for each module in the course, whether student finished r not and on time or not.
-       puts @matrix
-     end
-     @mods=@course.groups.map{|m| m.name}
-   end
+   #if params[:all_modules]  #when click on the modules - all modules, progress of each student in each module (done/not done/done but not on time)
+     
+   #end
    if params[:g] #shows all lectures in a module, and the quizzes in each lecture # also show a matrix with all the lectures inside the module and how each student performed (on time/late/not done)
       @modulechart=Group.where(:id => params[:g], :course_id => params[:id]).first
       if @modulechart.nil?
         redirect_to progress_teacher_course_path(params[:id]), :alert => "No such Module"
       end
       #@type="group"
+      
+      
+      ################ new chart #####################
+      
+      @module_new = @modulechart.get_data
+      @module_colors = @modulechart.get_colors
+      @module_categories = @modulechart.get_categories
+      @module_questions = @modulechart.get_questions
+      @module_question_ids = @modulechart.get_question_ids
+      @module_lectures= @modulechart.get_lecture_names
+      
+      ################################################
       
       @chart_data={}   #only count those that submitted their answers
       #exactly like lecture.. but all lectures on one graph... and make it bar i think.
@@ -461,20 +467,7 @@ class CoursesController < ApplicationController
         @otherway<<{:name => "Answer #{i}", :data => t}
       end
       @otherway = @otherway.to_json
-      
-      ###### also want to add a matrix ##
-      
-       @matrixLecture={}
-       @late={}
-       @students.each do |s|
-         @matrixLecture[s]=s.grades(@modulechart)  #returns for each module in the course, whether student finished r not and on time or not.
-         @late[s]=s.late_days(@modulechart)
-         #puts @late
-       end
-       print @late.inspect
-       
-       @mods=@modulechart.lectures.map{|m| m.name}
-      
+           
       
    end 
    if params[:all]  #show all the quizzes
@@ -485,12 +478,14 @@ class CoursesController < ApplicationController
         @students.each do |s|
           @student_names<<s.name if !@student_names.include?(s.name)
           num=0
-          QuizGrade.where(:quiz_id => q.id, :user_id => s.id).select("distinct(question_id), grade").each do |ques|
-            if ques.grade==1
-              num+=1.0
+          if !QuizStatus.where(:user_id => s.id, :quiz_id => q.id, :status => "Submitted").empty?
+            QuizGrade.where(:quiz_id => q.id, :user_id => s.id).select("distinct(question_id), grade").each do |ques|
+              if ques.grade==1
+                num+=1.0
+              end
             end
+            @quizScores<< (num/q.questions.count * 100) if !q.questions.empty? # /@quizzes.count so if 100% for each quiz.. and they are 5 then each will be 20
           end
-          @quizScores<< num/q.questions.count * 100 if !q.questions.empty?
       end
       @data<<{:name => q.name, :data => @quizScores}
       @quizScores=[]
@@ -508,9 +503,11 @@ class CoursesController < ApplicationController
       #@type="quiz"
       
       @chart_data={}   #only count those that submitted their answers
+      @chart_questions={}
       QuizStatus.where(:quiz_id => @quizchart.id, :course_id => params[:id], :status => "Submitted").pluck(:user_id).each do |student|
         QuizGrade.where(:quiz_id => @quizchart.id, :user_id => student).select("grade, question_id").group(:question_id, :grade).each_with_index do |question, index|
           @chart_data["#{index}"]=[0,0] if @chart_data["#{index}"].nil?
+          @chart_questions["#{index}"]=[Question.find(question.question_id).content, Question.find(question.question_id).answers.where(:correct => true).map{|o| o.content}]
           if question.grade==0
             @chart_data["#{index}"][1] = (@chart_data["#{index}"][1]||0) + 1 #initialize to 0 if nil #incorrect
           else
@@ -560,6 +557,16 @@ class CoursesController < ApplicationController
       
       @correct=@correct.to_json
       
+      
+      ############ new chart #################
+      
+      @lecture_new = @q.get_data
+      @lecture_colors = @q.get_colors
+      @lecture_categories = @q.get_categories
+      @lecture_questions = @q.get_questions
+      @lecture_question_ids = @q.get_question_ids
+      
+      ########################################
       
       #also I want to get confused and Questions of that lecture
       @confused= Confused.where(:course_id => params[:id], :lecture_id =>params[:l])
@@ -622,8 +629,50 @@ class CoursesController < ApplicationController
       @otherway = @otherway.to_json
      end 
      
+     if params[:module_progress]
+        ###### also want to add a matrix ##
+      
+      @mod=Group.where(:id => params[:module_progress], :course_id => params[:id]).first
+      if @mod.nil?
+        redirect_to progress_teacher_course_path(params[:id]), :alert => "No such Module"
+      end
+      
+       @matrixLecture={}
+       @late={}
+       @students.each do |s|
+         @matrixLecture[s]=s.grades(@mod)  #returns for each module in the course, whether student finished r not and on time or not.
+         @late[s]=s.late_days(@mod)
+         #puts @late
+       end
+       print @late.inspect
+       
+       @matrixQuiz={}
+       @late_quiz={}
+       @students.each do |s|
+         @matrixQuiz[s]=s.quiz_grades(@mod)  #returns for each module in the course, whether student finished r not and on time or not.
+         @late_quiz[s]=s.quiz_late_days(@mod)
+         #puts @late
+       end
+       
+       @mods=@mod.lectures.map{|m| m.name}
+       @mods_quizzes= @mod.quizzes.map{|m| m.name}
+     end
+     
      #if progress chart
      if params[:p]  #progress chart, shows each students progress in quizzes/lectures and online quizzes
+       
+       ########## MATRIX CHART ###########
+       @matrix={}
+       @late={}
+       #@type="group"
+       @students.each do |s|
+         @matrix[s]=s.grades(@course)  #returns for each module in the course, whether student finished r not and on time or not.
+         @late[s]=s.course_late_days(@course)
+         puts @matrix
+       end
+       @mods=@course.groups.map{|m| m.name}
+       #######################################
+       
        #@type="Progress"
        @p="Progress Chart"
        @student_progress={}
@@ -640,9 +689,9 @@ class CoursesController < ApplicationController
          @nonline=s.online_quiz_grades.select{|v| Course.find(@course.id).lectures.pluck(:id).include?v.lecture_id}.length #all onlinequizzes in the course that the student solved
          @nonline_total = OnlineQuiz.all.select{|v| Course.find(@course.id).lectures.pluck(:id).include?v.lecture_id}.length #all onlinequizzes in the course
          
-         # % of lectures viewed (75%) solved if finished 75%
-         @nl_solved=LectureView.where(:course_id => @course.id, :user_id => s.id, :percent =>75).length
-         @nl_total= Course.find(@course.id).lectures.count 
+         # % of lectures viewed (75%) solved if finished 75%   #cancelling this part
+         #@nl_solved=LectureView.where(:course_id => @course.id, :user_id => s.id, :percent =>75).length
+         #@nl_total= Course.find(@course.id).lectures.count 
          
          if @n_solved.nil? || @n_total==0
            @result1=0
@@ -650,11 +699,11 @@ class CoursesController < ApplicationController
            @result1=@n_solved.to_f/@n_total.to_f*100
          end
          
-         if @nl_solved.nil? || @nl_total==0
-           @result2=0
-         else
-           @result2=@nl_solved.to_f/@nl_total.to_f*100
-         end
+         # if @nl_solved.nil? || @nl_total==0
+           # @result2=0
+         # else
+           # @result2=@nl_solved.to_f/@nl_total.to_f*100
+         # end
          
          if @nonline.nil? || @nonline_total==0
            @result3=0
@@ -662,7 +711,7 @@ class CoursesController < ApplicationController
            @result3=@nonline.to_f/@nonline_total.to_f*100
          end
          
-         @student_progress[s.id]=[s.name, @result1, @result2, @result3]
+         @student_progress[s.id]=[s.name, @result1, @result3] #@result2
        end
        puts "student ength issss #{@student_progress.length}"
        @student_progress_json= @student_progress.to_json
@@ -673,7 +722,96 @@ class CoursesController < ApplicationController
      puts "correct is #{@correct}"
      #finding out which is the correct answer
       
+      if params[:all_student_grades]
+        @statistics={}
+        @students.each do |s|
+         @statistics[s] = s.get_statistics(@course)
+       end
+      end
+      
+      if params[:individual_student_grades]
+        
+          @students2 = @course.enrolled_students #enrolled
+          @students =  @students2.order(:name).search(params[:search]).page(params[:page]).per(5)
+
+          # enrolled students
+          #@students2 = @course.enrolled_students  
+          @student_ids= @students2.map{|a| a.id}
+          
+          respond_to do |format|
+            format.html # show.html.erb
+            format.js{render "enrolled_students2"}
+          end
+      end
     
+  end
+  
+  
+  def student_grade
+    @student= User.find(params[:student_id])
+    @overall= @student.get_statistics(@course)
+    @ms= @course.groups
+    @mod_chart= @student.grades(@course)
+    @mod_late= @student.course_late_days(@course)
+    print "late is #{@mod_late}"
+    print "late is #{@mod_chart}"
+    @lec_chart={}
+    @lec_late={}
+    @q_chart={}
+    @q_late={}
+    
+    
+    @quizzes = Quiz.where("course_id = ? and (quiz_type IS NULL or quiz_type != 'survey')", @course.id)
+    print @quizzes.inspect
+    @lectures= Lecture.where(:course_id => @course.id)
+    @groups = Group.where(:course_id => @course.id)
+    # @course.groups.each do |m|
+      # @lec_chart[m]= @student.grades(m)
+      # @lec_late[m]= @student.late_days(m)
+      # @q_chart[m]= @student.quiz_grades(m)
+      # @q_late[m]= @student.quiz_late_days(m)
+    # end
+    respond_to do |format|
+            format.js{}
+     end
+  end
+  
+  def student_quiz_grade
+    @quiz= Quiz.find(params[:quiz_id])
+    student=User.find(params[:student_id])
+    @quiz_grade = student.get_detailed_quiz_grade(@quiz)
+    @tot= student.get_quiz_grade(@quiz)
+    respond_to do |format|
+      format.js{render "quiz_panel"}
+    end
+  end
+  
+  def student_lecture_grade
+    @lecture= Lecture.find(params[:lec_id])
+    student=User.find(params[:student_id])
+    @lecture_grade = student.get_detailed_lecture_grade(@lecture)
+    @tot2= student.get_lecture_grade(@lecture)
+    respond_to do |format|
+      format.js{render "lecture_panel"}
+    end
+  end
+  
+  def send_email
+    @student=User.find(params[:student])
+  end
+  
+  def send_batch_email
+  end
+  
+  def send_batch_email_through
+    #@student=User.find(params[:student])
+    UserMailer.student_batch_email(@course.users, params[:subject],params[:message]).deliver
+    redirect_to enrolled_students_course_path(@course), :notice => "Email Sent"
+  end
+  
+  def send_email_through
+    UserMailer.student_email(params[:email],params[:subject],params[:message]).deliver
+    redirect_to enrolled_students_course_path(@course), :notice => "Email Sent"
   end
   
   def progress_teacher_detailed
@@ -692,6 +830,10 @@ class CoursesController < ApplicationController
     
   end
   
+  
+  def dynamic_quizzes
+    @quizzes = Quiz.where(:course_id => @course.id)
+  end
   
   def student_quiz
     #could move to quiz_grades_controller later.

@@ -1,0 +1,20 @@
+<% if @quiz_grade!= 0%>
+<table class="table">
+	<tr><td>Question</td><td>Grade</td><td>Answers Chosen</td></tr>
+	<% @quiz_grade.each do |question|%>
+	<tr>
+		<td><%= question[0] %></td>
+		<td><%= question[1] %></td>
+		<td>
+		<% question[2].each do |ans| %>
+			<%= ans %><br />
+		<% end %>
+		</td>
+	</tr>
+	<% end %>
+</table>
+
+<center><b>Total: <%= @tot %></b></center>
+<% else %>
+<center><b>Not Submitted</b></center>
+<% end %>

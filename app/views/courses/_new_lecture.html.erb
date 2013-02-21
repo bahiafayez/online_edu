@@ -1,0 +1,285 @@
+<!-- <div id="container2" style="min-width: 400px; height: 400px; margin: 0 auto"></div><br><br /> -->
+<script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script>
+<center><b><%= @q.name %></b></center><br />
+<div id="all_charts"></div>
+<button style="margin-bottom:8px" class="btn" id="export">Export all</button> <select id="image_type"><option value='application/pdf'>PDF</option value='png'><option>PNG</option></select>
+
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel">Quiz</h3>
+	</div>
+	<div class="modal-body">
+		<center><div id="vid">
+		<div style="width:500px; height:300px" id="snapshot"></div>
+		</div></center>
+	</div>
+	<div class="modal-footer">
+		<a href="" data-remote="true" class="skip" style="float:left;">Skip to Question</a>
+		<button class="btn close" data-dismiss="modal" aria-hidden="true">Close</button>
+	</div>
+</div>
+
+<style>
+	.highcharts-title{
+		white-space: normal !important;
+		width: '150px' !important;
+	}
+</style>
+<script>
+$(function () {
+    
+    var chart
+    var all=[]
+    $(document).ready(function() {
+    	
+    	/**
+ * Create a global exportCharts method that takes an array of charts as an argument,
+ * and exporting options as the second argument
+ */
+/**
+ * Create a global getSVG method that takes an array of charts as an argument
+ */
+Highcharts.getSVG = function(charts) {
+    var svgArr = [],
+        top = 0,
+        width = 0;
+
+    $.each(charts, function(i, chart) {
+        var svg = chart.getSVG();
+        svg = svg.replace('<svg', '<g transform="translate(0,' + top + ')" ');
+        svg = svg.replace('</svg>', '</g>');
+
+        top += chart.chartHeight;
+        width = Math.max(width, chart.chartWidth);
+
+        svgArr.push(svg);
+    });
+
+    return '<svg height="'+ top +'" width="' + width + '" version="1.1" xmlns="http://www.w3.org/2000/svg">' + svgArr.join('') + '</svg>';
+};
+
+
+Highcharts.exportCharts = function(charts, options) {
+    var form
+        svg = Highcharts.getSVG(charts);
+
+    // merge the options
+    options = Highcharts.merge(Highcharts.getOptions().exporting, options);
+
+    // create the form
+    form = Highcharts.createElement('form', {
+        method: 'post',
+        action: options.url
+    }, {
+        display: 'none'
+    }, document.body);
+
+    // add the values
+    Highcharts.each(['filename', 'type', 'width', 'svg'], function(name) {
+        Highcharts.createElement('input', {
+            type: 'hidden',
+            name: name,
+            value: {
+                filename: options.filename || 'chart',
+                type: options.type,
+                width: options.width,
+                svg: svg
+            }[name]
+        }, null, form);
+    });
+    //console.log(svg); return;
+    // submit
+    form.submit();
+
+    // clean up
+    form.parentNode.removeChild(form);
+};
+
+
+    	var colors = Highcharts.getOptions().colors,
+    	name = 'Browser brands';
+    	var ids = getCount()
+    	for(var count in ids)
+    	{
+    		var the_id = ids[count] 
+    		var num=parseInt(count)+1
+    		
+    	$("#all_charts").append("<div style='min-width: 300px; height: 300px; margin: 0 auto' id=container_"+count+"></div><br>")	
+    		
+    		
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'container_'+count,
+                type: 'column',
+                marginLeft:300,
+                events:{
+            		load: function(event) {
+                		//When is chart ready?
+                		//console.log(this); //this refers to the loaded chart.
+                		$(".close").unbind();
+                		$(".close").click(function(event){
+                			$("#snapshot").html("");
+                		});
+                		$(".show_question").unbind();
+                		$(".show_question").click(function (event) {
+					     var url = $(this).data('url');
+					     var time = $(this).data('time');
+					     
+					     console.log("time is "+time);
+					     $("#snapshot").html("");
+					     pop2 = Popcorn.youtube( "#snapshot", url ,{ width: 500, controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
+					  	 //pop2.on("canplay", function(){
+					  	 pop2.play();
+					  	 //});
+					  	 $(".skip").unbind();
+					     $(".skip").click(function(event){
+					     	pop2.currentTime(parseInt(time));
+					     	return false;
+					     });
+					  	 $('#myModal').modal('show');
+					  	 pop2.on("loadeddata", function() {
+					  	 	 pop2.pause();
+					  	 	 pop2.currentTime(parseInt(time));
+					  	 	 console.log(pop2);
+					  	 	 console.log(pop2.currentTime());
+						 });
+					  	 
+					  	 
+					     
+					     
+					 	});
+                		
+            		}
+                }
+            },
+            title: {
+                text: "<a class='show_question' href='#myModal' data-toggle='modal' data-time='"+getTime(the_id)+"' data-url='"+getURL(the_id)+"' >Question "+num+"</a><br>", //null 
+                style:{
+                	fontSize: '12px',
+                	
+                },
+                useHTML: true,
+                margin: 50
+            },
+            xAxis: {
+                categories: getCategories(the_id)
+            },
+            yAxis: {
+                title: {
+                    text: 'Number of Students'
+                },
+                allowDecimals:false
+            },
+            legend: {
+	            align:'left',
+	            verticalAlign: 'top',
+	            width:200,
+	            maxHeight:1000,
+	            useHTML: true,
+	            style:{
+	            	fontSize: '10px'
+	            },
+	            itemStyle: {
+	                width: 150, // or whatever
+	                fontSize: '10px'
+	            },
+	    	},
+            plotOptions: {
+                column: {
+                    //cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        color: colors[0],
+                        style: {
+                            fontWeight: 'bold'
+                        },
+                        formatter: function() {
+                            return this.y;// +'%';
+                        }
+                    }
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    var point = this.point,
+                        s = this.x +':<b>'+ this.y;// +'% market share</b><br/>';
+                   
+                    return s;
+                }
+            },
+            series: [{
+                name: getName(the_id),
+                data: getSeries(the_id, colors),
+                color: 'white'
+            }],
+            exporting: {
+                enabled: true
+            }
+        });
+        all.push(chart)
+        }
+        $('#export').click(function() {
+        	console.log("all isss")
+        	console.log(all);
+        	type=$('#image_type').val();
+    		Highcharts.exportCharts(all,{type:type, filename:'<%= @q.name %>'}); //filename: 'my-pdf'
+		});
+    
+    
+    });
+
+    
+});
+  function getTime(id)
+  {
+  	var studentProgress= <%= raw @lecture_questions.to_json %>
+  	return studentProgress[id][1]
+  }
+  function getURL(id)
+  {
+  	var studentProgress= '<%=  @q.url %>'
+  	return studentProgress
+  }
+  function getCategories(id)
+  {
+  	var studentProgress= <%= raw @lecture_categories.to_json %>
+  		return studentProgress[id]	
+  }
+  function getCount()
+  {
+  	var studentProgress= <%= raw @lecture_question_ids.to_json %>
+  	console.log("here"+studentProgress.length)
+  	return studentProgress
+  }
+  function getName(id)
+  {
+  	var studentProgress= <%= raw @lecture_questions.to_json %>
+  	return studentProgress[id][0]
+        
+  }
+ function getSeries(id,colors)
+	{
+		
+	var studentProgress= <%= raw @lecture_new.to_json %>
+	var studentColors= <%= raw @lecture_colors.to_json %>
+       // x=[{"name":'Correct', "data":[], "color":[]}, {"name":'Incorrect', "data":[], "color":[]}]
+        x=[]
+        chart_data= studentProgress[id]   //[2,3,4]
+        chart_colors= studentColors[id]   //[2,3,4]
+        for(var key in chart_data)  // only once // key here is the json key (not number like with array)
+        {	
+        	var z= chart_data[key]  //z=2
+        	var color= chart_colors[key]
+        	
+        		x[key]={color: color,"y": z}
+        	
+        }
+        
+        console.debug(x)
+        return x
+	}     
+
+
+
+       </script>

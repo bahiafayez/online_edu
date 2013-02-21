@@ -1,27 +1,26 @@
-<h3>Module Progress Chart</h3>
-<style>
-	.table{
-		font-size: 10px;
-	}
-</style>
+<h3>Overall Statistics</h3>
+
 <table class="table">
+	<tr><td>Total Quiz Grade</td><td><%= @overall[0] %></td></tr>
+	<tr><td>Total Invideo Quiz Grade</td><td><%= @overall[1] %></td></tr>
+	<tr><td>% Quizzes Done</td><td><%= @overall[2] %></td></tr>
+	<tr><td>% Invideo Quizzes Done</td><td><%= @overall[3] %></td></tr>
+</table>
+
+<h3>Progress Matrix</h3>
+
+<table class="table">
+	
+	<% @mod_chart.each do |key,value| %>
 	<tr>
-	<td></td>
-	<% @mods.each do |m| %>
-	<td><%= m %></td>	
-	<% end %>
-	</tr>
-	<% @matrix.each do |k,v| %>
-	<tr>
-		<td><%= k.name %></td>
-		<% v.each do |key,value| %>
+			<td><%= Group.find(key).name %></td>
 			<td><%= image_tag "check5.png", :style =>"width:15px;"  if value == "Finished on Time" %>
 				<%= image_tag "redx.png", :style =>"width:15px;"  if value == "Not Finished" %>
-				<%= image_tag "check5gray.png", :style =>"width:15px;"  if value == "Finished Not on time" %> <%= "(#{@late[k][key]} days)" if @late[k][key]%>
+				<%= image_tag "check5gray.png", :style =>"width:15px;"  if value == "Finished Not on time" %> <%= "(#{@mod_late[key]} days)" if @mod_late[key]%>
 			</td>
 		<% end %>
 	</tr>
-	<% end %>
+
 	
 </table>
 

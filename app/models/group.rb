@@ -16,6 +16,79 @@ class Group < ActiveRecord::Base
     appearance_time > Time.zone.now.to_date
   end
   
+  
+  def get_data
+    data={}
+    lectures.each do |lecture|
+      lecture.online_quizzes.each do |quiz|
+        data[quiz.id]=[]
+        quiz.online_answers.each do |answer|
+          data[quiz.id]<< OnlineQuizGrade.where(:online_quiz_id => quiz.id, :online_answer_id => answer.id, :lecture_id => lecture.id).count
+        end
+      end
+    end
+    return data
+  end
+  
+  def get_colors
+    colors={}
+    lectures.each do |lecture|
+      lecture.online_quizzes.each do |quiz|
+        colors[quiz.id]=[]
+        quiz.online_answers.each do |answer|
+          color = if answer.correct
+                    "green"
+                  else
+                    "gray"
+                  end
+          colors[quiz.id]<< color
+        end
+      end
+    end
+    return colors
+  end
+  
+  def get_categories
+    data={}
+    lectures.each do |lecture|
+      lecture.online_quizzes.each do |quiz|
+        data[quiz.id] = quiz.online_answers.map{|obj| obj=obj.answer}
+      end
+    end
+    return data
+  end
+  
+  def get_lecture_names
+    data={}
+    lectures.each do |lecture|
+      lecture.online_quizzes.each do |quiz|
+        data[quiz.id] = [lecture.name, lecture.url]
+      end
+    end
+    return data
+  end
+  
+  def get_questions
+    data={}
+    lectures.each do |lecture|
+      lecture.online_quizzes.each do |quiz|
+        data[quiz.id] = [quiz.question, quiz.time]
+      end
+    end
+    return data
+  end
+  
+  def get_question_ids
+    data=[]
+    lectures.each do |lecture|
+      lecture.online_quizzes.each do |quiz|
+        data << quiz.id
+      end
+    end
+    return data
+  end
+  
+  
   def total_questions
     count=0;
     lectures.each do |l|

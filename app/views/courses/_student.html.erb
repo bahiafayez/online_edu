@@ -15,7 +15,7 @@
 </td>
 
 <td>
-<%= student.email %>
+<%= link_to student.email, send_email_course_path(@course, :student => student.id) %>
 </td>
 
 

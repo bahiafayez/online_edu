@@ -1,4 +1,4 @@
-<h3>Module Progress Chart</h3>
+<h3>Lecture Progress Chart</h3>
 <style>
 	.table{
 		font-size: 10px;
@@ -7,27 +7,26 @@
 <table class="table">
 	<tr>
 	<td></td>
-	<% @mods.each do |m| %>
-	<td><%= m %></td>	
-	<% end %>
+	<!-- <td></td> -->
+	<td>Total Quiz Grade</td>
+	<td>Total Invideo Quiz Grade</td>
+	<td>% Quizzes Done</td>
+	<td>% Invideo Quizzes Done</td>
 	</tr>
-	<% @matrix.each do |k,v| %>
+	<% @statistics.each do |k,v| %>
 	<tr>
 		<td><%= k.name %></td>
-		<% v.each do |key,value| %>
-			<td><%= image_tag "check5.png", :style =>"width:15px;"  if value == "Finished on Time" %>
-				<%= image_tag "redx.png", :style =>"width:15px;"  if value == "Not Finished" %>
-				<%= image_tag "check5gray.png", :style =>"width:15px;"  if value == "Finished Not on time" %> <%= "(#{@late[k][key]} days)" if @late[k][key]%>
-			</td>
+		<!-- <td><%= k.email %></td> -->
+		<% v.each do |value| %>
+			<td><%= value %></td>
 		<% end %>
 	</tr>
 	<% end %>
-	
 </table>
 
 
-<div style="border:1px solid black;width:150px;float:right;padding: 5px;">
+<!-- <div style="border:1px solid black;width:150px;float:right;padding: 5px;">
 	<%= image_tag "check5.png", :style =>"width:12px;"%><p style="margin-left:10px;font-size:12px;display:inline">Finished, On Time </p><br />
 	<%= image_tag "check5gray.png", :style =>"width:12px;"%><p style="margin-left:10px;font-size:12px;display:inline">Finished, Late</p><br />
 	<%= image_tag "redx.png", :style =>"width:12px;"%><p style="margin-left:10px;font-size:12px;display:inline">Not Finished</p>
-</div>
+</div> -->

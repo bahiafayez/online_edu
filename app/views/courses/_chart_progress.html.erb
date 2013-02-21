@@ -80,13 +80,13 @@ $(function () {
 function getSeries()
 {
 	var studentProgress= <%= raw @student_progress_json %>
-        x=[{"name":'Quiz', "data":[]}, {"name":'Lecture', "data":[]}, {"name":'Lecture Quizzes', "data":[]}]
+        x=[{"name":'Quiz', "data":[]}, {"name":'Lecture Quizzes', "data":[]}] //{"name":'Lecture', "data":[]}
         for(key in studentProgress)
         {	
         	//console.debug(studentProgress[key][1])
         	x[0].data.push(studentProgress[key][1])
         	x[1].data.push(studentProgress[key][2])
-        	x[2].data.push(studentProgress[key][3])
+        	//x[2].data.push(studentProgress[key][3])
         }
         
         console.debug(x)

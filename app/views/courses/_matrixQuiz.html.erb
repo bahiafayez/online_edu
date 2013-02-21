@@ -1,4 +1,4 @@
-<h3>Module Progress Chart</h3>
+<h3>Quiz Progress Chart</h3>
 <style>
 	.table{
 		font-size: 10px;
@@ -7,22 +7,23 @@
 <table class="table">
 	<tr>
 	<td></td>
-	<% @mods.each do |m| %>
+	<!-- <td></td> -->
+	<% @mods_quizzes.each do |m| %>
 	<td><%= m %></td>	
 	<% end %>
 	</tr>
-	<% @matrix.each do |k,v| %>
+	<% @matrixQuiz.each do |k,v| %>
 	<tr>
 		<td><%= k.name %></td>
+		<!-- <td><%= k.email %></td> -->
 		<% v.each do |key,value| %>
 			<td><%= image_tag "check5.png", :style =>"width:15px;"  if value == "Finished on Time" %>
 				<%= image_tag "redx.png", :style =>"width:15px;"  if value == "Not Finished" %>
-				<%= image_tag "check5gray.png", :style =>"width:15px;"  if value == "Finished Not on time" %> <%= "(#{@late[k][key]} days)" if @late[k][key]%>
+				<%= image_tag "check5gray.png", :style =>"width:15px;"  if value == "Finished Not on time" %> <%= "(#{@late_quiz[k][key]} days)" if @late_quiz[k][key]%>
 			</td>
 		<% end %>
 	</tr>
 	<% end %>
-	
 </table>
 
 

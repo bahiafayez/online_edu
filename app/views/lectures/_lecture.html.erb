@@ -154,7 +154,7 @@ function shortcuts(hid)
 function markSeen()  // marks that lecture was viewed
 {
 	//pop.play();
-	playVideo();
+	//playVideo();
 	$.getJSON('<%= @seen_path %>', {"seen":true}, function(response){
 	});
 
@@ -300,7 +300,7 @@ function checkTime(hid, duration) {
                 	console.log(player.getAvailableQualityLevels())
                 
                 	
-                	logStudent(player.getCurrentTime(), duration)
+                	//logStudent(player.getCurrentTime(), duration) #stopped that - 75% 50% and 25%
                 
                 
                 	$('#timer_'+hid).html("<p style='float:left;margin-left:60px;left:50px;line-height:60px;color:gray'>"+formatSecondsAsTime(player.getCurrentTime())+"</p><p style='float:left;margin-left:0px;line-height:60px;color:gray'> / "+formatSecondsAsTime(duration)+"</p>");
@@ -422,6 +422,7 @@ $(document).ready(function(){
 
 	last=0;
 	flag=0;
+	markSeen();
 	
 	$('#player').youTubeEmbed("<%= lecture.url %>",800,500,'small', 'youVideo');
 	
@@ -493,7 +494,7 @@ $(document).ready(function(){
 	},{"disable_in_input" : true});
 	
 	
-	showEvaluation("");  // on load show evaluation .. (only if 7aga mo3ayana?)
+	//showEvaluation("");  // on load show evaluation .. (only if 7aga mo3ayana?)
     
 });
 

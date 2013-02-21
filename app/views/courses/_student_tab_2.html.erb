@@ -1,0 +1,60 @@
+<div style="display:block">
+<p style="display:inline-block">
+  <label for="module_id">Module:</label>
+  <%= collection_select :person, :group_id, Group.where(:course_id => @course.id), :id, :name, :prompt => "Select a Module" %>
+</p>
+<p id="quiz_field" style="display:inline-block">
+  <label for="quiz_id">Quiz:</label>
+  <%= collection_select :person,:quiz_id, Quiz.where(:course_id => @course.id), :id, :name, :prompt => "Select a Quiz" %>
+</p>
+</div>
+
+<div id="quiz_panel"></div>
+
+<script>
+function quizSelected()
+{
+	console.log("here")
+	$.ajax({url:"/courses/<%=@course.id%>/student_quiz_grade", type:'get',data: { quiz_id: $('#person_quiz_id').val(), student_id: <%= @student.id %> }, dataType:'script'});
+}
+
+function groupSelected() {
+	console.log(quizzes)
+	console.log("hereee")
+  module_id = $('#person_group_id').val();
+  $("#person_quiz_id").html("<option value=''>Select a Quiz</option>")
+  
+  
+  		
+for (var i = 0; i < quizzes.length; i++) {
+  	var quiz= quizzes[i]
+    if (quiz[0] == module_id) {
+      $("#person_quiz_id").append("<option value='"+quiz[2]+"'>"+quiz[1]+"</option>"); 
+    }
+ };
+  if ($("#person_quiz_id option").size() == 1) {
+    $('#quiz_field').hide();
+  } else {
+    $('#quiz_field').show();
+
+  }
+}
+ 
+$(document).ready(function() {
+ quizzes = new Array();
+<% for quiz in @quizzes -%>
+  quizzes.push(new Array(<%= quiz.group_id %>, '<%=h quiz.name %>', <%= quiz.id %>));
+<% end -%>
+
+console.log("here?"+quizzes)
+  groupSelected();
+  
+  $("#person_quiz_id").change(function(event){
+  	quizSelected();	
+  });
+  $('#person_group_id').change(function(event){
+  	groupSelected();
+  });
+});
+
+</script>

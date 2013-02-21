@@ -16,4 +16,17 @@ class UserMailer < ActionMailer::Base
     @course = course
     mail(:bcc => users, :subject => "New Announcement - #{course.name}", :from => @from)
   end
+  
+  def student_email(user, subject, message)
+    @from =  "\"Scalable Learning\" <info@scalable-learning.com>"
+    @message=message   
+    mail(:to => user, :subject => subject, :from => @from)
+  end
+  
+  def student_batch_email(users, subject, message)
+    @from =  "\"Scalable Learning\" <info@scalable-learning.com>"
+    @message=message   
+    @users= users.map{|user| user.email}
+    mail(:bcc => @users, :subject => subject, :from => @from)
+  end
 end

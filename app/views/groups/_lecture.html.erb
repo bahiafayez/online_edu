@@ -247,6 +247,8 @@ function load(elem)
 {
 	// When call popover, its loaded from here.
 	console.debug("elem is "+elem)
+	if(document.getElementById("correct_"+elem)==null)
+		return
 	document.getElementById("correct_"+elem).checked=storedData[elem][0]
 	document.getElementById("explain_"+elem).value=storedData[elem][2]
 	document.getElementById("answer_"+elem).value=storedData[elem][1]

@@ -28,7 +28,10 @@ class Lecture < ActiveRecord::Base
     lecture_quizzes=online_quizzes.pluck(:id).sort #ids of lecture quizzes
     user_quizzes=OnlineQuizGrade.where(:user_id => user_asking, :lecture_id => id).pluck(:online_quiz_id).sort  
     #will add now the marks.
-    viewed=LectureView.where(:user_id => user_asking, :lecture_id => id, :percent => 75)
+    viewed=LectureView.where(:user_id => user_asking, :lecture_id => id) #, :percent => 75
+    
+    #print "answer iSSSSSSSSSS"
+    #print user_quizzes==lecture_quizzes and !viewed.empty?
     
     return (user_quizzes==lecture_quizzes and !viewed.empty?)
     
@@ -38,6 +41,58 @@ class Lecture < ActiveRecord::Base
   
   def edit_url
     return "Edit URL"
+  end
+  
+    def get_data
+    data={}
+     online_quizzes.each do |quiz|
+        data[quiz.id]=[]
+        quiz.online_answers.each do |answer|
+          data[quiz.id]<< OnlineQuizGrade.where(:online_quiz_id => quiz.id, :online_answer_id => answer.id, :lecture_id => id).count
+        end
+      end
+    return data
+  end
+  
+  def get_colors
+    colors={}
+      online_quizzes.each do |quiz|
+        colors[quiz.id]=[]
+        quiz.online_answers.each do |answer|
+          color = if answer.correct
+                    "green"
+                  else
+                    "gray"
+                  end
+          colors[quiz.id]<< color
+        end
+      end
+    return colors
+  end
+  
+  def get_categories
+    data={}
+      online_quizzes.each do |quiz|
+        data[quiz.id] = quiz.online_answers.map{|obj| obj=obj.answer}
+      end
+    return data
+  end
+  
+  
+  def get_questions
+    data={}
+      online_quizzes.each do |quiz|
+        data[quiz.id] = [quiz.question, quiz.time]
+      end
+    return data
+  end
+  
+  def get_question_ids
+    data=[]
+      online_quizzes.each do |quiz|
+        data << quiz.id
+      end
+    return data
   end
   
   private

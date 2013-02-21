@@ -1,0 +1,59 @@
+<div style="display:block">
+<p style="display:inline-block">
+  <label for="module_id">Module:</label>
+  <%= collection_select :human, :group_id, Group.where(:course_id => @course.id), :id, :name, :prompt => "Select a Module" %>
+</p>
+<p id="lecture_field" style="display:inline-block">
+  <label for="lecture_id">Lecture:</label>
+  <%= collection_select :human,:lecture_id, Lecture.where(:course_id => @course.id), :id, :name, :prompt => "Select a Lecture" %>
+</p>
+</div>
+
+<div id="lecture_panel"></div>
+
+<script>
+function lectureSelected()
+{
+	console.log("here")
+	$.ajax({url:"/courses/<%=@course.id%>/student_lecture_grade", type:'get',data: { lec_id: $('#human_lecture_id').val(), student_id: <%= @student.id %> }, dataType:'script'});
+}
+
+function groupSelected2() {
+	console.log(quizzes)
+	console.log("hereee")
+  module_id = $('#human_group_id').val();
+  $("#human_lecture_id").html("<option value=''>Select a Lecture</option>")
+  
+  
+  		
+for (var i = 0; i < lectures.length; i++) {
+  	var lec= lectures[i]
+    if (lec[0] == module_id) {
+      $("#human_lecture_id").append("<option value='"+lec[2]+"'>"+lec[1]+"</option>"); 
+    }
+ };
+  if ($("#human_lecture_id option").size() == 1) {
+    $('#lecture_field').hide();
+  } else {
+    $('#lecture_field').show();
+
+  }
+}
+ 
+$(document).ready(function() {
+ lectures = new Array();
+<% for lec in @lectures -%>
+  lectures.push(new Array(<%= lec.group_id %>, '<%=h lec.name %>', <%= lec.id %>));
+<% end -%>
+
+  groupSelected2();
+  
+  $("#human_lecture_id").change(function(event){
+  	lectureSelected();	
+  });
+  $('#human_group_id').change(function(event){
+  	groupSelected2();
+  });
+});
+
+</script>

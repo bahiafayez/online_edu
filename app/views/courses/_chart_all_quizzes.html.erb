@@ -9,7 +9,7 @@ $(function () {
                 renderTo: 'container',
                 type: 'bar',
                 //width: 400,
-        		height: <%= 50*@student_names.length + 150 %>
+        		height: <%= 100*@student_names.length + 150 %>
             },
             title: {
                 text: 'Student Grades'
@@ -33,13 +33,13 @@ $(function () {
             tooltip: {
                 formatter: function() {
                     return '<b>'+ this.x +'</b><br/>'+
-                        this.series.name +': '+ this.y +'<br/>'+
-                        'Total: '+ this.point.stackTotal;
+                        this.series.name +': '+ this.y +'<br/>'//+
+                        //'Total: '+ this.point.stackTotal;
                 }
             },
             plotOptions: {
                 series: {
-                    stacking: 'normal',
+                    
                 },
                 column:{
                 	pointPadding: 0.2,

@@ -1,0 +1,12 @@
+<!-- When teachers used to enroll -->
+<!-- $('#invited_students').html("<table class='table table-striped' width='100%'><tr><th>Enrolled</th><th>Student Name</th><th>Student Email</th></tr><%= escape_javascript(render :partial => 'student', :collection => @students , :locals=> {:remove=> true}) %></table><center><%= escape_javascript(paginate @students) %></center>");-->
+
+
+$('#invited_students').html("<table class='table table-striped' width='100%'><tr><th>Student Name</th><th>Student Email</th></tr><%= escape_javascript(render :partial => 'student2', :collection => @students , :locals=> {:remove=> true}) %></table><center><%= escape_javascript(paginate @students) %></center>");
+
+
+$(".student_name").unbind();
+$(".student_name").click(function(event){
+	var student_id= $(this).attr("id").split("_")[1]
+	$.ajax({url:"/courses/<%=@course.id%>/student_grade", type:'get',data: { student_id: student_id}, dataType:'script'}); 
+});

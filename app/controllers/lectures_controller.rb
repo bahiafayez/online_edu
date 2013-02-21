@@ -313,21 +313,26 @@ class LecturesController < ApplicationController
     end
   end
   
-  def seen #lecture was viewed.. will be marked as viewed. when passed 25 50 and 75
+  def seen #lecture was viewed.. will be marked as viewed. when passed 25 50 and 75 #cancelled for now.
    #LectureView.create(:user_id => current_user.id, :course_id => params[:course_id], :lecture_id => params[:id]) if LectureView.where(:user_id => current_user.id, :course_id => params[:course_id], :lecture_id => params[:id]).empty?
-   portion=params[:portion].to_i
+   # portion=params[:portion].to_i
+   # a=LectureView.where(:user_id => current_user.id, :course_id => params[:course_id], :lecture_id =>  params[:id])
+   # if a.empty?
+     # #create new one
+     # LectureView.create(:user_id => current_user.id, :course_id => params[:course_id], :lecture_id => params[:id], :percent => portion) if portion==25
+   # else
+     # a=a[0]
+     # #update this one
+     # if portion==50 and a.percent == 25
+        # a.update_attributes(:percent => 50) 
+      # elsif  portion==75 and a.percent == 50
+        # a.update_attributes(:percent => 75) 
+     # end
+   # end
    a=LectureView.where(:user_id => current_user.id, :course_id => params[:course_id], :lecture_id =>  params[:id])
    if a.empty?
-     #create new one
-     LectureView.create(:user_id => current_user.id, :course_id => params[:course_id], :lecture_id => params[:id], :percent => portion) if portion==25
-   else
-     a=a[0]
-     #update this one
-     if portion==50 and a.percent == 25
-        a.update_attributes(:percent => 50) 
-      elsif  portion==75 and a.percent == 50
-        a.update_attributes(:percent => 75) 
-     end
+     # #create new one
+   LectureView.create(:user_id => current_user.id, :course_id => params[:course_id], :lecture_id => params[:id])
    end
    
    render json:"done"

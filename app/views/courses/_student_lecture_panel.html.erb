@@ -1,0 +1,13 @@
+<table class="table">
+	<tr><td>Question</td><td>Grade</td><td>Answer Chosen</td></tr>
+	<% @lecture_grade.each do |question|%>
+	<tr>
+		<td><%= question[0] %></td>
+		<td><%= question[1] %></td>
+		<td><%= question[2] %></td>
+	</tr>
+	<% end %>
+</table>
+
+<center><b>Total: <%= @tot2 %></b></center>
+

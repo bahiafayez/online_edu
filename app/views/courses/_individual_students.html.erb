@@ -1,5 +1,3 @@
-<%= render 'shared/head' %>
-<% cache :hash => {:tag => User.maximum(:updated_at).to_i, :count => User.count} do %>
 <style>
 .pagination a, .pagination span {
     float: none;
@@ -26,40 +24,40 @@
 .search_field{
 	height:15px;
 }
+.student_name{
+	cursor: pointer;
+}
 
 </style>
 
-<div class="row">
-	  <!-- This is obtrusive javascript-->
-<!-- to search enrolled or not.. removed because teacher doesn't enroll students anymore.-->
-<!-- <div class="span6"> 
-<select style="display:inline;height:25px;font-size:12px;" id='type' onchange="change(this.value)"><option value="all">All</option><option value="enrolled">Enrolled</option><option value="not">Not Enrolled</option></select>
-</div> -->
-<div class="span12">
-<%= link_to "Email All", send_batch_email_course_path(@course) %>
-<%= form_tag enrolled_students_course_path(@course), :method => 'get', :id => "students_search", :style=>"display:inline;float:right" do %>
+
+<%= form_tag progress_teacher_course_path(@course, :individual_student_grades => "p", :type => "grades"), :method => 'get', :id => "students_search", :style=>"display:inline" do %>
   <p style="display:inline">
     <%= search_field_tag :search, params[:search], :style => "height:15px;" %>
     <%= submit_tag "Search", :name => nil, :class=>"btn" %>
   </p>
 <% end %>
-</div>
-</div>
 
+<br />
 
 <!-- <%= link_to "Students Enrolled", course_path(@course) , :onclick => "$('#invited_students').toggle()", :remote => true,  :id=>"show_now" %> -->
-<div id="invited_students", width="100%", style="overflow: auto;position:absolute:width:80%;height:500px;">
+<div id="invited_students", width="100%", style="overflow: auto;position:absolute:width:80%;">
 	<table class="table table-striped" width="100%">
 		<tr>
 			<!-- <th>Enrolled</th> -->
 			<th>Student Name</th>
 			<th>Student Email</th>
 		</tr>
-	<%= render :partial => "student", :collection => @students , :locals=> {:remove=> true} %></table>
+		<%= render :partial => "student2", :collection => @students , :locals=> {:remove=> true} %></table>
+	</table>
 	<center><%= paginate @students %></center>
 </div>
 <br />
-</div>
+
+<hr />
+
+<div id="student_grades" class="well"></div>
+
 
 
 <script>
@@ -69,7 +67,7 @@ $(document).ready(function(){   // should put this somewhere elsee..
 	//document.getElementById(b).parentNode.parentNode.style.display ="none";
 
 var data =<%= @student_ids %>;
-var data2=<%= @student_ids2 %>;
+
 console.debug("i isssss "+data)
 
 for(i=0; i<data.length; i++){
@@ -77,12 +75,6 @@ b= "studentsin_"+data[i]
 //document.getElementById(b).parentNode.parentNode.style.display ="none";
 }
 
-for(i=0; i<data2.length; i++){
-
-b= "students["+data2[i]+"]"
-console.debug(b)
-//document.getElementById(b).parentNode.parentNode.style.display ="none";
-}
 
 $('.pagination span a').live('click', 
     function () {
@@ -91,6 +83,13 @@ $('.pagination span a').live('click',
       return false;
     }
   );
+
+
+$(".student_name").click(function(event){
+	var student_id= $(this).attr("id").split("_")[1]
+	$.ajax({url:"/courses/<%=@course.id%>/student_grade", type:'get',data: { student_id: student_id}, dataType:'script'}); 
+});
+
 
 });
 
@@ -101,30 +100,20 @@ $('.pagination span a').live('click',
   });
   
 $('#students_search input').keyup(function () {
-  $.get($('#students_search').attr('action'),$('#students_search').serialize()+'&type='+$('#type').val(), null, 'script');
+  $.get($('#students_search').attr('action'),$('#students_search').serialize(), null, 'script');
   return false;
  });
 
 change = function(val)
 {
-	$.get($('#students_search').attr('action'),$('#students_search').serialize()+'&type='+$('#type').val(), null, 'script');	
+	$.get($('#students_search').attr('action'),$('#students_search').serialize(), null, 'script');	
 }
 
+
+
+
+
 </script>
-
-
-
-
-
-<% end %>
-
-
-
-
-<!--NOW ADD CHECKBOXES ONLY (MARKED OR NOT) AND REMOVE THE REMOVE BUTTON
-MAKE SURE WORKS IN "ALL"
-AND ALSO IN ENROLLED (REMOVED FROM LIST) AND NOT ENROLLED... WHEN GO FROM ONE TO ANOTHER UPDATED..
--->
 
 
 

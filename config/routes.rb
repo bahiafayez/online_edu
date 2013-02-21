@@ -51,6 +51,14 @@ OnlineEdu::Application.routes.draw do
     post 'student_quiz'
     get 'student_notifications'
     get 'course_editor'
+    get 'student_grade'
+    get 'dynamic_quizzes'
+    get 'student_quiz_grade'
+    get 'student_lecture_grade'
+    get 'send_email'
+    post 'send_email_through'
+    get 'send_batch_email'
+    post 'send_batch_email_through'
   end
     match '/events(/:year(/:month))' => 'events#index', :as => :event, :constraints => {:year => /\d{4}/, :month => /\d{1,2}/}
     match "events/:id" => "events#show"

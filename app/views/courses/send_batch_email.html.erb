@@ -1,0 +1,15 @@
+<script type="text/javascript">
+	bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
+</script>
+<%= render 'shared/head' %>
+<div class="well">
+
+<%= form_tag "send_batch_email_through" do %>
+<table>
+	<tr><td>TO:</td><td>All Students in <%=@course.name%></td><td><%= submit_tag "Send", :class=>"btn", :style=>"float:right"%></td></tr>
+	<tr><td>Subject:</td><td colspan="2"><%= text_field_tag "subject", '', :size => 300, :style => "width:500px" %></td></tr>
+	<tr><td></td><td colspan="2"><%= text_area_tag "message", nil, :rows => 20, :cols => 200 , :style => "width:100%"%></td></tr>
+</table>
+<% end %>
+	
+</div>
