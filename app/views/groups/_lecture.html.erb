@@ -86,6 +86,7 @@ $(document).ready(function() {
   console.log(pop);
   
   $('#insert_quiz').click(function(event){
+  	$('#attention').append("<li style='font-size:10px;'><center><img src='/assets/loading_small.gif'/>Please Wait</center></li>");
   	done_editing();
   	$.ajax({url:"/courses/<%=@course.id%>/lectures/<%=@lecture.id%>/new_quiz", type:'get',data: { time: pop.currentTime()}, dataType:'script'}); //statistics
 	return false;

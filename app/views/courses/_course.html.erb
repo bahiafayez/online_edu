@@ -78,7 +78,20 @@ $(document).ready(function(){
 	
 	setup_module_path();  // when click on module show statistics and details
 	setup_item_path(); // show quiz or lecture details.
+	setup_notifications();
 });
+
+setup_notifications = function()
+{
+	$('.adding').click(function(event){
+		$(this).closest('ul').append("<li style='font-size:10px;'><center><img src='/assets/loading_small.gif'/>Please Wait</center></li>")
+	});
+	
+	$('.adding_module').click(function(event){
+		$(this).parent().children("ul").append("<li style='font-size:10px;'><center><img src='/assets/loading_small.gif'/>Please Wait</center></li>");
+	});
+	
+}
 
 setup_module_path = function()
 {
@@ -120,12 +133,6 @@ setup_item_path = function()
 	
 }
 
-setup_module= function()
-{
-	
-		$.ajax({ url: "<%= new_or_edit_course_group_path(@course)%>", type: 'get', dataType:'script' });
-	
-};
 
 </script>
 <style>
@@ -163,9 +170,9 @@ setup_module= function()
                             <% end %>
                             <li class="item-buttons">
                             <center>
-                            <%=link_to "Add Lecture",new_or_edit_course_lecture_path(@course, :group =>group.id), :class=>"btn btn-mini", :remote => true%>
-                            <%=link_to "Add Quiz",new_or_edit_course_quiz_path(@course, :group =>group.id, :type =>"quiz"), :class=>"btn btn-mini", :remote => true%>
-                            <%=link_to "Add Survey",new_or_edit_course_quiz_path(@course, :group =>group.id, :type =>"survey"), :class=>"btn btn-mini", :remote => true%>
+                            <%=link_to "Add Lecture",new_or_edit_course_lecture_path(@course, :group =>group.id), :class=>"btn btn-mini adding", :remote => true%>
+                            <%=link_to "Add Quiz",new_or_edit_course_quiz_path(@course, :group =>group.id, :type =>"quiz"), :class=>"btn btn-mini adding", :remote => true%>
+                            <%=link_to "Add Survey",new_or_edit_course_quiz_path(@course, :group =>group.id, :type =>"survey"), :class=>"btn btn-mini adding", :remote => true%>
                             </center>
                             </li>
                           </ul>
@@ -176,5 +183,5 @@ setup_module= function()
                  
  				<% end %>
  			</ul>
- 			<%= button_tag "Add a module",:onclick =>"setup_module();" ,:class =>"btn", :style => "float:right;margin-bottom:20px;margin-top:20px;margin-right:10px;"%>
+ 			<%= link_to "Add Module", new_or_edit_course_group_path(@course) ,:class =>"btn adding_module", :style => "float:right;margin-bottom:20px;margin-top:20px;margin-right:10px;", :remote => true%>
  

@@ -86,6 +86,7 @@ $('.pagination span a').live('click',
 
 
 $(".student_name").click(function(event){
+	$('#student_grades').html("<p style='font-size:10px;'><center><img src='/assets/loading_small.gif'/> Please Wait</center></p>");
 	var student_id= $(this).attr("id").split("_")[1]
 	$.ajax({url:"/courses/<%=@course.id%>/student_grade", type:'get',data: { student_id: student_id}, dataType:'script'}); 
 });

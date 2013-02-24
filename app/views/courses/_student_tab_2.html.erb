@@ -15,6 +15,7 @@
 function quizSelected()
 {
 	console.log("here")
+	$('#quiz_panel').html("<p style='font-size:10px;'><center><img src='/assets/loading_small.gif'/> Please Wait</center></p>");
 	$.ajax({url:"/courses/<%=@course.id%>/student_quiz_grade", type:'get',data: { quiz_id: $('#person_quiz_id').val(), student_id: <%= @student.id %> }, dataType:'script'});
 }
 

@@ -15,6 +15,7 @@
 function lectureSelected()
 {
 	console.log("here")
+	$('#lecture_panel').html("<p style='font-size:10px;'><center><img src='/assets/loading_small.gif'/> Please Wait</center></p>");
 	$.ajax({url:"/courses/<%=@course.id%>/student_lecture_grade", type:'get',data: { lec_id: $('#human_lecture_id').val(), student_id: <%= @student.id %> }, dataType:'script'});
 }
 

@@ -14,7 +14,7 @@
 #acc1{margin:0px; padding: 0px;}
 
 
-p {margin: 0 10px 1em}
+/*p {margin: 0 10px 1em}*/
 .strong{font-weight:700}
 .clear {clear:both}
 img{border:0 none}
@@ -91,6 +91,8 @@ a:hover.trigger.open, a:focus.trigger.open, a:active.trigger.open {border-color:
 
 .trigger2:hover{cursor:pointer;color:#005580}
 
+.modules{width:270px;}
+
 </style>
 <script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script>
 <script src="/assets/highcharts.js"></script>
@@ -108,12 +110,14 @@ a:hover.trigger.open, a:focus.trigger.open, a:active.trigger.open {border-color:
 	/*position:absolute;
 	overflow:auto;
 	margin-left:30%;*/
+	width:570px;
 }
 
 #tree{
 	/*position:absolute;
 	overflow:auto;*/
 	/*width:auto*/
+	width:270px;
 	
 }
 
@@ -122,6 +126,7 @@ a:hover.trigger.open, a:focus.trigger.open, a:active.trigger.open {border-color:
 	overflow:auto;
 	margin-left:75%;
 	margin-right:5%;*/
+	width:270px;
 }
 
 </style>
@@ -131,7 +136,7 @@ a:hover.trigger.open, a:focus.trigger.open, a:active.trigger.open {border-color:
 
 <% cache :hash => {:tag => @course.updated_at.to_i} do %>
 <!-- <h4><%= "#{@course.short_name} - #{@course.name}" %></h4> -->
-<div class="row">
+<div class="row" style="width:1200px;">
 <input type="hidden" id="current_viewed" data-item="" data-id="" >
 <div class="span3" id="tree">
 <%= render "course" %>

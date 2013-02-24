@@ -35,23 +35,23 @@ label{
   	<% end %>
   	
   	
-  	<%= task_form.link_to_remove "Remove this question" %>
+  	<%= task_form.link_to_remove "Remove Question", :style => "margin-top:-20px" %>
 	<!-- <%= task_form.full_error :content %> -->	
-  		<%= task_form.fields_for :answers do |t| %>
+  		<%= task_form.fields_for :answers ,:html =>{:class=>"abc"} do |t| %>
   		<!-- <p style="background-color: #eeffff; margin-left: 40px; width: 400px">  <!-- style this better with css --> 
-  		<%= t.input :content ,:label => "Answer", :label_html =>{:style => 'margin-left: 40px;' },:input_html => {:style => 'margin-left: 40px; width: 250px; height: 50px'} %>
+  		<%= t.input :content ,:label => "Answer", :label_html =>{:style => 'margin-left: 30px;margin-bottom:-50px' },:input_html => {:style => 'margin-left: 40px; width: 250px; height: 50px;margin-bottom:-50px'} %>
   		<% if @quiz.quiz_type!="survey" %> 
-  			<%= t.input :correct ,:label => "Correct Answer?", :label_html =>{:style => 'margin-left: 40px;' }, :input_html => {:style => 'margin-left: 40px;'} %><br>
+  			<%= t.input :correct ,:label => "Correct?", :label_html =>{:style => 'margin-left: 40px;' }, :input_html => {:style => 'margin-left: 5px;margin-top:9px'} %><br>
   		<% end %>
-  		<%= t.link_to_remove "Remove this answer" %>
+  		<%= t.link_to_remove "Remove Answer", :style=>"margin-top:-30px;" %>
   		<!-- </p> -->
   		<% end %>
   		
-  		<p><%= task_form.link_to_add "Add an answer", :answers %></p>
+  		<p><%= task_form.link_to_add "Add Answer", :answers %></p>
   		
 	<% end %>
 	
-	<p><%= f.link_to_add "Add a question", :questions %></p>
+	<p><%= f.link_to_add "Add Question", :questions %></p>
 
 	
   <div class="form-actions">

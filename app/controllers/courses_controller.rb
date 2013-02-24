@@ -515,8 +515,8 @@ class CoursesController < ApplicationController
           end
         end
       end
-      @chart_data_old= @chart_data
-      @chart_data=@chart_data.to_json
+      @chart_data_old= Hash[@chart_data.sort]
+      @chart_data=Hash[@chart_data.sort].to_json
       puts "chart data issssss #{@chart_data}"
     end
     ################ if survey ###################
@@ -679,7 +679,7 @@ class CoursesController < ApplicationController
        @students.each do |s|
          #getting number of quizzes student solved in this course (long since course_id not in table.. should consider adding it)
          # now any question solved in the quiz and i consider it, later only consider those with status = submitted
-         # % of quizzes solved
+         # % of quizzes solved #should not include surveys!
          @n_solved=QuizStatus.where(:user_id => s.id, :course_id => @course.id, :status => "Submitted").length     #s.quiz_grades.select('distinct quiz_id').select{|v| Course.find(@course.id).quizzes.pluck(:id).include?v.quiz_id}.length
          @n_total= Course.find(@course.id).quizzes.count
          #number of lectures where i count a lecture if atleast one online quiz is solved.
