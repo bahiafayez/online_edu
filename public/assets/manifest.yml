@@ -61,6 +61,14 @@ fullscreen2_exit.png: fullscreen2_exit-c4a55a48b0baebabffcec99a14582743.png
 fullscreen2_exit/index.png: fullscreen2_exit-c4a55a48b0baebabffcec99a14582743.png
 fullscreen_exit.png: fullscreen_exit-8f46b3a5c35077484dd054fd077f048a.png
 fullscreen_exit/index.png: fullscreen_exit-8f46b3a5c35077484dd054fd077f048a.png
+loading1.gif: loading1-3ac1a44b02714cff8ac68c55cd42d28d.gif
+loading1/index.gif: loading1-3ac1a44b02714cff8ac68c55cd42d28d.gif
+loading2.gif: loading2-616f9f030f366015940e3c8fae254232.gif
+loading2/index.gif: loading2-616f9f030f366015940e3c8fae254232.gif
+loading3.gif: loading3-a6a4bb07b09ca06405203e12bac5b663.gif
+loading3/index.gif: loading3-a6a4bb07b09ca06405203e12bac5b663.gif
+loading_small.gif: loading_small-65b9b251c65ba48562a5a2bd6299aa88.gif
+loading_small/index.gif: loading_small-65b9b251c65ba48562a5a2bd6299aa88.gif
 logo.png: logo-a66e557f3f93b4d5195033ba1a1527a3.png
 logo/index.png: logo-a66e557f3f93b4d5195033ba1a1527a3.png
 logo2.png: logo2-eabae741fd8695ca72dfec7e95cf9fea.png
