@@ -117,6 +117,27 @@ class Group < ActiveRecord::Base
     all=(quizzes+lectures).sort{|a,b| a.position <=> b.position}
   end
   
+  def get_lecture_list
+    data=[]
+    lectures.each do |l|
+      data<<l.url
+    end
+    return data
+  end
+  
+  def get_display_data
+    num_quizzes=0
+    data={}
+    lectures.each do |lec|
+      data[lec.url]=[]
+      lec.online_quizzes.each do |quiz|
+        num_quizzes+=1
+        data[lec.url]<< [quiz.time, num_quizzes, quiz.question, quiz.id]
+      end
+    end
+    return data
+  end
+  
   private
   def clean_up
     self.events.where(:lecture_id => nil, :quiz_id => nil).destroy_all

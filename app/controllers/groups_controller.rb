@@ -253,5 +253,21 @@ class GroupsController < ApplicationController
       format.js{}
       end
    end
+   
+   def display_quizzes    
+     @group = Group.find(params[:id])
+     @num_lectures= @group.lectures.count
+     @num_quizzes= @group.total_questions 
+     @lecture_list= @group.get_lecture_list
+     @display_data=@group.get_display_data
+     
+     #for charts
+     @module_new = @group.get_data
+      @module_colors = @group.get_colors
+      @module_categories = @group.get_categories
+      @module_questions = @group.get_questions
+     
+      render :layout => "display"
+   end
  
 end

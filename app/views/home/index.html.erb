@@ -7,3 +7,28 @@
 	<iframe width="560" height="315" src="http://www.youtube.com/embed/yktbiEM4fpQ" frameborder="0" allowfullscreen></iframe>
 	</div>
 </center>
+
+
+
+  <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+  <script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script>
+  <style type="text/css">
+    #resizable { width: 100%; height: 900px; background: silver; }
+  </style>
+  <script>
+  $(document).ready(function() {
+    $("#resizable").resizable();
+	pop = Popcorn.youtube( "#resizable", "http://www.youtube.com/watch?v=OVLZ6tCOa1w"); //youtube unlike normal html5 needs to be run from a webserver
+	pop.controls( false );                          
+	pop.play();
+	console.log(pop);
+	
+	w=$("#resizable").width();
+	height = w*9.0/16.0;
+	w=$("#resizable").height(height);
+	// ok so now takes width of screen and height according to aspect ratio. Div is also resizable by hand
+  });
+  </script>
+  
+<div id="resizable"></div>
+

@@ -73,6 +73,7 @@ OnlineEdu::Application.routes.draw do
         get 'group_editor'
         get 'statistics'
         get 'details'
+        get 'display_quizzes'
       end
       collection do
         post 'sort'

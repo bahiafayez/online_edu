@@ -1,6 +1,7 @@
 <!-- <div id="container2" style="min-width: 400px; height: 400px; margin: 0 auto"></div><br><br /> -->
 <script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script>
 <center><b><%= @modulechart.name %></b></center><br />
+<%= link_to "Display Quizzes", display_quizzes_course_group_path(@course, @modulechart) %>
 <div id="all_charts"></div>
 <button style="margin-bottom:8px" class="btn" id="export">Export all</button> <select id="image_type"><option value='application/pdf'>PDF</option value='png'><option>PNG</option></select>
 
