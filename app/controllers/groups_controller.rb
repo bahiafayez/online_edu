@@ -1,8 +1,12 @@
 class GroupsController < ApplicationController
+  load_and_authorize_resource 
   # GET /online_answers
   # GET /online_answers.json
+  
   before_filter :getCourse
+  before_filter :correct_user
   before_filter :set_zone
+ 
   
   def set_zone
     @course=Course.find(params[:course_id])
@@ -13,6 +17,13 @@ class GroupsController < ApplicationController
     @course= Course.find(params[:course_id])  
   end
   
+  def correct_user
+    # Checking to see if the current user is taking the course OR teaching the course, otherwise he is not authorised.
+    @c=Course.find(params[:course_id])
+    if !@c.users.include?(current_user) and !(@c.user == current_user)
+      redirect_to courses_path, :alert => "You are not authorized to see requested page"
+    end
+  end
   def index
     @groups = @course.groups
 
@@ -262,10 +273,20 @@ class GroupsController < ApplicationController
      @display_data=@group.get_display_data
      
      #for charts
-     @module_new = @group.get_data
+     @module_new = @group.get_data_percent
       @module_colors = @group.get_colors
       @module_categories = @group.get_categories
       @module_questions = @group.get_questions
+     
+      render :layout => "display"
+   end
+   
+   def display_questions    
+     @group = Group.find(params[:id])
+     @num_lectures= @group.lectures.count
+     @num_quizzes= @group.total_student_questions 
+     @lecture_list= @group.get_lecture_list
+     @display_data=@group.get_display_question_data
      
       render :layout => "display"
    end

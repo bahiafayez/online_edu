@@ -1,12 +1,13 @@
 <p style='list-style-type: none' id='attention'></p>
+<div id="val_problem"></div>
 <table class="table">
 <tr><td>Question</td><td>Time</td><td></td></tr>
 <% @lecture.online_quizzes.each do |quiz|%>
 <tr id=<%="online_quiz_#{quiz.id}"%>>
-	<td><%= link_to quiz.question, "", :remote => true, :onclick => "showOnlineQuiz('#{quiz.time}', '#{quiz.id}', '#{@lecture.id}')" %></td>
-	<td><%= Time.seconds_to_time(quiz.time) %></td>
+	<td><%= link_to quiz.question, "", :remote => true, :id =>"question_label_#{quiz.id}" ,:onclick => "showOnlineQuiz('#{quiz.time}', '#{quiz.id}', '#{@lecture.id}')" %><input id="question_<%= quiz.id %>" value="<%=quiz.question%>" type="text" style="display:none"/></td>
+	<td><b id="time_label_<%= quiz.id%>"> <%=Time.seconds_to_time(quiz.time)%> </b><input id="time_<%= quiz.id %>" value="<%=Time.seconds_to_time(quiz.time) %>" type="time" style="display:none"/></td>
 	<td><%= link_to image_tag("trash2.png"), quiz, :method => :delete, :remote => true, :confirm => "Are you sure you want to delete quiz #{quiz.question}", :style => "float:right"%>
-		<a class="edit_question" href="#myModal" data-toggle="modal" data-time="<%= quiz.time %>" data-id="<%= quiz.id %>" data-question="<%= quiz.question %>" style="float:right;"><img src="/assets/pencil3.png"/></a>
+		<a class="edit_question" href="" data-remote="true" data-time="<%= quiz.time %>" data-id="<%= quiz.id %>" data-question="<%= quiz.question %>" style="float:right;"><img src="/assets/pencil3.png"/></a>
 	</td>
 </tr>
 <% end %>
@@ -67,37 +68,69 @@ done_editing = function()
 }
 
 $(document).ready(function(){
-	$(document).on("click", ".edit_question", function () {
-	 done_editing();
-     var question = $(this).data('question');
-     var time = $(this).data('time');
-     var id= $(this).data('id');
-     $("#question").val( question );
-     $("#time").val( formatSecondsAsTime(time) );
-     $("#quiz_id").val(id)
-     $('#snapshot').html("");
-     $('#vid').hide();
-     pop2 = Popcorn.youtube( "#snapshot", "<%= @lecture.url %>" ,{ width: 200, controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
-  	 pop2.pause();
-  	 pop2.currentTime(parseInt(time));
-  	 console.log(pop2);
-  	 console.log(pop2.currentTime());
+	//$(document).on("click", ".edit_question", function () {
+	$(".edit_question").click(function(event){
+		if($(this).attr("disabled")!="disabled")
+		{
+		if($(this).html()=="Save")
+		{
+			var id= $(this).data('id');
+			if(validate($("#time_"+id)))
+			{
+				var a = $("#time_"+id).val().split(':'); // split it at the colons
+				// minutes are worth 60 seconds. Hours are worth 60 minutes.
+				var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]); 
+
+				$.ajax({url:"/online_quizzes/"+id, type:'put',data: { online_quiz: {time:seconds, question:$("#question_"+id).val()}}, dataType:'script'}); //save with time
+			}
+		
+		
+		//time: pop2.currentTime(), 
+		}else{
+			
+		 done_editing();
+		 console.log("in edit");
+	     var question = $(this).data('question');
+	     var time = $(this).data('time');
+	     var id= $(this).data('id');
+	     $("#question_"+id).val( question );
+	     $("#question_"+id).css("display","inline");
+	     $("#time_"+id).val( formatSecondsAsTime(time) );
+	     $("#time_"+id).css("display","inline");
+	     $("#question_label_"+id).css("display","none");
+	     $("#time_label_"+id).css("display","none");
+	     $(".edit_question").attr("disabled","disabled");
+	     $(this).attr("disabled",false);
+	     $(this).html("Save");
+	     $(this).addClass("btn btn-mini");
+	    }
+	    
+	   }
+     return false;
+     //$("#quiz_id").val(id)
+     //$('#snapshot').html("");
+     //$('#vid').hide();
+     //pop2 = Popcorn.youtube( "#snapshot", "<%= @lecture.url %>" ,{ width: 200, controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
+  	 //pop2.pause();
+  	 //pop2.currentTime(parseInt(time));
+  	 //console.log(pop2);
+  	 //console.log(pop2.currentTime());
     //$('#mymodal').modal('show');
 });
 
-	$('#change_time').click(function(event){
-		if($(this).is(":checked")){
-			$('#vid').show();
-			var time=$(this).siblings("#time").val()
-			tt=time.split(":");
-			sec=tt[0]*3600+tt[1]*60+tt[2]*1;
-			console.log("time is "+sec)
-			pop2.currentTime(sec);
-			console.log(pop2);
-		}else{
-			$('#vid').hide();
-		}
-	});
+	// $('#change_time').click(function(event){
+		// if($(this).is(":checked")){
+			// $('#vid').show();
+			// var time=$(this).siblings("#time").val()
+			// tt=time.split(":");
+			// sec=tt[0]*3600+tt[1]*60+tt[2]*1;
+			// console.log("time is "+sec)
+			// pop2.currentTime(sec);
+			// console.log(pop2);
+		// }else{
+			// $('#vid').hide();
+		// }
+	// });
 	
 	$("#save_quiz").click(function(event){
 		id= $("#quiz_id").val()
@@ -109,5 +142,35 @@ $(document).ready(function(){
 		
 	});	
 });
+
+function validate(elem) {
+	console.log("in validate")
+	var intRegex = /^\d\d:\d\d:\d\d$/;  //checking format
+	if(intRegex.test(elem.val())) {
+	   		   
+		
+	    var hhmm = elem.val().split(':'); // split hours and minutes
+	    var hours = parseInt(hhmm[0]); // get hours and parse it to an int
+	    var minutes = parseInt(hhmm[1]); // get minutes and parse it to an int
+	    var seconds = parseInt(hhmm[2]);
+	    console.log(elem.val());
+		console.log(hours);
+		console.log(minutes);
+		console.log(seconds);
+	    // check if hours or minutes are incorrect
+	    if(hours < 0 || hours > 24 || minutes < 0 || minutes > 59 || seconds< 0 || seconds > 59) {
+	        console.log("in bad format");
+	        //alert('NOPE'); // display error
+	        $("#val_problem").html("<div class='alert alert-danger'><b>Incorrect Format for Time</b></div>");
+	        return false; // stop the form from sending
+	    }
+	    else
+	    	return true;
+	   }
+	    else{
+	    	$("#val_problem").html("<div class='alert alert-danger'><b>Incorrect Format for Time</b></div>");
+	    	return false;
+	    }
+}
 	
 </script>

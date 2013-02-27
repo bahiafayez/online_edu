@@ -30,22 +30,23 @@ setup_chart = function(the_id)
         chart = new Highcharts.Chart({
             chart: {
                 renderTo: 'the_chart',
-                type: 'bar',
+                type: 'column',
+                //marginLeft:300,
             },
-            title: {
+            title: { 
                 text: null, 
             },
             xAxis: {
                 categories: getCategories(the_id),
                 labels:{
                 	style:{
-                		fontSize:'16px'
+                		fontSize:'14px'
                 	}
                 }
             },
             yAxis: {
                 title: {
-                    text: 'Number of Students'
+                    text: '%'
                 },
                 allowDecimals:false
             },
@@ -174,44 +175,6 @@ setup_buttons = function(h)
 	
 }
 
-setup_video = function()
-{
-	lectures= <%= raw @lecture_list.to_json %>
-	console.log(lectures)
-	display=<%= raw @display_data.to_json %>
-	
-	for(var elem in lectures)
-	{
-		url=lectures[elem]
-			if(display[url].length!=0)
-			{
-				first_lecture= url
-				first_quiz= display[url][0][0] // first quiz . first parameter
-				current_lecture= parseInt(elem)+1;
-				current_quiz= parseInt(display[url][0][1]); //first quiz . second parameter
-				$("#the_question").text(display[url][0][2]);
-				setup_chart(display[url][0][3]);
-				setup_position_text(); // setting text in top left corner.
-				break; 
-			}
-		
-	}
-	
-	console.log(lectures);
-	pop = Popcorn.youtube( "#resizable", first_lecture, {controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
-	//pop.controls( false );                         
-	console.log(pop);
-	
-	pop.on("loadeddata", function() {
-		pop.pause();
-		pop.currentTime(parseInt(first_quiz));
-		pop.controls( false );   
-		$(".html5-video-controls").css("display","none"); 
-		console.log(pop);
-		console.log(pop.currentTime());
-		 });
-	
-}
 
 
 function onYouTubeIframeAPIReady() {
@@ -265,6 +228,7 @@ function onPlayerReady(event) {
         console.log(first_quiz)
         event.target.seekTo(first_quiz);
         console.log(event.target.getCurrentTime());
+        player.mute();
         
  }    
 function onPlayerStateChange(){
@@ -282,13 +246,6 @@ setup_video2=function()
       
 }
  
-
-// function onPlayerStateChange(event) {
-    // if (event.data == YT.PlayerState.PLAYING && !done) {
-      // setTimeout(stopVideo, 6000);
-      // done = true;
-    // }
-// }
 
 function stopVideo() {
    player.stopVideo();
@@ -346,18 +303,7 @@ get_next_quiz = function()
 	
 	if(old_lecture!=current_lecture)
 	{
-	// $("#resizable").html("");
-	// pop = Popcorn.youtube( "#resizable", first_lecture); //youtube unlike normal html5 needs to be run from a webserver
-	// pop.controls( false );                         
-	// console.log(pop);
-// 	
-	// pop.on("loadeddata", function() {
-		// pop.pause();
-		// pop.currentTime(parseInt(first_quiz));
-		// $(".html5-video-controls").css("display","none");
-		// console.log(pop);
-		// console.log(pop.currentTime());
-		 // });
+	
 		var v=first_lecture.split("=")[1].split("&")[0]
       	console.log("in here");
         player.loadVideoById(v);
@@ -365,11 +311,7 @@ get_next_quiz = function()
 		player.playVideo();
 	}
 	else{
-		
-		// pop.pause();
-		// pop.currentTime(parseInt(first_quiz));
-		// console.log(pop);
-		// console.log(pop.currentTime());
+	
 		player.seekTo(first_quiz);
 		player.playVideo();
 		 
@@ -480,11 +422,12 @@ $("#previous").click(function(event){
   		font-size: 16px;
   	}
   </style>
-<div id="pos" style="position:absolute"><b id="q_num"></b><br/><b id="lec_num"></b></div>
+<div id="pos" style="position:absolute"><b style="padding-left:15px;" id="q_num"></b><br/><b style="padding-left:15px;" id="lec_num"></b></div>
+<%= link_to "Exit", progress_teacher_course_path(@course, :g => @group.id, :type => "modules"), :style =>"float:right;margin-right:5px;" %>
 <div id="big_div" style="width:100%;height:100%; background-color:white">
 <div style="display: block; height: 60%; width: 100%;" id="top"><div id="left" style="height: 100%; min-width: 100px; display: inline-block;vertical-align: top;"><%= link_to "-3 sec", "", :remote => true, :class => "btn btn-primary", :id => "minus_3" %><%= link_to "Previous", "", :remote => true, :class => "btn btn-primary", :id => "previous" %></div><div id="resizable" style="margin-top: 0px; height: 100%; background-color: gray; width: 428.444px; display: inline-block;"></div><div id="right" style="height: 100%; min-width: 100px; display: inline-block;vertical-align: top;"><%= link_to "+3 sec", "", :remote => true, :class => "btn btn-primary", :id => "plus_3" %><%= link_to "Next", "", :remote => true, :class => "btn btn-primary", :id => "next" %></div></div>
 <div id="below" style="display:block;width:100%;height:40%;background-color:white;">
-	<div id="the_question" style="display:inline;font-size:28px;margin-top:10px;line-height:30px;height:100%;width:40%;"></div>
+	<div id="the_question" style="position:absolute;padding-left:10px;display:inline;font-size:28px;margin-top:10px;line-height:30px;height:100%;width:40%;"></div>
 	<div id="the_chart" style="width:60%;height:100%;background-color:white;float:right;display:inline;"></div>
 </div>
 

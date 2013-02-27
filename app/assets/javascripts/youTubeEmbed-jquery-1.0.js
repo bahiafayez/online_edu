@@ -125,8 +125,8 @@
              // for the question
              var hidden_div= $('<div>',{"id":"conf_video_"+haveid,"style":'display:none;',"class":"hidden_div"}).appendTo(elements.container);
              var hidden_input= $('<input>',{"type":'text', "id":"confusedQues_video_"+haveid, "placeholder":"Enter Question", "style":"margin-top:8px;width:150px;height:15px;", "name":"confusedQues", "required":"true"}).appendTo(hidden_div);
-             var hidden_button= $('<input>',{"type":"button", "onclick":"confusedQuestion('video_"+haveid+"')", "class":"btn btn-primary", "style":"height:25px;margin-bottom:2px","value":"Save"}).appendTo(hidden_div);
-             
+             var hidden_button= $('<input>',{"type":"button", "onclick":"confusedQuestion('video_"+haveid+"')", "class":"btn btn-primary", "style":"height:25px;margin-bottom:2px","value":"Ask"}).appendTo(hidden_div);
+            
              
              var hidden_shortcuts= $('<div>',{"id":"short_video_"+haveid,"style":'display:none',"class":"well hidden_shortcuts"}).appendTo(elements.container);
              
@@ -154,6 +154,17 @@
 				$('#myModal2').modal('hide')
 				elements.player.pauseVideo();
 			})
+			
+			$("#confusedQues_video_"+haveid).bind('keyup', function(e) {
+
+   						 if ( e.keyCode === 13 ) { // 13 is enter key
+
+        					confusedQuestion('video_'+haveid)
+
+    				}
+			});
+
+
            // fullScreen.click(function(){
                 //alert("I was clicked"+ elements.container.width(300));
                 //console.log(elements.container.flash().width(300))

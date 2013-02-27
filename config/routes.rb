@@ -74,6 +74,7 @@ OnlineEdu::Application.routes.draw do
         get 'statistics'
         get 'details'
         get 'display_quizzes'
+        get 'display_questions'
       end
       collection do
         post 'sort'

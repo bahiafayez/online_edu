@@ -30,6 +30,23 @@ class Group < ActiveRecord::Base
     return data
   end
   
+  
+  def get_data_percent
+    data={}
+    lectures.each do |lecture|
+      lecture.online_quizzes.each do |quiz|
+        data[quiz.id]=[]
+        total= OnlineQuizGrade.where(:online_quiz_id => quiz.id, :lecture_id => lecture.id).count
+          if total>0
+            quiz.online_answers.each do |answer|
+              data[quiz.id]<< OnlineQuizGrade.where(:online_quiz_id => quiz.id, :online_answer_id => answer.id, :lecture_id => lecture.id).count/(total.to_f)*100.0
+            end
+          end
+      end
+    end
+    return data
+  end
+  
   def get_colors
     colors={}
     lectures.each do |lecture|
@@ -136,6 +153,33 @@ class Group < ActiveRecord::Base
       end
     end
     return data
+  end
+  
+  def get_display_question_data
+    num_quizzes=0
+    data={}
+    lectures.each do |lec|
+      data[lec.url]=[]
+      b=LectureQuestion.get_rounded_display(LectureQuestion.where(:lecture_id => lec.id))
+      sorted_b=Hash[b.sort]
+      sorted_b.each do |k,v|
+        num_quizzes+=1
+        data[lec.url]<<[k,num_quizzes,v[1]]
+      end
+        
+      end
+    return data
+  end
+  
+  def total_student_questions
+    
+    count=0
+    lectures.each do |l|
+       count+=LectureQuestion.get_rounded_time_30(LectureQuestion.where(:lecture_id => l.id)).count
+       #count+=LectureQuestion.where(:lecture_id => l.id).count #no we want it interms of 30 seconds.
+    end
+    return count
+    #@questions_chart2= LectureQuestion.get_rounded_time(@confused_questions.order(:time))
   end
   
   private

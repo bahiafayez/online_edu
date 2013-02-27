@@ -1,7 +1,8 @@
 <!-- <div id="container2" style="min-width: 400px; height: 400px; margin: 0 auto"></div><br><br /> -->
 <script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script>
 <center><b><%= @modulechart.name %></b></center><br />
-<%= link_to "Display Quizzes", display_quizzes_course_group_path(@course, @modulechart) %>
+<%= link_to "Display Quizzes", display_quizzes_course_group_path(@course, @modulechart) , :style => "float:right;"%><br />
+<%= link_to "Display Questions", display_questions_course_group_path(@course, @modulechart), :style => "float:right;" %><br /><br />
 <div id="all_charts"></div>
 <button style="margin-bottom:8px" class="btn" id="export">Export all</button> <select id="image_type"><option value='application/pdf'>PDF</option value='png'><option>PNG</option></select>
 
@@ -25,6 +26,13 @@
 	.highcharts-title{
 		white-space: normal !important;
 		width: '150px' !important;
+	}
+	.highcharts-legend-item span{
+		white-space: normal !important;
+		width:'150px' !important;
+	}
+	.highcharts-legend-item{
+		width:'150px';
 	}
 </style>
 <script>
@@ -179,7 +187,7 @@ Highcharts.exportCharts = function(charts, options) {
 	            maxHeight:1000,
 	            useHTML: true,
 	            style:{
-	            	fontSize: '10px'
+	            	fontSize: '10px',
 	            },
 	            itemStyle: {
 	                width: 150, // or whatever

@@ -137,10 +137,18 @@ var currentID=""
 
 function fading(hid)
 {
+	
+	//if($('#conf').css('display')!="none")
+	if($('#conf_'+hid).css("display")!="block")
+		{
+			pauseVideo(hid);
+		}
+	else{
+		playVideo(hid);
+	}
 	$('#conf_'+hid).fadeToggle();
-	if($('#conf').css('display')!="none")
-		//pop.pause();
-		pauseVideo(hid);
+	$("#confusedQues_"+hid).focus();	
+	
 }
 
 function shortcuts(hid)
@@ -242,6 +250,8 @@ function confusedQuestion(hid)
 		$('#conf_'+hid).fadeToggle();
 		document.getElementById("confusedQues_"+hid).value=""
 		//pop.pause();
+		player.playVideo();
+		
 	});	
 	// pause video aswell
 }
