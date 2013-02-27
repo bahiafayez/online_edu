@@ -4,12 +4,12 @@
 
 <style>
 #page{
-	min-height:600px;
+	height:600px;
 }
 	.ontop{
 		/*background:#fff;  /* invisible div*/
         position:absolute;
-        min-width:800px;
+        width:800px;
         
         z-index:2;
         margin-top:40px;
@@ -52,6 +52,9 @@ textarea{
 	min-height:80px;
 }
 
+.popover{
+		z-index:2000 !important;
+	}
 </style>
 <div id="error"></div>
 
@@ -63,6 +66,7 @@ textarea{
 
 <%  cache :hash => {:tag => lecture.updated_at.to_i, :lecture => lecture.id} do %>
 
+<!-- <a id='f_screen'>full screen</a> -->
 <p>
   <b>Name:</b>
   <%= lecture.name %>
@@ -84,7 +88,7 @@ textarea{
 </p>
 
 <div id="page">
-	<div class="ontop" id="ontop_video_youVideo" style="min-height:450px;"></div>
+	<div class="ontop" id="ontop_video_youVideo" style="height:450px;"></div>
 	<div id="player" style="position:absolute"></div>
 	<!-- <div id="checkButton" style="margin-top:-70px; position:absolute; margin-left:150px"></div> -->
 	
@@ -323,12 +327,14 @@ function checkTime(hid, duration) {
           //console.debug("flag isss "+flag)
            if(player.getCurrentTime()> parseFloat(a[key].time) && player.getCurrentTime()< parseFloat(a[key].time)+0.5 &&  flag==0 )
            {
+           	list_of_points=[]
            //console.debug("more than 4 seconds");
           // document.getElementById("foo").innerHTML = "<b style='background-color: white;'>HELLO!!!</b>";
           //  console.debug("pop duration isss"+pop.duration()) 
            //pop.pause();
            pauseVideo(hid);
            flag=1;
+           
            last=parseFloat(a[key].time)
            currentID = a[key].id
            // now i want to get the answers
@@ -341,9 +347,9 @@ function checkTime(hid, duration) {
     			ordered={}
     			html=""
     			for(answer in resp['answers']) {
-           			top3= parseFloat((resp['answers'][answer].ycoor)*(player.width*9/16)/281);
-           			left= parseFloat(resp['answers'][answer].xcoor*(player.width)/500)+1;
-           			
+           			top3= parseFloat((resp['answers'][answer].ycoor)*$("#ontop_video_youVideo").height());//(player.width*9/16)/281);
+           			left= parseFloat(resp['answers'][answer].xcoor*$("#ontop_video_youVideo").width());//(player.width)/500)+1;
+           			list_of_points.push([resp['answers'][answer].id,resp['answers'][answer].xcoor,resp['answers'][answer].ycoor ])
            			
            			reason= resp['answers'][answer].explanation
            			if(resp['answers'][answer].correct==true)
@@ -429,7 +435,7 @@ function checkedRadioBtn(sGroupName)
     
     
 $(document).ready(function(){
-
+	list_of_points=[]
 	last=0;
 	flag=0;
 	markSeen();

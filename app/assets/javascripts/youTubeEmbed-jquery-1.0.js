@@ -66,7 +66,9 @@
 			
 			//data = data.items[0];
 			
-			settings.ratio = 3/4;
+			// make it always 9/16?
+			//settings.ratio = 3/4; //was kda
+			settings.ratio=9/16;
 			if(data.aspectRatio == "widescreen"){
 				settings.ratio = 9/16;
 			}
@@ -138,22 +140,174 @@
              
              $('#timer_video_'+haveid).html("<p style='float:left;margin-left:60px;left:50px;line-height:60px;color:gray'>"+formatSecondsAsTime(0) +"</p> <p style='float:left;margin-left:0px;line-height:60px;color:gray'> / "+formatSecondsAsTime(data.duration)+"</p>");
              
+             // $('#f_screen').click(function(event){
+	             	// resize();
+             // });
+             
+               window.onresize=function resizeit(){
+						// check if full screen first.
+						if($("#page").css("position")=="fixed")
+							resize();
+					// also if there are buttons should place them correctly.
+					// play by default when enter page.
+				};
+				
+			resize = function()
+			{
+					//var x=$("body").offset();
+					//$(".container").offset();
+					//$(".content").offset();
+					//$("#player").css(x)
+					//$(window).width();
+					//$(window).height();
+					$("body").css("overflow","hidden"); //return
+					$("#page").css("position","fixed"); //return
+					$("#page").css({"top":0,"left":0});
+					
+					$("#timer_video_youVideo").width($(window).width());
+					$("#ontop_video_youVideo").css("z-index",1050);
+					$("#ontop_video_youVideo").css("margin-top","0px");
+					$("#player").width($(window).width());
+					$("#page").width($(window).width());
+					$("#player").css("z-index",1040);
+					$(".flashContainer").width($(window).width());
+					$(".flashContainer").css("margin","0px");  //default 40px auto
+					$(".flashContainer").css("background-color","black"); 
+					
+					
+					
+					$("#page").height($(window).height());
+					$("#player").height($(window).height());
+					$("#ontop_video_youVideo").height($(window).height()-50); //-50 for control bar
+					$(".flashContainer").height($(window).height());
+					$("#video_youVideo").height($(window).height()-50);
+					
+					
+					var hv=$(window).height()-50
+					// setting width of ontop and video depending on the height
+					$("#video_youVideo").width(hv*16.0/9.0);
+					$("#ontop_video_youVideo").width(hv*16.0/9.0);
+					
+					var lf= ($(".flashContainer").width() - $("#video_youVideo").width())/2.0;
+					$("#video_youVideo").css("margin-left", lf+"px");
+					$("#ontop_video_youVideo").css("margin-left", lf+"px");
+					
+					
+					// if there is a quiz right now
+					if(flag==1)
+					{
+						for(var i=0; i<list_of_points.length; i++)
+						{
+							var toadd= $("#"+list_of_points[i][0])
+							var top3= parseFloat((list_of_points[i][2])*$("#ontop_video_youVideo").height());
+							var left= parseFloat((list_of_points[i][1])*$("#ontop_video_youVideo").width());
+							toadd.css({"top":top3+"px", "left":left+"px"});
+						}
+					}
+					
+					// take care of ontop, correct aspect ratio, background..position., and correct point position
+					// on resize, make small again, get fullscreen and minimize button working.
+					// make sure progress bar working right..
+					// make player page and flash entire size but video correct aspect ratio.
+					//$("#timer_video_youVideo").height($(window).height());
+					
+					// ok so when display points, display fil makan el sa7 AND when they are there already and we're resizing.
+					// play by default when enter page.
+					// but before kol da store points aslan as %
+			}
+             
+             
              $('.fullscreenDiv.full').click(function(){
 				//alert("i was clicked");
-				console.log(url)
-				if(first==1)
-				{
-				$('#player2').youTubeEmbed(url, 832,520,'big','bigVideo');
-				first=0;
-				}
-                $('#myModal2').modal('show')
-			})
+				// console.log(url)
+				// if(first==1)
+				// {
+				// $('#player2').youTubeEmbed(url, 832,520,'big','bigVideo');
+				// first=0;
+				// }
+                // $('#myModal2').modal('show')
+                $(this).removeClass("full");
+                $(this).addClass("small");
+                
+            	$('.fullscreenDiv.small').unbind();
+            	bind_small();	    
+                
+                resize();
+			});
 			
+			
+			bind_small=function(){
 			$('.fullscreenDiv.small').click(function(){
-				//alert("i was clicked");
-				$('#myModal2').modal('hide')
-				elements.player.pauseVideo();
-			})
+				// //alert("i was clicked");
+				// $('#myModal2').modal('hide')
+				// elements.player.pauseVideo();
+				
+					$(this).removeClass("small");
+                	$(this).addClass("full");
+				
+					$("body").css("overflow","auto"); //return
+					$("#page").css("position","static"); //return
+					//$("#page").css({"top":0,"left":0});
+					
+					
+     
+        
+					$("#timer_video_youVideo").width(800);
+					$("#ontop_video_youVideo").css("z-index",2);
+					$("#ontop_video_youVideo").css("margin-top","40px");
+					$("#player").width(800);
+					$("#page").width(800);
+					$("#player").css("z-index",0);
+					$(".flashContainer").width(800);
+					$(".flashContainer").css("margin","40px auto");  //default 40px auto
+					$(".flashContainer").css("background-color","black"); 
+					
+					
+					
+					$("#page").height(500);
+					$("#player").height(500);
+					$("#ontop_video_youVideo").height(800*9/16); //-50 for control bar
+					$(".flashContainer").height(500);
+					$("#video_youVideo").height(800*9/16);
+					
+					$("#video_youVideo").width(800);
+					$("#ontop_video_youVideo").width(800);
+					
+					
+					$("#video_youVideo").css("margin-left", "0px");
+					$("#ontop_video_youVideo").css("margin-left", "0px");
+				
+					if(flag==1)
+					{
+						for(var i=0; i<list_of_points.length; i++)
+						{
+							var toadd= $("#"+list_of_points[i][0])
+							var top3= parseFloat((list_of_points[i][2])*$("#ontop_video_youVideo").height());
+							var left= parseFloat((list_of_points[i][1])*$("#ontop_video_youVideo").width());
+							toadd.css({"top":top3+"px", "left":left+"px"});
+						}
+					}
+				
+					$('.fullscreenDiv.full').unbind();
+            		$('.fullscreenDiv.full').click(function(){
+						//alert("i was clicked");
+						// console.log(url)
+						// if(first==1)
+						// {
+						// $('#player2').youTubeEmbed(url, 832,520,'big','bigVideo');
+						// first=0;
+						// }
+		                // $('#myModal2').modal('show')
+		                $(this).removeClass("full");
+		                $(this).addClass("small");
+		                
+		            	$('.fullscreenDiv.small').unbind();
+		            	bind_small();	    
+		                
+		                resize();
+					});	
+				
+			})};
 			
 			$("#confusedQues_video_"+haveid).bind('keyup', function(e) {
 

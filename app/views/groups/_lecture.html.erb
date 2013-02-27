@@ -3,7 +3,7 @@
 		/*background:#fff;  /* invisible div*/
         position:absolute;
         min-width:500px;
-        min-height:278px;
+        min-height:280px;
         z-index:5;
 	}
 	
@@ -16,6 +16,7 @@
 .myclass{
 		width:270px;
 	}
+	
 </style>
 
 <script language="JavaScript" type="text/JavaScript">
@@ -128,8 +129,8 @@ function addDoubleClickBind(q,l)
 	$('.ontop').unbind();
 	$('.ontop').dblclick(function(e) {
     var offset = $(this).offset();
-  	left= parseInt(e.pageX) - parseInt(offset.left) -5//not clientX because client depends on window.. so numbers change when scrolling.
-  	top2 = parseInt(e.pageY) - parseInt(offset.top) -5
+  	left= parseFloat(e.pageX) - parseFloat(offset.left) -5//not clientX because client depends on window.. so numbers change when scrolling.
+  	top2 = parseFloat(e.pageY) - parseFloat(offset.top) -5
   	
   	console.debug("offset is "+ left)
   	console.debug("offset is "+ top2)
@@ -143,8 +144,12 @@ function addDoubleClickBind(q,l)
     
     toadd.css({"top":top2+"px", "left":left+"px", 'zIndex': 5, 'position':'absolute'})
     $('#ontop').append(toadd) 
+    
+     var the_top = parseFloat(toadd.position().top)/($("#ontop").height() -32);
+     console.log("the top is:"+the_top+" top px is "+ toadd.position().top+" height ontop is "+$("#ontop").height());
+     var the_left = parseFloat(toadd.position().left)/$("#ontop").width()
      
-  	 $.getJSON('<%= add_answer_course_lecture_path(@course, @lecture) %>',{"left":toadd.position().left, "top":toadd.position().top, "quiz": q, "flag":true, "correct":false}, function(resp){
+  	 $.getJSON('<%= add_answer_course_lecture_path(@course, @lecture) %>',{"left":the_left, "top":the_top, "quiz": q, "flag":true, "correct":false}, function(resp){
                 	console.log("current quiz is "+q)
                 	storedData[resp['current'].id]=[false,"", ""]
                 	console.debug("current id issss "+ resp['current'].id)
@@ -177,7 +182,9 @@ function getOldData(q,l)
   		var toadd = $('<img />').attr({ 'id': old[i].id , 'src': '/assets/button8.png' });
   	toadd= toadd.addClass("component").addClass("dropped").draggable({cursor: 'move',containment: ".ontop"});
     storedData[old[i].id]=[old[i].correct,old[i].answer, old[i].explanation]
-    toadd.css({"top":old[i].ycoor+"px", "left":old[i].xcoor+"px", 'zIndex': 5, 'position':'absolute'})
+    var new_y= old[i].ycoor * ($("#ontop").height() - 32);
+    var new_x= old[i].xcoor * $("#ontop").width();
+    toadd.css({"top":new_y+"px", "left":new_x+"px", 'zIndex': 5, 'position':'absolute'})
     toadd.attr("onclick","load('"+toadd.attr('id')+"')")
 	toadd.attr("rel","popover").attr("data-content","Correct:<input group='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Answer: <textarea rows=3 id='answer_"+toadd.attr('id') +"' type='text' /><br>Explanation:<textarea rows=3 id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=removeElem('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
 	toadd.attr("data-original-title","")
@@ -230,7 +237,10 @@ function saveAll()
 		storedData2[key]=[]
 		console.debug("key:"+storedData[key])
 		//storedData2[key].push.apply(storedData2[key],storedData[key],[$('#'+key).position().top,$('#'+key).position().left]);
-		storedData2[key]= storedData[key].concat([$('#'+key).position().top,$('#'+key).position().left])
+		var new_y= parseFloat($('#'+key).position().top)/($("#ontop").height() - 32);
+		//32 because ontop includes control bar!
+		var new_x= parseFloat($('#'+key).position().left)/$("#ontop").width();
+		storedData2[key]= storedData[key].concat([new_y,new_x])
 	}
 	console.debug(storedData)
 	console.debug(storedData2)
