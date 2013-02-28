@@ -29,11 +29,12 @@ class Lecture < ActiveRecord::Base
     user_quizzes=OnlineQuizGrade.where(:user_id => user_asking, :lecture_id => id).pluck(:online_quiz_id).sort  
     #will add now the marks.
     viewed=LectureView.where(:user_id => user_asking, :lecture_id => id) #, :percent => 75
-    
+    print viewed
     #print "answer iSSSSSSSSSS"
     #print user_quizzes==lecture_quizzes and !viewed.empty?
-    
-    return (user_quizzes==lecture_quizzes and !viewed.empty?)
+    #user_quizzes==lecture_quizzes
+    # changed it because sometimes user has solved more! when a quiz is deleted..
+    return ( user_quizzes&lecture_quizzes == lecture_quizzes and !viewed.empty?)
     
     
     
