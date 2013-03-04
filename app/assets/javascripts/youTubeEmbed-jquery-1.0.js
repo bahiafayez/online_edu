@@ -160,6 +160,11 @@
 					//$("#player").css(x)
 					//$(window).width();
 					//$(window).height();
+					
+					
+					$("#video_youVideo").css("margin-left", "0px");
+					$("#ontop_video_youVideo").css("margin-left", "0px");
+						
 					$("body").css("overflow","hidden"); //return
 					$("#page").css("position","fixed"); //return
 					$("#page").css({"top":0,"left":0});
@@ -167,8 +172,10 @@
 					$("#timer_video_youVideo").width($(window).width());
 					$("#ontop_video_youVideo").css("z-index",1050);
 					$("#ontop_video_youVideo").css("margin-top","0px");
+					$("#video_youVideo").css("margin-top", "0px");
 					$("#player").width($(window).width());
 					$("#page").width($(window).width());
+					$("#page").css("z-index",1035);
 					$("#player").css("z-index",1040);
 					$(".flashContainer").width($(window).width());
 					$(".flashContainer").css("margin","0px");  //default 40px auto
@@ -185,12 +192,29 @@
 					
 					var hv=$(window).height()-50
 					// setting width of ontop and video depending on the height
+					
 					$("#video_youVideo").width(hv*16.0/9.0);
 					$("#ontop_video_youVideo").width(hv*16.0/9.0);
 					
+					if($("#video_youVideo").width()>$(window).width())  // if width will get cut out.
+					{
+						$("#video_youVideo").width($(window).width());
+						$("#ontop_video_youVideo").width($(window).width());
+						$("#video_youVideo").height($(window).width()*9.0/16.0);
+						$("#ontop_video_youVideo").height($(window).width()*9.0/16.0);
+						
+						var lf= ($(".flashContainer").height() -50 - $("#video_youVideo").height())/2.0;
+						$("#video_youVideo").css("margin-top", lf+"px");
+						$("#ontop_video_youVideo").css("margin-top", lf+"px");
+						
+					}
+					else{
 					var lf= ($(".flashContainer").width() - $("#video_youVideo").width())/2.0;
 					$("#video_youVideo").css("margin-left", lf+"px");
 					$("#ontop_video_youVideo").css("margin-left", lf+"px");
+					}
+					
+					
 					
 					
 					// if there is a quiz right now
@@ -258,6 +282,7 @@
 					$("#player").width(800);
 					$("#page").width(800);
 					$("#player").css("z-index",0);
+					$("#page").css("z-index",0);
 					$(".flashContainer").width(800);
 					$(".flashContainer").css("margin","40px auto");  //default 40px auto
 					$(".flashContainer").css("background-color","black"); 
@@ -276,6 +301,9 @@
 					
 					$("#video_youVideo").css("margin-left", "0px");
 					$("#ontop_video_youVideo").css("margin-left", "0px");
+					
+					$("#video_youVideo").css("margin-top", "0px");
+					
 				
 					if(flag==1)
 					{

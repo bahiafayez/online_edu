@@ -1,6 +1,6 @@
 class CoursesController < ApplicationController
   load_and_authorize_resource   #cancan to check if user is allowed to perform an action. checks from ability.rb
-  before_filter :correct_user, :except => [:index, :new, :create]
+  #before_filter :correct_user, :except => [:index, :new, :create]
   before_filter :set_zone , :except => [:index, :new, :create]
   
   cache_sweeper :course_sweeper
@@ -805,12 +805,12 @@ class CoursesController < ApplicationController
   
   def send_batch_email_through
     #@student=User.find(params[:student])
-    UserMailer.student_batch_email(@course.users, params[:subject],params[:message]).deliver
+    UserMailer.student_batch_email(@course.users, params[:subject],params[:message], @course.user.email).deliver
     redirect_to enrolled_students_course_path(@course), :notice => "Email Sent"
   end
   
   def send_email_through
-    UserMailer.student_email(params[:email],params[:subject],params[:message]).deliver
+    UserMailer.student_email(params[:email],params[:subject],params[:message], @course.user.email).deliver
     redirect_to enrolled_students_course_path(@course), :notice => "Email Sent"
   end
   

@@ -14,19 +14,20 @@ class UserMailer < ActionMailer::Base
     @announcement = announcement
     @url  = "http://www.scalable-learning.com/courses/#{course.id}"
     @course = course
-    mail(:bcc => users, :subject => "New Announcement - #{course.name}", :from => @from)
+    @reply_to= course.user.email
+    mail(:bcc => users, :subject => "New Announcement - #{course.name}", :from => @from, :reply_to => @reply_to)
   end
   
-  def student_email(user, subject, message)
+  def student_email(user, subject, message, teacher_email)
     @from =  "\"Scalable Learning\" <info@scalable-learning.com>"
     @message=message   
-    mail(:to => user, :subject => subject, :from => @from)
+    mail(:to => user, :subject => subject, :from => @from, :reply_to => teacher_email)
   end
   
-  def student_batch_email(users, subject, message)
+  def student_batch_email(users, subject, message, teacher_email)
     @from =  "\"Scalable Learning\" <info@scalable-learning.com>"
     @message=message   
     @users= users.map{|user| user.email}
-    mail(:bcc => @users, :subject => subject, :from => @from)
+    mail(:bcc => @users, :subject => subject, :from => @from, :reply_to => teacher_email)
   end
 end

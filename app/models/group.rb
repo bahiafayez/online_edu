@@ -37,12 +37,15 @@ class Group < ActiveRecord::Base
       lecture.online_quizzes.each do |quiz|
         data[quiz.id]=[]
         total= OnlineQuizGrade.where(:online_quiz_id => quiz.id, :lecture_id => lecture.id).count
-          if total>0
+          
             quiz.online_answers.each do |answer|
-              data[quiz.id]<< OnlineQuizGrade.where(:online_quiz_id => quiz.id, :online_answer_id => answer.id, :lecture_id => lecture.id).count/(total.to_f)*100.0
+              if total>0
+                data[quiz.id]<< OnlineQuizGrade.where(:online_quiz_id => quiz.id, :online_answer_id => answer.id, :lecture_id => lecture.id).count/(total.to_f)*100.0
+              else
+                data[quiz.id]<<0
+              end
             end
-          end
-      end
+       end
     end
     return data
   end

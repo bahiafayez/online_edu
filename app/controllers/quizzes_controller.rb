@@ -167,6 +167,13 @@ class QuizzesController < ApplicationController
     end
     
       if @quiz.save
+        
+        #place in correct position!
+        if !@quiz.group.get_items.empty? #not the first element.
+            @quiz.position = @quiz.group.get_items.last.position + 1
+            @quiz.save
+        end
+        
         @updated = @quiz.appearance_time.strftime('%d %b (%a)')
         logger.debug("appearance time isssss #{@updated}")
         #render json: {"quiz" => @quiz, "updated"=>@updated}, status: :created

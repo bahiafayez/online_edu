@@ -4,7 +4,7 @@ class GroupsController < ApplicationController
   # GET /online_answers.json
   
   before_filter :getCourse
-  before_filter :correct_user
+  #before_filter :correct_user
   before_filter :set_zone
  
   
@@ -278,7 +278,11 @@ class GroupsController < ApplicationController
       @module_categories = @group.get_categories
       @module_questions = @group.get_questions
      
+     if @num_quizzes == 0
+       redirect_to progress_teacher_course_path(@course, :g=>@group.id ,:type=>"modules"), :alert => "There are no quizzes in this module"
+     else
       render :layout => "display"
+      end
    end
    
    def display_questions    
@@ -288,7 +292,12 @@ class GroupsController < ApplicationController
      @lecture_list= @group.get_lecture_list
      @display_data=@group.get_display_question_data
      
+     if @num_quizzes == 0
+       redirect_to progress_teacher_course_path(@course, :g=>@group.id ,:type=>"modules"), :alert => "There are no student questions in this module"
+     else
+     
       render :layout => "display"
+      end
    end
  
 end

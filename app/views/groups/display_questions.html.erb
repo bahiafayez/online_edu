@@ -88,7 +88,7 @@ function onYouTubeIframeAPIReady() {
 	lectures= <%= raw @lecture_list.to_json %>
 	console.log(lectures)
 	display=<%= raw @display_data.to_json %>
-	
+	var first_lecture="";
 	for(var elem in lectures)
 	{
 		url=lectures[elem]
@@ -104,6 +104,8 @@ function onYouTubeIframeAPIReady() {
 			}
 		
 	}
+	if(first_lecture!="")
+		{
 	   var v=first_lecture.split("=")[1].split("&")[0]
       	console.log("in here");
         player = new YT.Player('resizable', {
@@ -126,7 +128,16 @@ function onYouTubeIframeAPIReady() {
 	//setup_video();
 	setup_video2();
 	setup_actions();
+	}
+	else{
+		setup_alert();
+	}
 
+}
+
+function setup_alert()
+{
+	$("#big_div").html("<center>There are no questions.</center>")
 }
 
 function onPlayerReady(event) {
@@ -337,6 +348,7 @@ $("#previous").click(function(event){
   		font-size: 16px;
   	}
   </style> 
+
 <div id="pos" style="position:absolute"><b style="padding-left:15px;" id="q_num"></b><br/><b style="padding-left:15px;" id="lec_num"></b></div>
 <%= link_to "Exit", progress_teacher_course_path(@course, :g => @group.id, :type => "modules"), :style =>"float:right;margin-right:5px;" %>
 <div id="big_div" style="width:100%;height:100%; background-color:white">

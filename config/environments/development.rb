@@ -26,7 +26,7 @@ OnlineEdu::Application.configure do
     port:     587,
     domain:   "domain.of.sender.net",
     authentication:  "plain",
-    user_name:  "admission.nileu@gmail.com",
+    user_name:  "scalable.learn@gmail.com",
     password:   "faber-castell",
     enable_starttls_auto: true
   }

@@ -159,8 +159,8 @@ function addDoubleClickBind(q,l)
                 	toadd.attr("onclick","load('"+toadd.attr('id')+"')")
 	        		toadd.attr("rel","popover").attr("data-content","Correct:<input name='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Answer: <textarea rows=3 id='answer_"+toadd.attr('id') +"' type='text' /><br>Explanation:<textarea rows=3 id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=removeElem('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
 	                toadd.attr("data-original-title","")
-	                toadd.clickover({ global_close: false, template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'})//.dblclick(function() {
-               
+	                toadd.clickover({ placement: "right", global_close: false, template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'})//.dblclick(function() {
+               		
     });
                 
   	
@@ -188,7 +188,7 @@ function getOldData(q,l)
     toadd.attr("onclick","load('"+toadd.attr('id')+"')")
 	toadd.attr("rel","popover").attr("data-content","Correct:<input group='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Answer: <textarea rows=3 id='answer_"+toadd.attr('id') +"' type='text' /><br>Explanation:<textarea rows=3 id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=removeElem('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
 	toadd.attr("data-original-title","")
-	toadd.clickover({ global_close: false, template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'})//.dblclick(function() {
+	toadd.clickover({ placement: "right", global_close: false, template:  '<div class="popover myclass"><div class="arrow"></div><div class="popover-inner myclass"><div class="popover-content"><p></p></div></div></div>'})//.dblclick(function() {
      $('#ontop').append(toadd) 
     // console.log("to add is")
     // console.log(toadd)          
@@ -263,6 +263,15 @@ function load(elem)
 	document.getElementById("correct_"+elem).checked=storedData[elem][0]
 	document.getElementById("explain_"+elem).value=storedData[elem][2]
 	document.getElementById("answer_"+elem).value=storedData[elem][1]
+	
+	
+	//x=$("#details").position().left;
+	//y=$(".ontop2").width();
+	//z=x+y;
+	//$(".popover").css("left", x+'px');
+	x=$("#details").offset();
+	$(".popover").css("left",x.left);
+
 }
 
 jQuery(function() {

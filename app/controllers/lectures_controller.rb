@@ -391,6 +391,13 @@ class LecturesController < ApplicationController
     
     
       if @lecture.save
+        
+        #place in correct position!
+        if !@lecture.group.get_items.empty? #not the first element.
+            @lecture.position = @lecture.group.get_items.last.position + 1
+            @lecture.save
+        end
+        
         @updated = @lecture.appearance_time.strftime('%d %b (%a)')
         @type="lecture_#{@lecture.id}"
         logger.debug("appearance time isssss #{@updated}")

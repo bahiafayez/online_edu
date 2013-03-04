@@ -145,8 +145,8 @@ video1.jpg: video1-46cb5b58b00582a54e958266b5b2b838.jpg
 video1/index.jpg: video1-46cb5b58b00582a54e958266b5b2b838.jpg
 active_admin.js: active_admin-7c2ef1834a4bb718f80f4b1a10d59c49.js
 active_admin/index.js: active_admin-7c2ef1834a4bb718f80f4b1a10d59c49.js
-application.js: application-5946415ff2f02334b2965399c56404b2.js
-application/index.js: application-5946415ff2f02334b2965399c56404b2.js
+application.js: application-bf160bca868b620e7a8e8bf9f7d968a0.js
+application/index.js: application-bf160bca868b620e7a8e8bf9f7d968a0.js
 bootstrap-datetimepicker.min.js: bootstrap-datetimepicker.min-3181a95fe3bca97fadd8b7b3e9150e54.js
 bootstrap-datetimepicker/index.min.js: bootstrap-datetimepicker.min-3181a95fe3bca97fadd8b7b3e9150e54.js
 bootstrapx-clickover.js: bootstrapx-clickover-4a898dda74328a242c156e85501e74d9.js
@@ -167,8 +167,8 @@ nicEdit.js: nicEdit-5e3dd7ebbefb5e87ec7147a761805732.js
 nicEdit/index.js: nicEdit-5e3dd7ebbefb5e87ec7147a761805732.js
 shortcut.js: shortcut-86b7a080a50ac3fba881156e6979b501.js
 shortcut/index.js: shortcut-86b7a080a50ac3fba881156e6979b501.js
-youTubeEmbed-jquery-1.0.js: youTubeEmbed-jquery-1.0-e1b223612db904b885bfa54ce2911cf1.js
-youTubeEmbed-jquery-1/index.0.js: youTubeEmbed-jquery-1.0-e1b223612db904b885bfa54ce2911cf1.js
+youTubeEmbed-jquery-1.0.js: youTubeEmbed-jquery-1.0-92b2ca42dde6ce21cb7cfed6790bb1fb.js
+youTubeEmbed-jquery-1/index.0.js: youTubeEmbed-jquery-1.0-92b2ca42dde6ce21cb7cfed6790bb1fb.js
 application.css: application-8b4fbc8af69721223f1dcb1c3ec036c6.css
 application/index.css: application-8b4fbc8af69721223f1dcb1c3ec036c6.css
 bootstrap-datetimepicker.min.css: bootstrap-datetimepicker.min-7783a5096cbfae3fdcb4fc3f97b430d7.css

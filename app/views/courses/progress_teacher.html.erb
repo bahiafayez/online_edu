@@ -260,23 +260,17 @@ _gaq.push(['_trackPageview']);
 
 <div class="span9">
 <% if @quizchart %>
-	<!-- <%= render 'chart2' %> -->
 	<%= render 'new_quiz' %>
 <% end %>
 <% if @survey_data %>
 	<%= render 'survey_chart' %>
 <% end %>
 <% if @modulechart %>
-	<!-- <%= render 'chartModule' %> -->
 	<%= render 'new_module' %>
 <% end %>
 <% if @q %>
-	<!-- <%= render 'chart1' %> -->
-	<%= #render 'confused' #don't think we need this anymore
-	%>
 	<%= render "new_lecture" %>
 	<%= render 'confused_chart' %>
-	<!-- <%= render 'evaluations' %> -->
 <% end %>
 <% if @p %>
 	<%= render 'chart_progress' %>
@@ -297,24 +291,3 @@ _gaq.push(['_trackPageview']);
 </div>
 </div>
 
-
-<!-- <table class="table table-striped">
-<thead>
-	<th>
-		Student name 
-	</th>
-	<th>
-		Student Email
-	</th>
-</thead>
-<% @students.each do |q| %>
-<tr>
-	<td>
-	<%= link_to q.name, progress_teacher_detailed_course_path(@course, :q=>q.id) , :class => "btn"%>
-	</td>
-	<td>
-	<%= q.email %>	
-	</td>
-</tr>
-<% end %>
-</table> -->
