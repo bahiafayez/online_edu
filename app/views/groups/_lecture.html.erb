@@ -140,7 +140,7 @@ function addDoubleClickBind(q,l)
   	
   	
   	var toadd = $('<img />').attr({'src': '/assets/button8.png' });
-  	toadd= toadd.addClass("component").addClass("dropped").draggable({cursor: 'move',containment: ".ontop"});
+  	toadd= toadd.addClass("component").addClass("dropped").draggable({containment: ".ontop"}); //cursor: 'move',
     
     toadd.css({"top":top2+"px", "left":left+"px", 'zIndex': 5, 'position':'absolute'})
     $('#ontop').append(toadd) 
@@ -180,7 +180,7 @@ function getOldData(q,l)
   		var toadd = $('<img />').attr({ 'id': old[i].id , 'src': '/assets/button_green.png' });
   	else
   		var toadd = $('<img />').attr({ 'id': old[i].id , 'src': '/assets/button8.png' });
-  	toadd= toadd.addClass("component").addClass("dropped").draggable({cursor: 'move',containment: ".ontop"});
+  	toadd= toadd.addClass("component").addClass("dropped").draggable({containment: ".ontop"}); //cursor: 'move',
     storedData[old[i].id]=[old[i].correct,old[i].answer, old[i].explanation]
     var new_y= old[i].ycoor * ($("#ontop").height() - 32);
     var new_x= old[i].xcoor * $("#ontop").width();
@@ -289,7 +289,7 @@ jQuery(function() {
             console.debug("z is "+z)
             return z;
         },
-        cursor: 'move',
+        //cursor: 'move',
         containment: ".ontop"
        
     });

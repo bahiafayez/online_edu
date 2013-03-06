@@ -18,8 +18,8 @@ function setAuthor(element) // get the author of the youtube video and display i
 			        title = data.entry.title.$t;
 			        author = data.entry.author[0].name.$t;
 			        duration = data.entry.media$group.yt$duration.seconds
-			        $("#title").val(title);
-			        $("#author").val(author);
+			        $("#title").text(title);
+			        $("#author").text(author);
 			        $("#thumbnail").html("<img class=bigimg src="+data.entry.media$group.media$thumbnail[0].url+" />");
 			        saveDuration(duration);
 			        }
@@ -72,6 +72,17 @@ $(document).ready(function(){
 		due_date_setup($(this));
 	});
 	$('#lecture_url').change(function(event){
+		// over here, convert all to long.
+		var url=$('#lecture_url').val();
+		var videoid = url.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
+		if(videoid != null) {
+		   console.log("video id = ",videoid[1]);
+		   //change handler is not executed when the content is changed programmatically.
+		   $("#lecture_url").val("http://www.youtube.com/watch?v="+videoid[1]);
+		} else { 
+		    console.log("The youtube url is not valid.");
+		}
+		
 		setAuthor($(this));
 		//setVideo();
 	});
@@ -95,16 +106,16 @@ $(document).ready(function(){
 <td>Lecture Title:</td><td> <%= f.text_field :name, :size => 15, :style => "height:17px;width:140px;font-size:12px;"%></td>
 </tr>
 <tr>
-<td>Lecture URL:</td><td> <%= f.text_field :url, :size => 15, :style => "height:17px;width:140px;font-size:12px;"%></td>
+<td>Lecture URL:</td><td> <%= f.text_field :url, :size => 15, :style => "height:17px;width:140px;font-size:12px;", :onclick => "$(this).select();" %></td>
 </tr>
 <tr>
 <td>Thumbnail:</td><td id="thumbnail"> </td>
 </tr>
 <tr>
-<td>Author:</td><td> <%= text_field_tag :author,'', :style => "height:17px;width:140px;font-size:12px;", :disabled => true%></td>
+<td>Author:</td><td> <%= label_tag :author,'', :style => "height:17px;width:140px;font-size:10px;", :id => "author"%></td>
 </tr>
 <tr>
-<td>Title:</td><td> <%= text_field_tag :title, '',:style => "height:17px;width:140px;font-size:12px;", :disabled => true%></td>
+<td>Title:</td><td> <%= label_tag :title, '',:style => "height:17px;width:140px;font-size:10px;", :id => "title"%></td>
 </tr>
 <tr>
 <td>Use Module's Appearance Date? </td><td> <%= f.check_box :appearance_time_module %><br /> <%= f.text_field :appearance_time , :class => "date_picker",:style => "height:25px;width: 120px;font-size:12px;" %></td>

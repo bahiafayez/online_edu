@@ -53,7 +53,25 @@ body {
   color:gray;
 }
 
-
+#play-me{
+      position:absolute;
+      width:50px;
+      height:50px;
+      background: url("play33.png") no-repeat center center;
+    }
+#play-me.pause{
+      background: url("pause3.png") no-repeat center center;
+    }
+#mute-me{
+      position:absolute;
+      top:40px;
+      width:50px;
+      height:50px;
+      background: url("mute2.png") no-repeat center center;
+}
+#mute-me.mute{
+      background: url("unmute4.png") no-repeat center center;
+}
 
 // .accordian-inner > a:hover, a:visited, a:link, a:active{
   // text-decoration:none;

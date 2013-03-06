@@ -11,8 +11,42 @@
   var done = false;
   var first_quiz;
   $(document).ready(function() {
-	
+		play=0;
+		setup_play();
+		setup_mute();
   });
+  
+  setup_play = function()
+  {
+  	$("#play-me").click(function(event){
+  		if($(this).hasClass("pause"))
+  		{
+  			$(this).removeClass("pause");
+  			player.pauseVideo();
+  			play=0;
+  		}
+  		else{
+  			$(this).addClass("pause");
+  			play=1;
+  			player.playVideo();
+  		}
+  	});
+  }
+  
+  setup_mute= function()
+  {
+  	$("#mute-me").click(function(event){
+  		if($(this).hasClass("mute"))
+  		{
+  			$(this).removeClass("mute")
+  			player.mute();
+  		}
+  		else{
+  			$(this).addClass("mute")
+  			player.unMute();
+  		}
+  	});
+  }
   
   window.onresize=function resizeit(){
 
@@ -150,7 +184,7 @@ function onPlayerReady(event) {
  }    
 function onPlayerStateChange(){
 	console.log("here "+player.getPlayerState());
-	if(player.getPlayerState()==1)
+	if(player.getPlayerState()==1  && play==0)
 	{
 		console.log("here in playing")
 		player.pauseVideo();
@@ -165,7 +199,7 @@ setup_video2=function()
 
 setup_questions = function(list)
 {
-	text="<table style='height:100%;width:100%;overflow:auto'>"
+	text="<table style='height:100%;width:99%;overflow:auto'>"
 	for(var i=0; i<list.length; i++)
 	{
 		text+= "<tr><td style='padding-left:15px;cursor:pointer' onclick='player.seekTo("+list[i][1]+")'>"+list[i][0]+"</td></tr>"
@@ -228,6 +262,11 @@ get_next_quiz = function()
 			break;
 	}
 	
+	// will pause again.
+	play=0;
+	$("#play-me").removeClass("pause");
+  	player.pauseVideo();
+  	
 	if(old_lecture!=current_lecture)
 	{
 	
@@ -238,7 +277,7 @@ get_next_quiz = function()
 		player.playVideo();
 	}
 	else{
-	
+		
 		player.seekTo(first_quiz);
 		player.playVideo();
 		 
@@ -292,6 +331,11 @@ get_previous_quiz = function()
 		
 	}
 	
+	// will pause again.
+	play=0;
+	$("#play-me").removeClass("pause");
+  	player.pauseVideo();
+  	
 	if(old_lecture!=current_lecture)
 	{
 		var v=first_lecture.split("=")[1].split("&")[0]
@@ -349,12 +393,18 @@ $("#previous").click(function(event){
   	}
   </style> 
 
-<div id="pos" style="position:absolute"><b style="padding-left:15px;" id="q_num"></b><br/><b style="padding-left:15px;" id="lec_num"></b></div>
-<%= link_to "Exit", progress_teacher_course_path(@course, :g => @group.id, :type => "modules"), :style =>"float:right;margin-right:5px;" %>
-<div id="big_div" style="width:100%;height:100%; background-color:white">
-<div style="display: block; height: 60%; width: 100%;" id="top"><div id="left" style="height: 100%; min-width: 100px; display: inline-block;vertical-align: top;"><%= link_to "-3 sec", "", :remote => true, :class => "btn btn-primary", :id => "minus_3" %><%= link_to "Previous", "", :remote => true, :class => "btn btn-primary", :id => "previous" %></div><div id="resizable" style="margin-top: 0px; height: 100%; background-color: gray; width: 428.444px; display: inline-block;"></div><div id="right" style="height: 100%; min-width: 100px; display: inline-block;vertical-align: top;"><%= link_to "+3 sec", "", :remote => true, :class => "btn btn-primary", :id => "plus_3" %><%= link_to "Next", "", :remote => true, :class => "btn btn-primary", :id => "next" %></div></div>
-<div id="below" style="overflow:auto;display:block;width:100%;height:40%;background-color:white;">
-	<div id="the_question" style="overflow:auto;display:inline;font-size:20px;margin-top:10px;line-height:30px;height:100%;width:100%;"></div>
-</div>
 
+
+
+<div id="big_div" style="width:100%;height:100%; background-color:white">
+<div id="mute-me"></div>
+<div id="play-me"></div>
+<div style="display: block; height: 60%; width: 100%;" id="top"><div id="left" style="height: 100%; min-width: 50px; display: inline-block;vertical-align: top;"><%= link_to "-3", "", :remote => true, :class => "btn btn-primary", :id => "minus_3" %><%= link_to "<<", "", :remote => true, :class => "btn btn-primary", :id => "previous" %></div><div id="resizable" style="margin-top: 0px; height: 100%; background-color: gray; width: 428.444px; display: inline-block;"></div><div id="right" style="height: 100%; min-width: 50px; display: inline-block;vertical-align: top;"><%= link_to "+3", "", :remote => true, :class => "btn btn-primary", :id => "plus_3" %><%= link_to ">>", "", :remote => true, :class => "btn btn-primary", :id => "next" %></div></div>
+<div id="below" style="display:block;width:100%;height:40%;background-color:white;">
+	<div id="the_question2" style="position:absolute;padding-left:10px;display:inline;font-size:28px;margin-top:0px;line-height:30px;height:40%;width:100%;">
+		<div id="the_question" style="overflow:auto;display:inline;font-size:20px;margin-top:10px;line-height:30px;height:70%;width:98%;position:absolute"></div>
+		<%= link_to "Exit", progress_teacher_course_path(@course, :g => @group.id, :type => "modules") , :style => "display:inline;font-size:16px;position:absolute;bottom:0;left:0"%>
+		<div id="pos" style="display:inline;position:absolute;bottom:0;margin-left:5px;"><b style="padding-left:15px;" id="q_num"></b><b style="padding-left:5px;" id="lec_num"></b></div>
+	</div>
+</div>
 </div>

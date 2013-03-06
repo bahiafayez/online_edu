@@ -96,6 +96,16 @@ class Lecture < ActiveRecord::Base
     return data
   end
   
+  def convert_short_to_long_url
+     vid=/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/.match(url)
+     if !vid.nil?
+       vid= vid[1]
+       self.url= "http://www.youtube.com/watch?v=#{vid}"
+       print url
+       save 
+     end
+  end
+  
   private
   def clean_up
     self.events.where(:quiz_id => nil).destroy_all
