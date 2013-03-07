@@ -5,6 +5,7 @@
 <style>
 #page{
 	height:600px;
+	margin-top:-40px;
 }
 	.ontop{
 		/*background:#fff;  /* invisible div*/
@@ -67,6 +68,15 @@ textarea{
 <%  cache :hash => {:tag => lecture.updated_at.to_i, :lecture => lecture.id} do %>
 
 <!-- <a id='f_screen'>full screen</a> -->
+
+<div id="page">
+	<div class="ontop" id="ontop_video_youVideo" style="height:450px;"></div>
+	<div id="player" style="position:absolute"></div>
+	<!-- <div id="checkButton" style="margin-top:-70px; position:absolute; margin-left:150px"></div> -->
+	
+</div>
+<% end %>
+
 <p>
   <b>Name:</b>
   <%= lecture.name %>
@@ -87,13 +97,6 @@ textarea{
 	<%= lecture.online_quizzes.count %>
 </p>
 
-<div id="page">
-	<div class="ontop" id="ontop_video_youVideo" style="height:450px;"></div>
-	<div id="player" style="position:absolute"></div>
-	<!-- <div id="checkButton" style="margin-top:-70px; position:absolute; margin-left:150px"></div> -->
-	
-</div>
-<% end %>
 	<div id="evaluation" style='width:800px;'></div>
 
 
@@ -262,10 +265,12 @@ function confusedQuestion(hid)
 
 function save(elem)
     		{
+    			console.log("in save");
+    			
     			var answer_id= elem.attr("id")
 				// here call the controller function to save to database!!
     			$.getJSON("<%= @saveOnline %>",{"quiz":currentID, "answer":answer_id }, function(resp){
-    				
+    				elem.attr('checked','checked');	
     			});
     		}
 
@@ -348,7 +353,7 @@ function checkTime(hid, duration) {
     			html=""
     			for(answer in resp['answers']) {
            			top3= parseFloat((resp['answers'][answer].ycoor)*$("#ontop_video_youVideo").height());//(player.width*9/16)/281);
-           			left= parseFloat(resp['answers'][answer].xcoor*$("#ontop_video_youVideo").width());//(player.width)/500)+1;
+           			left= parseFloat(resp['answers'][answer].xcoor*$("#ontop_video_youVideo").width())+(3/800.0 * $("#ontop_video_youVideo").width());//(player.width)/500)+1;
            			list_of_points.push([resp['answers'][answer].id,resp['answers'][answer].xcoor,resp['answers'][answer].ycoor ])
            			
            			reason= resp['answers'][answer].explanation
@@ -366,7 +371,7 @@ function checkTime(hid, duration) {
            			ordered[parseInt(resp['answers'][answer].ycoor)]=[resp['answers'][answer].id,title, reason]
            			console.debug("current ID is "+currentID)
            			console.debug("a[key].id iss "+a[key].id)
-           			html+="<input name='button_"+currentID+"'type='radio' onclick='save($(this))' rel='clickover' id='"+resp['answers'][answer].id+"' data-original-title=\""+title+"\" class='pop' data-content=\""+reason+"\" style='position:absolute; border: 1px solid #006; background: #9cf; top:"+top3+"px; left: "+left+"px;'>"
+           			html+="<input name='button_"+currentID+"'type='radio' onclick='save($(this))' rel='clickover' id='"+resp['answers'][answer].id+"' data-original-title=\""+title+"\" class='pop' data-content=\""+reason+"\" style='position:absolute; border: 1px solid #006; background: #9cf; top:"+top3+"px; left: "+left+"px;margin-top:0px'>"
            			//onclick='show_reason(\""+reason+"\")'
            			//$('.pop').popover()
            			
@@ -441,6 +446,7 @@ $(document).ready(function(){
 	markSeen();
 	
 	$('#player').youTubeEmbed("<%= lecture.url %>",800,500,'small', 'youVideo');
+	//playVideo("video_youVideo");
 	
 //.youTubeEmbed('http://www.youtube.com/watch?v=quwebVjAEJA');				
 	console.log("<%= lecture.url %>")

@@ -4,8 +4,8 @@
 <tr><td>Question</td><td>Time</td><td></td></tr>
 <% @lecture.online_quizzes.each do |quiz|%>
 <tr id=<%="online_quiz_#{quiz.id}"%>>
-	<td><%= link_to quiz.question, "", :remote => true, :id =>"question_label_#{quiz.id}" ,:onclick => "showOnlineQuiz('#{quiz.question}','#{quiz.time}', '#{quiz.id}', '#{@lecture.id}')" %><input onkeyup="check_enter()" id="question_<%= quiz.id %>" value="<%=quiz.question%>" type="text" style="display:none"/></td>
-	<td><b id="time_label_<%= quiz.id%>"> <%=Time.seconds_to_time(quiz.time)%> </b><input id="time_<%= quiz.id %>" value="<%=Time.seconds_to_time(quiz.time) %>" type="text" style="display:none"/></td>
+	<td><%= link_to quiz.question, "", :remote => true, :id =>"question_label_#{quiz.id}" ,:onclick => "showOnlineQuiz('#{quiz.question}','#{quiz.time}', '#{quiz.id}', '#{@lecture.id}')" %><input onkeyup="check_enter(event, <%= quiz.id %>)" id="question_<%= quiz.id %>" value="<%=quiz.question%>" type="text" style="display:none"/></td>
+	<td><b id="time_label_<%= quiz.id%>"> <%=Time.seconds_to_time(quiz.time)%> </b><input onkeyup="check_enter(event,<%= quiz.id %>)" id="time_<%= quiz.id %>" value="<%=Time.seconds_to_time(quiz.time) %>" type="text" style="display:none"/></td>
 	<td><%= link_to image_tag("trash2.png"), quiz, :method => :delete, :remote => true, :confirm => "Are you sure you want to delete quiz #{quiz.question}", :style => "float:right;width:20px;"%>
 		<a class="edit_question" href="" data-remote="true" data-time="<%= quiz.time %>" data-id="<%= quiz.id %>" data-question="<%= quiz.question %>" style="float:right;"><img src="/assets/pencil3.png"/></a>
 	</td>
@@ -42,7 +42,7 @@
 <script>
 showOnlineQuiz= function(name,seconds,q,l){
 	$("#current_invideo_viewed").data("id", q); //setting current quiz
-	$("#editing").html("<div class='alert'><b>Editing quiz "+name+" at "+formatSecondsAsTime(seconds)+"</b> <a class='btn' id='done' style='float:right;margin-top:-5px;' onclick='done_editing()'>Done</a></div>")
+	$("#editing").html("<div class='alert'><div>Editing quiz '"+name+"' at "+formatSecondsAsTime(seconds)+"</div> <a class='btn' id='done' style='margin-top:5px;' onclick='done_editing()'>Done</a></div>")
 	$('#invideo_quizzes').children('table').children('tbody').children('tr').css("background-color","transparent")
 	$('#online_quiz_'+q).css("background-color","rgb(252,248,227)");
 	document.getElementById("ontop").innerHTML=""
@@ -67,9 +67,22 @@ done_editing = function()
 	//$('.edit').attr("disabled",false)
 }
 
-check_enter = function()
+
+check_enter = function(ev,the_id)
 {
-	
+	if (ev.keyCode == 13) {
+        // Do something
+    
+	var id= the_id;
+	if(validate($("#time_"+id)))
+	{
+		var a = $("#time_"+id).val().split(':'); // split it at the colons
+		// minutes are worth 60 seconds. Hours are worth 60 minutes.
+		var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]); 
+
+		$.ajax({url:"/online_quizzes/"+id, type:'put',data: { online_quiz: {time:seconds, question:$("#question_"+id).val()}}, dataType:'script'}); //save with time
+	}
+	}
 }
 
 $(document).ready(function(){

@@ -168,6 +168,7 @@
 					$("body").css("overflow","hidden"); //return
 					$("#page").css("position","fixed"); //return
 					$("#page").css({"top":0,"left":0});
+					$("#page").css({"margin-top":"0px"});
 					
 					$("#timer_video_youVideo").width($(window).width());
 					$("#ontop_video_youVideo").css("z-index",1050);
@@ -224,7 +225,7 @@
 						{
 							var toadd= $("#"+list_of_points[i][0])
 							var top3= parseFloat((list_of_points[i][2])*$("#ontop_video_youVideo").height());
-							var left= parseFloat((list_of_points[i][1])*$("#ontop_video_youVideo").width());
+							var left= parseFloat((list_of_points[i][1])*$("#ontop_video_youVideo").width())+(3/800.0 * $("#ontop_video_youVideo").width());
 							toadd.css({"top":top3+"px", "left":left+"px"});
 						}
 					}
@@ -283,13 +284,14 @@
 					$("#page").width(800);
 					$("#player").css("z-index",0);
 					$("#page").css("z-index",0);
+					$("#page").css({"margin-top":"-40px"});
 					$(".flashContainer").width(800);
 					$(".flashContainer").css("margin","40px auto");  //default 40px auto
 					$(".flashContainer").css("background-color","black"); 
 					
 					
 					
-					$("#page").height(500);
+					$("#page").height(600);
 					$("#player").height(500);
 					$("#ontop_video_youVideo").height(800*9/16); //-50 for control bar
 					$(".flashContainer").height(500);
@@ -311,7 +313,7 @@
 						{
 							var toadd= $("#"+list_of_points[i][0])
 							var top3= parseFloat((list_of_points[i][2])*$("#ontop_video_youVideo").height());
-							var left= parseFloat((list_of_points[i][1])*$("#ontop_video_youVideo").width());
+							var left= parseFloat((list_of_points[i][1])*$("#ontop_video_youVideo").width())+ (3/800.0 * $("#ontop_video_youVideo").width());
 							toadd.css({"top":top3+"px", "left":left+"px"});
 						}
 					}
@@ -501,14 +503,16 @@
                     //var interval = window.setInterval(function() { checkTime(); }, 1000);
                     //console.log(interval);
                      var interval = window.setInterval(function() { checkTime('video_'+playerID, $(document.getElementById('video_'+playerID)).children("param[name='duration']:first").val()); }, 100);
-                    console.log(interval);
+                    console.log("int is "+interval);
                     
+                    //console.log("cuureent "+('video_'+playerID).getCurrentTime());
+                    document.getElementById('video_'+playerID).playVideo();
                    
                     //set quality
                     document.getElementById('video_'+playerID).setPlaybackQuality("large"); // could make it default.. to change dynamically based on user capabilities.
                     
                     document.getElementById('video_'+playerID).addEventListener('onStateChange','eventListener_'+playerID);
-                    console.log(('video_'+playerID).getCurrentTime());
+                    
                     
                     
 				}
