@@ -7,11 +7,19 @@
 
 <% else %> 
 
-<tr>
-<td><%= image_tag "spacer.gif", :height => "1px" , :width=>"1px"%></td>
-<td><%= check_box_tag "answer[#{question.id}][#{answer.id}]", 1, (!@out.nil? and !@out[question.id].nil? and @out[question.id].include?answer.id) ? true: false %> <%= answer.content%></td>
-<td></td>
-</tr>
+	<% if @q.quiz_type == "survey" %>  <!-- if survey radio buttons-->
+		<tr>
+		<td><%= image_tag "spacer.gif", :height => "1px" , :width=>"1px"%></td>
+		<td><%= radio_button_tag "answer[#{question.id}]","#{answer.id}" , (!@out.nil? and !@out[question.id].nil? and @out[question.id].include?answer.id) ? true: false %> <%= answer.content%></td>
+		<td></td>
+		</tr>
+	<% else %>  <!-- if quiz checkboxes -->
+		<tr>
+		<td><%= image_tag "spacer.gif", :height => "1px" , :width=>"1px"%></td>
+		<td><%= check_box_tag "answer[#{question.id}][#{answer.id}]", 1, (!@out.nil? and !@out[question.id].nil? and @out[question.id].include?answer.id) ? true: false %> <%= answer.content%></td>
+		<td></td>
+		</tr>
+	<% end %>
 
 <% end %>
 

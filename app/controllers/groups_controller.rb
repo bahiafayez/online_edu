@@ -103,7 +103,11 @@ class GroupsController < ApplicationController
       if @group.update_attributes(params[:group])
         #@group.due_date= @group.due_date.next_day #end_of_day #because if 15 sep.. then due date should be beg of 16.
         #@group.save
-        @group.events << Event.new(:name => "#{@group.name} due", :start_at => @group.due_date, :end_at => @group.due_date, :all_day => false, :color => "red", :course_id => @course.id)
+        print params[:group][:due_date]
+        print "due is"
+        print @group.due_date
+        
+        @group.events << Event.new(:name => "#{@group.name} due", :start_at => params[:group][:due_date], :end_at => params[:group][:due_date], :all_day => false, :color => "red", :course_id => @course.id)
         
         # also change due date and appearance date of all lectures/quizzes with boolean checked.
         @group.lectures.each do |l|
@@ -164,7 +168,7 @@ class GroupsController < ApplicationController
     print "here"
     #render json: "a" => "b" 
     @group = @course.groups.build(:name => "New Module", :appearance_time => Time.zone.now.to_date, :due_date => 1.week.from_now.to_date) #added to_date so it won't have time.
-    @group.events << Event.new(:name => "#{@group.name} due", :start_at => @group.due_date, :end_at => @group.due_date, :all_day => false, :color => "red", :course_id => @course.id)
+    @group.events << Event.new(:name => "#{@group.name} due", :start_at => Time.zone.now.to_date, :end_at => Time.zone.now.to_date, :all_day => false, :color => "red", :course_id => @course.id)
     
       if @group.save
         @updated = @group.appearance_time.strftime('%d %b (%a)')

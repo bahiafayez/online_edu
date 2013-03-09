@@ -18,6 +18,10 @@
 <%= link_to student.email, send_email_course_path(@course, :student => student.id) %>
 </td>
 
+<td>
+<%= link_to "Remove from course", remove_student_course_path(@course, :student => student.id), :confirm=>"Are you would like to delete #{User.find(student.id).name} and all of his data?"%>	
+</td>
+
 
 </tr>
 

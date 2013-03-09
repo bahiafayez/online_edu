@@ -54,6 +54,7 @@
 			<!-- <th>Enrolled</th> -->
 			<th>Student Name</th>
 			<th>Student Email</th>
+			<th></th>
 		</tr>
 	<%= render :partial => "student", :collection => @students , :locals=> {:remove=> true} %></table>
 	<center><%= paginate @students %></center>

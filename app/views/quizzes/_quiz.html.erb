@@ -35,10 +35,14 @@
 	
 </p>
 
+<% if quiz.quiz_type == 'quiz' %>
 <% if @disable %>
 <center><div><%= submit_tag 'Save' ,:disabled => "disabled" , :class => 'btn' %><%= submit_tag 'Submit' ,:disabled => "disabled",  :class => 'btn btn-primary'%></div></center>
 <% else %>
 <center><div><%= submit_tag 'Save' , :class => 'btn' %><%= submit_tag 'Submit' ,  :class => 'btn btn-primary'%></div></center>
+<% end %>
+<%else%>
+<center><div><%= submit_tag 'Save' , :class => 'btn btn-primary' %></div></center>
 <% end %>
 
 <% end -%>  

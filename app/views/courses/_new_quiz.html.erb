@@ -112,8 +112,8 @@ Highcharts.exportCharts = function(charts, options) {
             	style:{
             		fontSize:'12px',
             		width:"200px"
-            	}
-            	//useHTML:true
+            	},
+            	useHTML:true
             },
             xAxis: {
                 categories: [parseInt(count)+1]
@@ -193,11 +193,23 @@ Highcharts.exportCharts = function(charts, options) {
   {
   	var ques= <%= raw @chart_questions.to_json %>
   	var correct = ques[count][1]
-  	return "Correct answers are:<br>"+correct.join("-----")
+  	var text= "Correct answers are:<br>"+correct.join(", ")
+  	var words = text.split(/[\s]+/);
+	var numWordsPerLine = 4;
+	var str = [];
+				
+	for (var word in words) {
+		if (word > 0 && word % numWordsPerLine == 0)
+			str.push('<br>');
+			str.push(words[word]);
+		  }
+				
+  return str.join(' ');
+  	
   }
   function getCount()
   {
-  	return <%= raw @chart_data_old.length %>
+  	return <%= raw @chart_questions.length %>
   	
   }
   function getName(count)
@@ -210,18 +222,30 @@ Highcharts.exportCharts = function(charts, options) {
 	{
 	console.log("count is "+count)	
 	var studentProgress= <%= raw @chart_data %>
-    x=[{"name":'Correct', "data":[], "color":[]}, {"name":'Incorrect', "data":[], "color":[]}];
-    d= studentProgress[count];
-     console.log(studentProgress[count]);
-        	//console.debug(studentProgress[key][1])
-     x[0].data.push(d[0]);
-     x[1].data.push(d[1]);
-     x[0].color = "green";
-     x[1].color = "red";
-        
-        
-        console.debug(x);
-        return x;
+	
+		    x=[{"name":'Correct', "data":[], "color":[]}, {"name":'Incorrect', "data":[], "color":[]}];
+		    d= studentProgress[count];
+		     console.log(studentProgress);
+		        	//console.debug(studentProgress[key][1])
+		     if(studentProgress["empty"] == true)
+			{
+		      x[0].data.push(0);
+		     x[1].data.push(0);
+		    }
+		    else
+		    {
+		    	x[0].data.push(d[0]);
+		     x[1].data.push(d[1]);
+		   
+		    }
+		     
+		     x[0].color = "green";
+		     x[1].color = "red";
+		        
+		        
+		        console.debug(x);
+		        return x;
+	
 	}     
 
 

@@ -1,5 +1,6 @@
 class Pause < ActiveRecord::Base
   attr_accessible :course_id, :lecture_id, :time, :user_id
+  belongs_to :lecture
   
     def self.get_rounded_time(array)
     return_hash={}

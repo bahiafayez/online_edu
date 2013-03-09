@@ -109,7 +109,7 @@ setup_chart = function(the_id)
             tooltip: {
                 formatter: function() {
                     var point = this.point,
-                        s = this.x +':<b>'+ this.y;// +'% market share</b><br/>';
+                        s = this.x //+':<b>'+ this.y;// +'% market share</b><br/>';
                    
                     return s;
                 }
@@ -183,6 +183,11 @@ setup_screens = function()
 	}
 	
 	player.setSize($("#resizable").width(), $("#resizable").height());
+	$("#fo2").width($("#resizable").width());
+	$("#fo2").height($("#resizable").height());
+	$("#fo2").css("left",$("#resizable").position().left);
+	$("#fo2").css("top",$("#resizable").position().top);
+	
 }
 setup_buttons = function(h)
 {
@@ -281,6 +286,7 @@ function onPlayerReady(event) {
         event.target.seekTo(first_quiz);
         console.log(event.target.getCurrentTime());
         player.mute();
+        $("#cover").css("display","none");
         
  }    
 function onPlayerStateChange(){
@@ -289,6 +295,8 @@ function onPlayerStateChange(){
 	{
 		console.log("here in playing")
 		player.pauseVideo();
+		$("#fo2").css("display","none");
+		console.log(player.getCurrentTime())
 	}
 	//else{
 	//	play=0;
@@ -369,11 +377,13 @@ get_next_quiz = function()
         player.loadVideoById(v, first_quiz);
 		player.seekTo(first_quiz);
 		player.playVideo();
+		$("#fo2").css("display","block");
 	}
 	else{
 	
 		player.seekTo(first_quiz);
 		player.playVideo();
+		$("#fo2").css("display","block");
 		 
 	}
 	
@@ -438,11 +448,13 @@ get_previous_quiz = function()
         player.loadVideoById(v);
 		player.seekTo(first_quiz);
 		player.playVideo();
+		$("#fo2").css("display","block");
 	}
 	else{
 		
 		player.seekTo(first_quiz);
 		player.playVideo();
+		$("#fo2").css("display","block");
 		 
 	}
 	
@@ -486,11 +498,42 @@ $("#previous").click(function(event){
   	#q_num, #lec_num{
   		font-size: 14px;
   	}
+  	#fo2{
+  		position:absolute;
+  		display:none;
+  		width: 100%;
+  		position: fixed;
+  		opacity: 0.7;
+  		background-color: #fff;
+  		z-index: 99;
+  		text-align: center;
+  	}
+  	
+  	#cover{
+  		
+  		width: 100%;
+  		height:100%;
+  		top:0px;
+  		left:0px;
+  		position: fixed;
+  		opacity: 1;
+  		background-color: #fff;
+  		z-index: 99;
+  		text-align: center;
+  	}
+  	#loading-image {
+	  position: absolute;
+	  top: 45%;
+	  left: 47%;
+	  width:30px;
+	  z-index: 100;
+	}
   </style>
+<div id="cover"></div>  
 <div id="big_div" style="width:100%;height:100%; background-color:white">
 <div id="mute-me"></div>
 <div id="play-me"></div>
-<div style="display: block; height: 60%; width: 100%;" id="top"><div id="left" style="height: 100%; min-width: 50px; display: inline-block;vertical-align: top;"><%= link_to "-3", "", :remote => true, :class => "btn btn-primary", :id => "minus_3" %><%= link_to "<<", "", :remote => true, :class => "btn btn-primary", :id => "previous" %></div><div id="resizable" style="margin-top: 0px; height: 100%; background-color: gray; width: 428.444px; display: inline-block;"></div><div id="right" style="height: 100%; min-width: 50px; display: inline-block;vertical-align: top;"><%= link_to "+3", "", :remote => true, :class => "btn btn-primary", :id => "plus_3" %><%= link_to ">>", "", :remote => true, :class => "btn btn-primary", :id => "next" %></div></div>
+<div style="display: block; height: 60%; width: 100%;" id="top"><div id="left" style="height: 100%; min-width: 50px; display: inline-block;vertical-align: top;"><%= link_to "-3", "", :remote => true, :class => "btn btn-primary", :id => "minus_3" %><%= link_to "<<", "", :remote => true, :class => "btn btn-primary", :id => "previous" %></div><div id='fo2'><%= image_tag "loading2.gif", :id => "loading-image"%></div><div id="resizable" style="margin-top: 0px; height: 100%; background-color: gray; width: 428.444px; display: inline-block;"></div><div id="right" style="height: 100%; min-width: 50px; display: inline-block;vertical-align: top;"><%= link_to "+3", "", :remote => true, :class => "btn btn-primary", :id => "plus_3" %><%= link_to ">>", "", :remote => true, :class => "btn btn-primary", :id => "next" %></div></div>
 <div id="below" style="display:block;width:100%;height:40%;background-color:white;">
 	<div id="the_question2" style="position:absolute;padding-left:10px;display:inline;font-size:28px;margin-top:0px;line-height:30px;height:40%;width:40%;">
 		<div id="the_question" style="position:absolute;height:90%;"></div>

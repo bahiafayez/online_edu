@@ -82,38 +82,43 @@
 
 			elements.container = $('<div>',{"class":'flashContainer',css:{
 				width	: settings.width,
-				height	: settings.height
+				height	: correct_height +32 //settings.height
 			}}).appendTo(elements.originalDIV);
 
 			// Embedding the YouTube chromeless player
 			// and loading the video inside it:
 			
 			
-
+//http://www.youtube.com/v/VIDEO_ID?version=3&enablejsapi=1
+//'http://www.youtube.com/apiplayer?enablejsapi=1&version=3'
 			elements.container.flash({
-				swf			: 'http://www.youtube.com/apiplayer?enablejsapi=1&version=3',
+				swf			: 'http://www.youtube.com/v/'+settings.videoID+'?version=3&enablejsapi=1&rel=0&showinfo=0&autohide=0&fs=0',
 				id			: 'video_'+settings.safeID,
-				height		: correct_height,
+				height		: correct_height + 32,
 				width		: settings.width,
 				duration	: data.duration,
 				allowScriptAccess:'always',
-				wmode		: 'transparent',
+				allowFullScreen: false,
+				wmode		: 'opaque',
 				flashvars	: {
 					"video_id"		: settings.videoID,
-					"playerapiid"	: settings.safeID
-				}
+					"playerapiid"	: settings.safeID,
+					"fs":0
+					
+				},
+				
 			});
 
 			// We use get, because we need the DOM element
 			// itself, and not a jquery object:
 			
 			elements.player = elements.container.flash().get(0);
-			console.log(elements.player)
+			console.log("plaer is"+elements.player)
 			// Creating the control Div. It will act as a ply/pause button
 
-			var timer=  $('<div>',{"class":'timer',"style":"width:"+width+"px","id":"timer_video_"+haveid}).appendTo(elements.container);
-			elements.control = $('<div>',{"class":'controlDiv play'})
-							   .appendTo(elements.container);
+			//var timer=  $('<div>',{"class":'timer',"style":"width:"+width+"px","id":"timer_video_"+haveid}).appendTo(elements.container);
+			elements.control = $('<div>',{"class":'controlDiv play',"style":"display:none;"})
+							   .appendTo(elements.container.parent());
              if(type=="small"){
              var fullScreen=  $('<div>',{"class":'fullscreenDiv full'}).appendTo(elements.container);
              }
@@ -124,10 +129,11 @@
              var question=  $('<div>',{"class":'questionDiv', "onclick":"fading('video_"+haveid+"')"}).appendTo(elements.container);
              var shortcuts=  $('<div>',{"class":'shortcutDiv', "onclick":"shortcuts('video_"+haveid+"')"}).appendTo(elements.container);
              
+             var highlight=  $('<div>',{"class":'highlight_play'}).appendTo(elements.container);
              // for the question
              var hidden_div= $('<div>',{"id":"conf_video_"+haveid,"style":'display:none;',"class":"hidden_div"}).appendTo(elements.container);
-             var hidden_input= $('<input>',{"type":'text', "id":"confusedQues_video_"+haveid, "placeholder":"Enter Question", "style":"margin-top:8px;width:150px;height:15px;", "name":"confusedQues", "required":"true"}).appendTo(hidden_div);
-             var hidden_button= $('<input>',{"type":"button", "onclick":"confusedQuestion('video_"+haveid+"')", "class":"btn btn-primary", "style":"height:25px;margin-bottom:2px","value":"Ask"}).appendTo(hidden_div);
+             var hidden_input= $('<input>',{"type":'text', "id":"confusedQues_video_"+haveid, "placeholder":"Enter Question", "style":"margin-top:15px;margin-bottom:3px;line-height:10px;font-size:10px;width:150px;height:13px;", "name":"confusedQues", "required":"true"}).appendTo(hidden_div);
+             var hidden_button= $('<input>',{"type":"button", "onclick":"confusedQuestion('video_"+haveid+"')", "class":"btn btn-primary", "style":"height:25px;margin-bottom:-12px;line-height:10px;font-size:10px;","value":"Ask"}).appendTo(hidden_div);
             
              
              var hidden_shortcuts= $('<div>',{"id":"short_video_"+haveid,"style":'display:none',"class":"well hidden_shortcuts"}).appendTo(elements.container);
@@ -138,7 +144,7 @@
              // change duration:
              $('#dur').html(formatSecondsAsTime(data.duration))
              
-             $('#timer_video_'+haveid).html("<p style='float:left;margin-left:60px;left:50px;line-height:60px;color:gray'>"+formatSecondsAsTime(0) +"</p> <p style='float:left;margin-left:0px;line-height:60px;color:gray'> / "+formatSecondsAsTime(data.duration)+"</p>");
+             //$('#timer_video_'+haveid).html("<p style='float:left;margin-left:60px;left:50px;line-height:60px;color:gray'>"+formatSecondsAsTime(0) +"</p> <p style='float:left;margin-left:0px;line-height:60px;color:gray'> / "+formatSecondsAsTime(data.duration)+"</p>");
              
              // $('#f_screen').click(function(event){
 	             	// resize();
@@ -151,7 +157,9 @@
 					// also if there are buttons should place them correctly.
 					// play by default when enter page.
 				};
-				
+			
+			
+			
 			resize = function()
 			{
 					//var x=$("body").offset();
@@ -170,7 +178,7 @@
 					$("#page").css({"top":0,"left":0});
 					$("#page").css({"margin-top":"0px"});
 					
-					$("#timer_video_youVideo").width($(window).width());
+					//$("#timer_video_youVideo").width($(window).width());
 					$("#ontop_video_youVideo").css("z-index",1050);
 					$("#ontop_video_youVideo").css("margin-top","0px");
 					$("#video_youVideo").css("margin-top", "0px");
@@ -186,32 +194,33 @@
 					
 					$("#page").height($(window).height());
 					$("#player").height($(window).height());
-					$("#ontop_video_youVideo").height($(window).height()-50); //-50 for control bar
+					$("#ontop_video_youVideo").height($(window).height()-33); //-50 for control bar
 					$(".flashContainer").height($(window).height());
-					$("#video_youVideo").height($(window).height()-50);
+					$("#video_youVideo").height($(window).height());
 					
 					
-					var hv=$(window).height()-50
+					var hv=$(window).height()-32
 					// setting width of ontop and video depending on the height
 					
-					$("#video_youVideo").width(hv*16.0/9.0);
-					$("#ontop_video_youVideo").width(hv*16.0/9.0);
+					$("#video_youVideo").width($(window).width());
+					$("#ontop_video_youVideo").width((hv-1)*16.0/9.0);
 					
-					if($("#video_youVideo").width()>$(window).width())  // if width will get cut out.
+					if($("#ontop_video_youVideo").width()>$(window).width())  // if width will get cut out.
 					{
-						$("#video_youVideo").width($(window).width());
+						//$("#video_youVideo").width($(window).width());
 						$("#ontop_video_youVideo").width($(window).width());
-						$("#video_youVideo").height($(window).width()*9.0/16.0);
+						//$("#video_youVideo").height($(window).width()*9.0/16.0 + 32);
 						$("#ontop_video_youVideo").height($(window).width()*9.0/16.0);
 						
-						var lf= ($(".flashContainer").height() -50 - $("#video_youVideo").height())/2.0;
-						$("#video_youVideo").css("margin-top", lf+"px");
+						var lf= ($(".flashContainer").height() -32 - $("#ontop_video_youVideo").height())/2.0;
+						//$("#video_youVideo").css("margin-top", lf+"px");
 						$("#ontop_video_youVideo").css("margin-top", lf+"px");
 						
 					}
 					else{
-					var lf= ($(".flashContainer").width() - $("#video_youVideo").width())/2.0;
-					$("#video_youVideo").css("margin-left", lf+"px");
+						
+					var lf= ($(".flashContainer").width() - ($("#video_youVideo").height()-32)*16.0/9.0)/2.0;
+					//$("#video_youVideo").css("margin-left", lf+"px");
 					$("#ontop_video_youVideo").css("margin-left", lf+"px");
 					}
 					
@@ -225,7 +234,7 @@
 						{
 							var toadd= $("#"+list_of_points[i][0])
 							var top3= parseFloat((list_of_points[i][2])*$("#ontop_video_youVideo").height());
-							var left= parseFloat((list_of_points[i][1])*$("#ontop_video_youVideo").width())+(3/800.0 * $("#ontop_video_youVideo").width());
+							var left= parseFloat((list_of_points[i][1])*$("#ontop_video_youVideo").width())+(4/800.0 * $("#ontop_video_youVideo").width());
 							toadd.css({"top":top3+"px", "left":left+"px"});
 						}
 					}
@@ -277,7 +286,7 @@
 					
      
         
-					$("#timer_video_youVideo").width(800);
+					//$("#timer_video_youVideo").width(800);
 					$("#ontop_video_youVideo").css("z-index",2);
 					$("#ontop_video_youVideo").css("margin-top","40px");
 					$("#player").width(800);
@@ -293,9 +302,9 @@
 					
 					$("#page").height(600);
 					$("#player").height(500);
-					$("#ontop_video_youVideo").height(800*9/16); //-50 for control bar
-					$(".flashContainer").height(500);
-					$("#video_youVideo").height(800*9/16);
+					$("#ontop_video_youVideo").height(448); //-50 for control bar
+					$(".flashContainer").height(450+32);
+					$("#video_youVideo").height(450+32);
 					
 					$("#video_youVideo").width(800);
 					$("#ontop_video_youVideo").width(800);
@@ -313,7 +322,7 @@
 						{
 							var toadd= $("#"+list_of_points[i][0])
 							var top3= parseFloat((list_of_points[i][2])*$("#ontop_video_youVideo").height());
-							var left= parseFloat((list_of_points[i][1])*$("#ontop_video_youVideo").width())+ (3/800.0 * $("#ontop_video_youVideo").width());
+							var left= parseFloat((list_of_points[i][1])*$("#ontop_video_youVideo").width())+ (4/800.0 * $("#ontop_video_youVideo").width());
 							toadd.css({"top":top3+"px", "left":left+"px"});
 						}
 					}
@@ -366,10 +375,10 @@
 			// If the user wants to show the progress bar:
 
 			if(settings.progressBar){
-				elements.progress =	$('<div>',{"class":'progressBar'})
-									.appendTo(elements.container);
+				elements.progress =	$('<div>',{"class":'progressBar',"style":"display:none"})
+									.appendTo(elements.container.parent());
 
-				elements.elapsed =	$('<div>',{"class":'elapsed'})
+				elements.elapsed =	$('<div>',{"class":'elapsed',"style":"display:none"})
 									.appendTo(elements.progress);
 				
 				elements.progress.click(function(e){
@@ -489,6 +498,7 @@
 				if(status==0){ // video has ended
 					elements.control.removeClass('pause').addClass('replay');
 					elements.container.removeClass('playing');
+					add_lecture_buttons();
 					//showEvaluation(settings.safeID);  .. khaleto mawgoud 3ala tool.
 				}
 			}

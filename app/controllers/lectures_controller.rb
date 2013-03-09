@@ -129,7 +129,7 @@ class LecturesController < ApplicationController
         if @lecture.due_date.to_formatted_s(:number) != @lecture.group.due_date.to_formatted_s(:number) or @lecture.appearance_time.to_formatted_s(:number) != @lecture.group.appearance_time.to_formatted_s(:number)
           print @lecture.due_date.to_formatted_s(:number)
           print @lecture.group.due_date.to_formatted_s(:number)
-          @lecture.events << Event.new(:name => "#{@lecture.name} due", :start_at => @lecture.due_date, :end_at => @lecture.due_date, :all_day => false, :color => "red", :course_id => @course.id, :group_id => @lecture.group.id)
+          @lecture.events << Event.new(:name => "#{@lecture.name} due", :start_at => params[:lecture][:due_date], :end_at => params[:lecture][:due_date], :all_day => false, :color => "red", :course_id => @course.id, :group_id => @lecture.group.id)
         end
         format.html { redirect_to [@course, @lecture], notice: 'Lecture was successfully updated.' }
         format.json { head :no_content }

@@ -13,21 +13,25 @@
 
 <% @groups.each do |g| %>	
 <tr>
-<td><%= g.name %></td>	
+<td><%= g.name %><br>
+	<small>Deadline: <%= g.due_date.to_formatted_s(:short) %></small>
+</td>	
 <td>
 
 <blockquote>
-<% (g.lectures.where("appearance_time<= ?",Time.zone.now) + g.quizzes.where("appearance_time<= ?",Time.zone.now)).sort!{|x,y| ( x.position and y.position ) ? x.position <=> y.position : ( x.position ? -1 : 1 )  }.each do |l| %>
+<% (g.lectures.where("appearance_time<= ?",Time.zone.now.to_date) + g.quizzes.where("appearance_time<= ?",Time.zone.now.to_date)).sort!{|x,y| ( x.position and y.position ) ? x.position <=> y.position : ( x.position ? -1 : 1 )  }.each do |l| %>
 <% if l.class.name=="Lecture" %>
 	<%= link_to l.name, courseware_course_path(@course, :l =>l.id) %><br />
+		<% if l.due_date != g.due_date %><small>Deadline: <%= l.due_date.to_formatted_s(:short) %></small><% end %>
 	<% l.online_quizzes.order(:time).each do |f| %>
 		<span style="padding-right:2em;"><%= @lectureGrades[f.id]||0 %>/1.0</span>
 	<% end %><br /><br />
 <% else %>
-<%= link_to l.name, courseware_course_path(@course, :q =>l.id) %><br />
- <small>Deadline: <%= l.due_date.to_formatted_s(:short) %></small>
- <%= @quiztable[l.id][0] %>/<%= @quiztable[l.id][1] %><br /><br />
-
+	<% if l.quiz_type=="quiz"%>
+	<%= link_to l.name, courseware_course_path(@course, :q =>l.id) %><br />
+ 		<% if l.due_date != g.due_date %><small>Deadline: <%= l.due_date.to_formatted_s(:short) %></small><% end %>
+ 	<%= @quiztable[l.id][0] %>/<%= @quiztable[l.id][1] %><br /><br />
+	<% end %>
 <% end %>
 <% end %>
 
@@ -78,7 +82,7 @@ $(function () {
                 type: 'column'
             },
             title: {
-                text: 'Grades'
+                text: 'Quiz Grades'
             },
             //subtitle: {
             //    text: 'Source: WorldClimate.com'

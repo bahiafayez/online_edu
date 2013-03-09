@@ -11,7 +11,7 @@
 		/*background:#fff;  /* invisible div*/
         position:absolute;
         width:800px;
-        
+        display:none;
         z-index:2;
         margin-top:40px;
         /*margin-left:40px;*/
@@ -70,7 +70,7 @@ textarea{
 <!-- <a id='f_screen'>full screen</a> -->
 
 <div id="page">
-	<div class="ontop" id="ontop_video_youVideo" style="height:450px;"></div>
+	<div class="ontop" id="ontop_video_youVideo" style="height:448px;"></div>
 	<div id="player" style="position:absolute"></div>
 	<!-- <div id="checkButton" style="margin-top:-70px; position:absolute; margin-left:150px"></div> -->
 	
@@ -175,6 +175,18 @@ function markSeen()  // marks that lecture was viewed
 
 }
 
+add_lecture_buttons = function()
+{
+	var next='<%= @next_lecture  %>'
+	var previous = '<%= @previous_lecture  %>'
+	console.log(previous)
+	console.log(next)
+	if(next!="")
+		var next_lecture = $("<a class='btn btn-primary next_lecture' href="+next+" >Next Lecture</a>").appendTo($(".flashContainer"));
+	if(previous!= "")
+		var previous_lecture = $("<a class='btn btn-primary previous_lecture' href="+previous+" >Previous Lecture</a>").appendTo($(".flashContainer"));	
+}
+
 function showEvaluation(hid)
 {
 	$.getJSON('<%= @get_evaluation_path %>', {"course_id":<%= @course.id %>, "lecture_id":<%= @q.id %>}, function(response){
@@ -226,7 +238,7 @@ function formatSecondsAsTime(secs, format) {
 
 function confused(hid)
 {
-	$('#confused_notify_'+hid).html("<div id='fading_"+hid+"' style='width:40px;height:10px;text-align:center;vertical-align:center;line-height:12px;padding-left:20px;' class='alert alert-success'>Thanks!</div>")
+	$('#confused_notify_'+hid).html("<div id='fading_"+hid+"' style='width:40px;height:10px;padding-top:2px;padding-bottom:2px;text-align:center;vertical-align:center;line-height:12px;padding-left:20px;' class='alert alert-success'>Thanks!</div>")
 	$("#fading_"+hid).fadeOut(5000);
 
 	
@@ -265,12 +277,19 @@ function confusedQuestion(hid)
 
 function save(elem)
     		{
+    			//first display in correct place:
+    			//x=$("#details").offset();
+				//$(".popover").css("left",x.left);
+    			
     			console.log("in save");
     			
     			var answer_id= elem.attr("id")
 				// here call the controller function to save to database!!
     			$.getJSON("<%= @saveOnline %>",{"quiz":currentID, "answer":answer_id }, function(resp){
     				elem.attr('checked','checked');	
+    				// and highlight the play button
+    				$(".highlight_play").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100);
+    				
     			});
     		}
 
@@ -322,7 +341,7 @@ function checkTime(hid, duration) {
                 	//logStudent(player.getCurrentTime(), duration) #stopped that - 75% 50% and 25%
                 
                 
-                	$('#timer_'+hid).html("<p style='float:left;margin-left:60px;left:50px;line-height:60px;color:gray'>"+formatSecondsAsTime(player.getCurrentTime())+"</p><p style='float:left;margin-left:0px;line-height:60px;color:gray'> / "+formatSecondsAsTime(duration)+"</p>");
+                	//$('#timer_'+hid).html("<p style='float:left;margin-left:60px;left:50px;line-height:60px;color:gray'>"+formatSecondsAsTime(player.getCurrentTime())+"</p><p style='float:left;margin-left:0px;line-height:60px;color:gray'> / "+formatSecondsAsTime(duration)+"</p>");
                 	
                 	a= <%= raw lecture.online_quizzes.to_json %>;   // important how to convert rails array of objects to JS array of objects
     //console.debug(a)
@@ -353,7 +372,7 @@ function checkTime(hid, duration) {
     			html=""
     			for(answer in resp['answers']) {
            			top3= parseFloat((resp['answers'][answer].ycoor)*$("#ontop_video_youVideo").height());//(player.width*9/16)/281);
-           			left= parseFloat(resp['answers'][answer].xcoor*$("#ontop_video_youVideo").width())+(3/800.0 * $("#ontop_video_youVideo").width());//(player.width)/500)+1;
+           			left= parseFloat(resp['answers'][answer].xcoor*$("#ontop_video_youVideo").width())+(4/800.0 * $("#ontop_video_youVideo").width());//(player.width)/500)+1;
            			list_of_points.push([resp['answers'][answer].id,resp['answers'][answer].xcoor,resp['answers'][answer].ycoor ])
            			
            			reason= resp['answers'][answer].explanation
@@ -388,8 +407,9 @@ function checkTime(hid, duration) {
     		//document.getElementById("checkButton").innerHTML= "<input class='check btn' type='button' value='Check My Answer'></button>"
     		// this creates the red answered ontop of video
     		//html+="<p id='tochange' style='color:red; background-color:white;position:relative;'>"+resp['ans']+"</p>"
+    		$("#ontop_"+hid).css("display","block");
     		document.getElementById("ontop_"+hid).innerHTML=html;
-    		$("[rel=clickover]").clickover();
+    		$("[rel=clickover]").clickover({"placement":"right"});
     		
     		//$(document).on("click", ".check", function () {
     		
@@ -413,6 +433,9 @@ function checkTime(hid, duration) {
            if (player.getPlayerState()!=2){
            //document.getElementById("foo").innerHTML=""   
            document.getElementById("ontop_"+hid).innerHTML=""
+           $("#ontop_"+hid).css("display","none");
+           //$(".popover").css("display","none");
+           $('.popover').remove() //sometimes popover if open , and click play, stays
           
            }
            }

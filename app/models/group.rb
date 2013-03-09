@@ -185,6 +185,15 @@ class Group < ActiveRecord::Base
     #@questions_chart2= LectureQuestion.get_rounded_time(@confused_questions.order(:time))
   end
   
+  def next_lecture(lec_pos)
+    self.lectures.first(:conditions => ['position > ?', lec_pos], :order => 'position ASC')
+  end
+  
+  def previous_lecture(lec_pos)
+    #self.lectures.first(:conditions => ['position < ?', lec_pos], :order => 'position DSC')
+    self.lectures.where("position < ?", lec_pos).sort_by(&:position).reverse.first
+  end
+  
   private
   def clean_up
     self.events.where(:lecture_id => nil, :quiz_id => nil).destroy_all

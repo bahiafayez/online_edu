@@ -15,7 +15,11 @@ end
 
 def quiznotseen?(quiz)
   #return QuizGrade.where(:user_id => current_user.id, :quiz_id => quiz).empty? #later will check if status is submitted
-  return QuizStatus.where(:user_id => current_user.id, :quiz_id => quiz, :course_id => params[:id], :status => "Submitted").empty?
+  if Quiz.find(quiz).quiz_type == 'quiz'
+    return QuizStatus.where(:user_id => current_user.id, :quiz_id => quiz, :course_id => params[:id], :status => "Submitted").empty?
+  else
+    return QuizStatus.where(:user_id => current_user.id, :quiz_id => quiz, :course_id => params[:id], :status => "Saved").empty?
+  end
 end
 
 

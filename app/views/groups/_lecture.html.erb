@@ -17,6 +17,33 @@
 		width:270px;
 	}
 	
+	#loading {
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  position: fixed;
+  display: block;
+  opacity: 0.7;
+  background-color: #fff;
+  z-index: 99;
+  text-align: center;
+}
+
+#loading-image {
+  position: absolute;
+  top: 45%;
+  left: 48%;
+  width:50px;
+  z-index: 100;
+}
+#please{
+	top:60%;
+	left:43%;
+	position:absolute;
+	z-index:100px;
+	display:none;
+}
 </style>
 
 <script language="JavaScript" type="text/JavaScript">
@@ -84,6 +111,19 @@ $(document).ready(function() {
   pop = Popcorn.youtube( "#youtube", "<%= @lecture.url %>" ,{ width: 400, controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
   pop.controls( false );                          
   pop.play();
+  var newh=$("#loading-image").position().top + $("#loading-image").height();
+  var neww=$("#loading-image").position().left - 10;
+  $("#please").css("top", newh);
+  $("#please").css("left", neww);
+  console.log("loading")
+  pop.on("loadeddata", function() {
+					  	 	 //pop2.pause();
+					  	 	 //pop2.currentTime(parseInt(time));
+					  	 	 $('#loading').hide();
+					  	 	 console.log("loaded")
+					  	 	 console.log(pop);
+					  	 	 console.log(pop.currentTime());
+						 });
   console.log(pop);
   
   $('#insert_quiz').click(function(event){
@@ -315,6 +355,10 @@ jQuery(function() {
     });
 
 </script>
+<div id="loading">
+ <%= image_tag "loading2.gif", :id => "loading-image"%>
+  <b id='please'>Please Wait ... </b>
+</div>
 <center><h3><%= @lecture.name %></h3></center>
 <div id="notify"></div>
 <center><div class="ontop2" style="width:500px;border:8px solid;margin-top:0px;" >

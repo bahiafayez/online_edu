@@ -5,6 +5,7 @@ class Quiz < ActiveRecord::Base
   has_many :events
   has_many :quiz_grades , :dependent => :destroy
   has_many :quiz_statuses, :dependent => :destroy
+  has_many :free_answers, :dependent => :destroy
   
   has_many :questions, :order => :id, :dependent => :destroy
   accepts_nested_attributes_for :questions, :allow_destroy => true

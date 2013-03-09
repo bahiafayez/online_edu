@@ -180,6 +180,7 @@ function onPlayerReady(event) {
         event.target.seekTo(first_quiz);
         console.log(event.target.getCurrentTime());
         player.mute();
+        $("#cover").css("display","none");
         
  }    
 function onPlayerStateChange(){
@@ -391,11 +392,23 @@ $("#previous").click(function(event){
   	#q_num, #lec_num{
   		font-size: 16px;
   	}
+  	#cover{
+  		
+  		width: 100%;
+  		height:100%;
+  		top:0px;
+  		left:0px;
+  		position: fixed;
+  		opacity: 1;
+  		background-color: #fff;
+  		z-index: 99;
+  		text-align: center;
+  	}
   </style> 
 
 
 
-
+<div id="cover"></div>  
 <div id="big_div" style="width:100%;height:100%; background-color:white">
 <div id="mute-me"></div>
 <div id="play-me"></div>

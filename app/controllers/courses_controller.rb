@@ -154,7 +154,8 @@ class CoursesController < ApplicationController
     
     logger.debug @course
     text="Done"
-    render json: text
+    #render json: text
+    redirect_to enrolled_students_course_path(Course.find(@course)), :notice => "#{@student.name} was removed from #{Course.find(@course).name}"
   end
   
   def add_student
@@ -207,7 +208,9 @@ class CoursesController < ApplicationController
       @alert_messages=[]
       day= 'day'.pluralize((Time.zone.now.to_date - @q.due_date).to_i)
       @alert_messages<< "Due date has passed -  #{@q.due_date.strftime("%d %b")} (#{(Time.zone.now.to_date - @q.due_date).to_i} #{day} ago)" if @q.due_date < Time.zone.now.to_date #if due date 5 april (night) then i have until 6 april..
-      @alert_messages<<"You've already submitted the #{type.capitalize}" if !status.empty? and status.first.status=="Submitted"
+      @alert_messages<<"You've already submitted the #{type.capitalize}" if !status.empty? and status.first.status=="Submitted" and flash[:from].nil?
+      
+      flash[:from]=nil #so it won't display anything.
       
       @answers.each do |a|
         if @out[a.question_id].nil?
@@ -253,6 +256,24 @@ class CoursesController < ApplicationController
       @seen_path=seen_course_lecture_path(params[:id], params[:l])
       @evaluation_path=evaluations_path()
       @get_evaluation_path=get_evaluations_path()
+      
+      #get next and previous lectures.
+      next_lecture = @q.group.next_lecture(@q.position)
+      if next_lecture.nil?
+        @next_lecture=""
+      else
+        @next_lecture = courseware_course_path(@course, :l => next_lecture.id)
+      end
+      
+      previous_lecture = @q.group.previous_lecture(@q.position)
+      if previous_lecture.nil?
+        @previous_lecture=""
+      else
+        @previous_lecture = courseware_course_path(@course, :l => previous_lecture.id)
+      end
+      
+      ##################################     
+      
       
       @first_evaluation= Evaluation.where(:course_id => params[:id], :lecture_id => params[:l], :user_id => current_user.id).empty?
       if !@first_evaluation
@@ -327,7 +348,10 @@ class CoursesController < ApplicationController
     @course=Course.find(params[:id])
     @quizzes=[]
     @course.groups.each do |g|
-      @quizzes<<g.quizzes if !g.quizzes.empty?
+      #@quizzes<<g.quizzes if !g.quizzes.empty? 
+      g.quizzes.each do |q|
+        @quizzes<<q if q.quiz_type!="survey"
+      end
     end
     @quizzes.flatten! #to be in one array (nothing nested)
     @quizNames=[]
@@ -502,12 +526,17 @@ class CoursesController < ApplicationController
       end
       #@type="quiz"
       
-      @chart_data={}   #only count those that submitted their answers
       @chart_questions={}
+      @quizchart.questions.each_with_index do |ques, index|
+        @chart_questions["#{index}"]=[Question.find(ques.id).content, Question.find(ques.id).answers.where(:correct => true).map{|o| o.content}]
+      end
+      
+      @chart_data={}   #only count those that submitted their answers
+      
       QuizStatus.where(:quiz_id => @quizchart.id, :course_id => params[:id], :status => "Submitted").pluck(:user_id).each do |student|
         QuizGrade.where(:quiz_id => @quizchart.id, :user_id => student).order("question_id").select("grade, question_id").group(:question_id, :grade).each_with_index do |question, index|
           @chart_data["#{index}"]=[0,0] if @chart_data["#{index}"].nil?
-          @chart_questions["#{index}"]=[Question.find(question.question_id).content, Question.find(question.question_id).answers.where(:correct => true).map{|o| o.content}]
+          #@chart_questions["#{index}"]=[Question.find(question.question_id).content, Question.find(question.question_id).answers.where(:correct => true).map{|o| o.content}]
           if question.grade==0
             @chart_data["#{index}"][1] = (@chart_data["#{index}"][1]||0) + 1 #initialize to 0 if nil #incorrect
           else
@@ -515,12 +544,17 @@ class CoursesController < ApplicationController
           end
         end
       end
+      
+      if @chart_data.empty?
+        @chart_data["empty"]=true
+      end
+      
       @chart_data_old= Hash[@chart_data.sort]
       @chart_data=Hash[@chart_data.sort].to_json
       puts "chart data issssss #{@chart_data}"
     end
     ################ if survey ###################
-    if params[:sur]
+    if params[:sur]  #all not just submitted (no submitted in surveys just save but we call the button submit)
       @surveychart=Quiz.where(:id => params[:sur], :course_id => params[:id], :quiz_type => "survey").first
       if @surveychart.nil?
         redirect_to progress_teacher_course_path(params[:id]), :alert => "No such survey"
@@ -649,13 +683,13 @@ class CoursesController < ApplicationController
        @matrixQuiz={}
        @late_quiz={}
        @students.each do |s|
-         @matrixQuiz[s]=s.quiz_grades(@mod)  #returns for each module in the course, whether student finished r not and on time or not.
+         @matrixQuiz[s]=s.quiz_grades2(@mod)  #returns for each module in the course, whether student finished r not and on time or not.
          @late_quiz[s]=s.quiz_late_days(@mod)
          #puts @late
        end
        
        @mods=@mod.lectures.map{|m| m.name}
-       @mods_quizzes= @mod.quizzes.map{|m| m.name}
+       @mods_quizzes= @mod.quizzes.where("quiz_type != 'survey'").map{|m| m.name}
      end
      
      #if progress chart
@@ -680,8 +714,19 @@ class CoursesController < ApplicationController
          #getting number of quizzes student solved in this course (long since course_id not in table.. should consider adding it)
          # now any question solved in the quiz and i consider it, later only consider those with status = submitted
          # % of quizzes solved #should not include surveys!
-         @n_solved=QuizStatus.where(:user_id => s.id, :course_id => @course.id, :status => "Submitted").length     #s.quiz_grades.select('distinct quiz_id').select{|v| Course.find(@course.id).quizzes.pluck(:id).include?v.quiz_id}.length
-         @n_total= Course.find(@course.id).quizzes.count
+         @n_solved=0 #QuizStatus.where(:user_id => s.id, :course_id => @course.id, :status => "Submitted").length     #s.quiz_grades.select('distinct quiz_id').select{|v| Course.find(@course.id).quizzes.pluck(:id).include?v.quiz_id}.length
+         QuizStatus.where(:user_id => s.id, :course_id => @course.id, :status => "Submitted").each do |s|
+           if Quiz.find(s.quiz_id).quiz_type == "quiz"
+             @n_solved+=1
+           end
+         end
+         
+         @n_total= 0#Course.find(@course.id).quizzes.count
+         Course.find(@course.id).quizzes.each do |q|
+           if q.quiz_type == "quiz"
+             @n_total+=1
+           end
+         end
          #number of lectures where i count a lecture if atleast one online quiz is solved.
          #@nl_solved=s.online_quiz_grades.select('distinct lecture_id').select{|v| Course.find(@course.id).lectures.pluck(:id).include?v.lecture_id}.length
          
@@ -869,27 +914,33 @@ class CoursesController < ApplicationController
           #@answers.each do |a|
             #print "answers are #{@answers}"
             #print "keys #{@answers.keys}"
-            @answers.each do |k,v|
-              print "question: #{k}"
-              print "answers: #{v}"
-              if Answer.where(:question_id => k, :correct => true).pluck(:id).sort == v.keys.map{|f| f.to_i}.sort
-                    g=1 #?? HOW!!
-               else
-                    g=0
-               end
-               
-               print "g isssss #{Answer.where(:question_id => k, :correct => true).pluck(:id).sort} and #{v.keys.map{|f| f.to_i}.sort}"
-               #should find better way to record results, now put same number in all answers
-               
-              #@answers[b].keys.each do |k|
-                v.keys.each do |p|
-                  #delete old ones first!!
-                  #plus need to handle radio or checkbox!!
-                  
-                  QuizGrade.create(:user_id => @user_id, :quiz_id => @quiz_id, :question_id => k, :answer_id => p, :grade => g  )
+            if Quiz.find(@quiz_id).quiz_type == "quiz"
+                @answers.each do |k,v|
+                  print "question: #{k}"
+                  print "answers: #{v}"
+                  if Answer.where(:question_id => k, :correct => true).pluck(:id).sort == v.keys.map{|f| f.to_i}.sort
+                        g=1 #?? HOW!!
+                   else
+                        g=0
+                   end
+                   
+                   print "g isssss #{Answer.where(:question_id => k, :correct => true).pluck(:id).sort} and #{v.keys.map{|f| f.to_i}.sort}"
+                   #should find better way to record results, now put same number in all answers
+                   
+                  #@answers[b].keys.each do |k|
+                    v.keys.each do |p|
+                      #delete old ones first!!
+                      #plus need to handle radio or checkbox!!
+                      
+                      QuizGrade.create(:user_id => @user_id, :quiz_id => @quiz_id, :question_id => k, :answer_id => p, :grade => g  )
+                    end
+                  #end
                 end
-              #end
-            end
+                else
+                  @answers.each do |k,v|
+                    QuizGrade.create(:user_id => @user_id, :quiz_id => @quiz_id, :question_id => k, :answer_id => v)
+                  end
+                end
             #QuizGrade.create(:user_id => @user_id, :quiz_id => @quiz_id, :question_id => a[0], :answer_id => a[1], :grade => 0  )
           #end
           type=Quiz.find(@quiz_id).quiz_type || "quiz"
@@ -913,6 +964,7 @@ class CoursesController < ApplicationController
           end
           
           respond_to do |format|
+            flash[:from]="s"
             format.html {redirect_to courseware_course_path(params[:id], :q => @quiz_id), notice: msg}
           end
           end

@@ -1,9 +1,9 @@
 class User < ActiveRecord::Base
   
-  has_many :subjects, :class_name => "Course"  # to get this call user.subjects
+  has_many :subjects, :class_name => "Course", :dependent => :destroy  # to get this call user.subjects
   has_many :quiz_grades, :dependent=> :destroy#, :conditions => :user kda its like im defining a method called quiz grades, which returns something when user = ... not what i want.
   has_many :online_quiz_grades, :dependent => :destroy
-  has_many :enrollments, :dependent => :delete_all
+  has_many :enrollments, :dependent => :destroy
   has_many :courses, :through => :enrollments, :uniq => true
   has_many :announcements
   has_many :quiz_statuses, :dependent => :destroy
@@ -41,11 +41,11 @@ class User < ActiveRecord::Base
     return grades
   end
   
-  def quiz_grades(group)
+  def quiz_grades2(group)
     #calculates for each module where done on time, done not on time, not done # returns an array
     
       grades={}
-      group.quizzes.each do |q|
+      group.quizzes.where("quiz_type != 'survey'").each do |q|
         grades[q.id]=self.finished_quiz_group?(q)
       end
     
@@ -57,13 +57,14 @@ class User < ActiveRecord::Base
     late1=0
     late2=0
     course.groups.each do |g|
-      if self.finished_quizzes(g.quizzes) and self.finished_lectures(g.lectures)
+      quizzes=g.quizzes.where("quiz_type != 'survey'")
+      if self.finished_quizzes(quizzes) and self.finished_lectures(g.lectures)
       
         if !self.finished_lectures_on_time(g.lectures)  #finished all lectures and quizzes
           late1= calculate_lectures_late_days(g.lectures)
         end
-        if !self.finished_quizzes_on_time(g.quizzes)
-          late2= calculate_quizzes_late_days(g.quizzes) 
+        if !self.finished_quizzes_on_time(quizzes)
+          late2= calculate_quizzes_late_days(quizzes) 
         end
         lateMax= if late1>late2 
                 late1 
@@ -90,7 +91,7 @@ class User < ActiveRecord::Base
   
   def quiz_late_days(group)
     late_days={}
-    group.quizzes.each do |q|
+    group.quizzes.where("quiz_type != 'survey'").each do |q|
       if self.finished_quiz(q) and !self.finished_quiz_on_time(q) #finished lecture but late
         late_days[q.id]=calculate_quiz_late_days(q)
         #print("late dayssss #{l.name} #{calculate_late_days(l)}") 
@@ -176,7 +177,7 @@ class User < ActiveRecord::Base
   
   def finished_group?(group)
     lectures= group.lectures
-    quizzes= group.quizzes
+    quizzes= group.quizzes.where("quiz_type != 'survey'")
     
     if self.finished_lectures(lectures) and self.finished_quizzes(quizzes)  #finished all lectures and quizzes
       if self.finished_lectures_on_time(lectures) and self.finished_quizzes_on_time(quizzes)
@@ -450,7 +451,7 @@ class User < ActiveRecord::Base
    @students = all_users.find_all{|u| u.has_role?('user')}
   end
   
-  def remove_student(course_id)
+  def remove_student(course_id)   #should i add them as associations (belong to/ has_many) ?
     enrollments.where(:course_id => course_id).destroy_all
   end
   

@@ -1,11 +1,11 @@
 class Course < ActiveRecord::Base
   belongs_to :user
   has_many :quizzes, :dependent => :destroy
-  has_many :enrollments, :dependent => :delete_all
+  has_many :enrollments, :dependent => :destroy
   has_many :users, :through => :enrollments, :uniq => true
   has_many :lectures, :dependent => :destroy
   has_many :groups, :order => "position", :dependent => :destroy
-  has_many :events
+  has_many :events, :dependent => :destroy
   has_many :announcements, :dependent => :destroy
   
   attr_accessible :description, :duration, :name, :prerequisites, :short_name, :start_date, :user_ids, :user_id, :time_zone
@@ -20,6 +20,7 @@ class Course < ActiveRecord::Base
   #attr_accessible :enrollment_attributes
   
   before_create :create_unique_identifier
+  
 
   def create_unique_identifier
     begin
