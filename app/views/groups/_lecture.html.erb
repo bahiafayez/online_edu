@@ -17,12 +17,12 @@
 		width:270px;
 	}
 	
-	#loading {
+#loading {
   width: 100%;
   height: 100%;
   top: 0px;
   left: 0px;
-  position: fixed;
+  position: absolute;
   display: block;
   opacity: 0.7;
   background-color: #fff;
@@ -107,6 +107,11 @@ $(document).ready(function() {
   });
   //hide_appear($('.hide_on_success'));
   //hide_due($('.hide_on_success_due'));
+  
+  $("#loading").css("left", $("#middle").position().left)
+  $("#loading").css("top", $("#middle").position().top)
+  $("#loading").width($("#details").position().left - $("#middle").position().left)
+  $("#loading").height($("#middle").height())
   
   pop = Popcorn.youtube( "#youtube", "<%= @lecture.url %>" ,{ width: 400, controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
   pop.controls( false );                          
