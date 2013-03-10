@@ -4,7 +4,7 @@ class UserMailer < ActionMailer::Base
   def welcome_email(user)
     @from =  "\"Scalable Learning\" <info@scalable-learning.com>"
     @user = user
-    @url  = "http://www.scalable-learning.com"
+    @url  = "http://scalable-learning.com"
     mail(:to => user.email, :subject => "Welcome to Scalable Learning", :from => @from)
   end
   
@@ -12,7 +12,7 @@ class UserMailer < ActionMailer::Base
     @from =  "\"Scalable Learning\" <info@scalable-learning.com>"
     @users = users
     @announcement = announcement
-    @url  = "http://www.scalable-learning.com/courses/#{course.id}"
+    @url  = "http://scalable-learning.com/courses/#{course.id}"
     @course = course
     @reply_to= course.user.email
     mail(:bcc => users, :subject => "New Announcement - #{course.name}", :from => @from, :reply_to => @reply_to)
