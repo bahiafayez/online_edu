@@ -181,10 +181,18 @@ add_lecture_buttons = function()
 	var previous = '<%= @previous_lecture  %>'
 	console.log(previous)
 	console.log(next)
+	$("<div class='next_and_previous'></div>").appendTo($(".flashContainer"));
 	if(next!="")
-		var next_lecture = $("<a class='btn btn-primary next_lecture' href="+next+" >Next Lecture</a>").appendTo($(".flashContainer"));
+		var next_lecture = $("<a class='btn btn-primary next_lecture' href="+next+" >Next Lecture</a>").appendTo($(".next_and_previous"));
 	if(previous!= "")
-		var previous_lecture = $("<a class='btn btn-primary previous_lecture' href="+previous+" >Previous Lecture</a>").appendTo($(".flashContainer"));	
+		var previous_lecture = $("<a class='btn btn-primary previous_lecture' href="+previous+" >Previous Lecture</a>").appendTo($(".next_and_previous"));	
+}
+
+remove_lecture_buttons = function()
+{
+	$(".next_lecture").remove();
+	$(".previous_lecture").remove();	
+	$(".next_and_previous").remove();
 }
 
 function showEvaluation(hid)
@@ -498,14 +506,14 @@ $(document).ready(function(){
 			if(document.getElementById("video_youVideo").getPlayerState()==1){
 				document.getElementById("video_youVideo").pauseVideo();
 				t=document.getElementById("video_youVideo").getCurrentTime();
-				pause(t);
+				//pause(t);
 			}else{
 				document.getElementById("video_youVideo").playVideo();}
 		}else{
 			if(document.getElementById("video_bigVideo").getPlayerState()==1){
 				document.getElementById("video_bigVideo").pauseVideo();
 				t=document.getElementById("video_bigVideo").getCurrentTime();
-				pause(t)
+				//pause(t)
 			}else{
 				document.getElementById("video_bigVideo").playVideo();}
 		}

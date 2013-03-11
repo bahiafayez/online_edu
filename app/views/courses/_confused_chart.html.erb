@@ -48,7 +48,9 @@ var chart;
             xAxis: {
                 type: 'datetime',
                 dateTimeLabelFormats: { // don't display the dummy year
-                    minute: '%H:%M'
+                    minute: '%M:%S',
+                    second: '%M:%S',
+                    hour: '%H:%M:%S'
                },
 
                 min:<%= @min %>,

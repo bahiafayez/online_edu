@@ -61,6 +61,15 @@ class EventsController < ApplicationController
     @event_strips = Event.create_event_strips(start_d, end_d, @events)
     
     @announcements=Announcement.where(:course_id => @course.id).order("updated_at DESC")
+    
+    
+    #here get information about each event for this user (done or not and deadline soon? to choose color is js)
+    @colors={}
+    @eventsAll.each do |event|
+      @colors["ec-event-#{event.id}"]= event.get_color(current_user)
+    end
+    @colors= @colors.to_json
+    
   end
     
   def show

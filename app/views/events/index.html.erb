@@ -1,6 +1,7 @@
 <!-- Probably move the stylesheet to you layout. Also make sure you include the javascript. -->
 <%= render "shared/head2"%>
-<% cache :hash => {:tag => Event.where(:course_id => @course.id).maximum('updated_at').to_i, :num => Event.where(:course_id => @course.id).count, :num_ann => Announcement.where(:course_id => @course.id).count, :ann => Announcement.where(:course_id => @course.id).maximum('updated_at').to_i}, :year => params[:year]||Time.zone.now.year, :month => params[:month]||Time.zone.now.month do %>
+<!-- caching works but im scared.-->
+<% #cache :hash => {:tag => Event.where(:course_id => @course.id).maximum('updated_at').to_i, :num => Event.where(:course_id => @course.id).count, :num_ann => Announcement.where(:course_id => @course.id).count, :ann => Announcement.where(:course_id => @course.id).maximum('updated_at').to_i}, :year => params[:year]||Time.zone.now.year, :month => params[:month]||Time.zone.now.month do %>
 <%= stylesheet_link_tag "event_calendar" %>
 
 <div class="row">
@@ -8,6 +9,12 @@
 
 <%= raw(event_calendar) %>
 <br />
+<table>
+	<tr><td style="background-color:green;width:20px;"></td><td>Done</td></tr>
+	<tr><td style="background-color:orange;width:20px;"></td><td>Not done</td></tr>
+	<tr><td style="background-color:red;width:20px;"></td><td>Not done and due in less than 2 days</td></tr>
+</table>
+<br>
 <table class="table table-striped">
 <thead>
 	<th>Announcements</th><th></th><th></th>
@@ -25,4 +32,14 @@
 </div>
 </div>
 
-<% end %>
+<% #end %>
+
+<script>
+	$(document).ready(function(){
+		var colors= <%= raw @colors %>
+		for(key in colors)
+		{
+			$("."+key).css("background-color",colors[key])
+		}
+	});
+</script>

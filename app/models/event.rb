@@ -26,5 +26,35 @@ class Event < ActiveRecord::Base
     #logger.debug("Events all are #{@eventsAll}")
   end
     
+   def get_color(user)
+     Time.zone = Course.find(course_id).time_zone
+     color=""
+     if lecture_id.nil? and quiz_id.nil? #module event
+       if (user.finished_group_boolean(Group.find(group_id))) 
+         color="green"
+       elsif (Group.find(group_id).due_date - Time.zone.now.to_date).to_i < 2 #deadline soon
+         color="red"
+       else
+         color="orange"
+       end
+     elsif !quiz_id.nil? #quiz event
+       if (Quiz.find(quiz_id).quiz_type=='quiz' and user.finished_quiz(Quiz.find(quiz_id))) or (Quiz.find(quiz_id).quiz_type=='survey' and user.finished_survey(Quiz.find(quiz_id))) 
+         color="green"
+       elsif (Quiz.find(quiz_id).due_date - Time.zone.now.to_date).to_i < 2 #deadline soon
+         color="red"
+       else
+         color="orange"
+       end
+     elsif !lecture_id.nil? #lecture event
+       if user.finished_lecture(Lecture.find(lecture_id))
+         color="green"
+       elsif (Lecture.find(lecture_id).due_date - Time.zone.now.to_date).to_i < 2 #deadline soon
+         color="red"
+       else
+         color="orange"
+       end
+     end
+     return color
+   end
   
 end

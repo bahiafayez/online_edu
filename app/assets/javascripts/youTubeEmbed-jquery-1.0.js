@@ -399,13 +399,14 @@
            
 
 			var initialized = false;
-			
+			paused=false;
+			buffering=false;
             
 			// Creating a global event listening function for the video
 			// (required by YouTube's player API):
 			
-			window['eventListener_'+settings.safeID] = function(status){
- console.log("time is "+ elements.player.getCurrentTime());
+			window['eventListener_'+settings.safeID] = function(status){  //onstatechange
+ 				console.log("time is "+ elements.player.getCurrentTime());
 				var interval;
 						
 				
@@ -413,8 +414,11 @@
 				
 				if(elements.player.getPlayerState()==1){
 								
+								remove_lecture_buttons();
+								
 								// If the video is not currently playing, start it:
-
+								buffering=false;
+								paused=false;
 								elements.control.removeClass('play replay').addClass('pause');
 								elements.container.addClass('playing');
 								//elements.player.playVideo();
@@ -428,17 +432,27 @@
 								}
 								
 							} else if(elements.player.getPlayerState()==2){ 
+								// here if paused
+								console.log("in pause")
 								
 								// If the video is currently playing, pause it:
-								
+								if(buffering!=true && paused==false){
+									console.log("inside method");
+									pause(elements.player.getCurrentTime());
+								}
 								elements.control.removeClass('pause').addClass('play');
 								elements.container.removeClass('playing');
 								//elements.player.pauseVideo();
-								
+								buffering=false
+								paused=true
 								if(settings.progressBar){
 									window.clearInterval(interval);
 								}
-							}
+							}else if(elements.player.getPlayerState()==3){ //buffering
+								// here if paused
+								buffering=true;
+								}
+							
 							
 				
 				if(status==-1)	// video is loaded

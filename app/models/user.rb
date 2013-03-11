@@ -174,6 +174,15 @@ class User < ActiveRecord::Base
     end
   end
   
+  def finished_group_boolean(group)
+    lectures= group.lectures
+    quizzes= group.quizzes.where("quiz_type != 'survey'")
+    
+    if self.finished_lectures(lectures) and self.finished_quizzes(quizzes)  #finished all lectures and quizzes
+      return true
+    end
+    return false
+  end
   
   def finished_group?(group)
     lectures= group.lectures
@@ -203,6 +212,14 @@ class User < ActiveRecord::Base
   def finished_quiz(quiz)
     finished=true
     if QuizStatus.where(:user_id => self.id, :quiz_id => quiz.id, :status => "Submitted").empty?
+        return false
+      end
+    return finished
+  end
+  
+  def finished_survey(quiz) #done when just saved.
+    finished=true
+    if QuizStatus.where(:user_id => self.id, :quiz_id => quiz.id, :status => "Saved").empty?
         return false
       end
     return finished

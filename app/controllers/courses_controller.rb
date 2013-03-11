@@ -417,7 +417,7 @@ class CoursesController < ApplicationController
       end
       #@type="group"
       
-      
+      @highlight= "group_#{@modulechart.id}"
       ################ new chart #####################
       
       @module_new = @modulechart.get_data
@@ -526,6 +526,8 @@ class CoursesController < ApplicationController
       end
       #@type="quiz"
       
+      @highlight= "quiz_#{@quizchart.group.id}_#{@quizchart.id}"
+      
       @chart_questions={}
       @quizchart.questions.each_with_index do |ques, index|
         @chart_questions["#{index}"]=[Question.find(ques.id).content, Question.find(ques.id).answers.where(:correct => true).map{|o| o.content}]
@@ -560,6 +562,7 @@ class CoursesController < ApplicationController
         redirect_to progress_teacher_course_path(params[:id]), :alert => "No such survey"
       end
       
+      @highlight= "survey_#{@surveychart.group.id}_#{@surveychart.id}"
       #MCQ charts
       @survey_data=@surveychart.get_survey_data
       @survey_categories=@surveychart.get_survey_categories
@@ -577,6 +580,8 @@ class CoursesController < ApplicationController
         redirect_to progress_teacher_course_path(params[:id]), :alert => "No such lecture"
       end
       #@type="lecture"
+       
+      @highlight= "lecture_#{@q.group.id}_#{@q.id}"
        
       @correct=[] 
       @chart_data={} 
@@ -671,6 +676,8 @@ class CoursesController < ApplicationController
         redirect_to progress_teacher_course_path(params[:id]), :alert => "No such Module"
       end
       
+      @highlight= "progress_#{@mod.id}"
+      
        @matrixLecture={}
        @late={}
        @students.each do |s|
@@ -706,6 +713,7 @@ class CoursesController < ApplicationController
        end
        @mods=@course.groups.map{|m| m.name}
        #######################################
+       @highlight= "progress_chart"
        
        #@type="Progress"
        @p="Progress Chart"
@@ -772,6 +780,8 @@ class CoursesController < ApplicationController
         @students.each do |s|
          @statistics[s] = s.get_statistics(@course)
        end
+       
+       @highlight= "students_all"
       end
       
       if params[:individual_student_grades]
@@ -782,6 +792,7 @@ class CoursesController < ApplicationController
           # enrolled students
           #@students2 = @course.enrolled_students  
           @student_ids= @students2.map{|a| a.id}
+          @highlight= "students_individual"
           
           respond_to do |format|
             format.html # show.html.erb

@@ -92,6 +92,7 @@ a:hover.trigger.open, a:focus.trigger.open, a:active.trigger.open {border-color:
 $("html").addClass("js");
 $.fn.accordion.defaults.container = false; 
 $.fn.accordion.defaults.initShow='<%= "##{@type}" if @type %>';
+
 $(function() {
   $("#acc3").accordion({initShow : "#current"});
   $("#acc1").accordion({
@@ -130,7 +131,12 @@ _gaq.push(['_trackPageview']);
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
 //--><!]]>
+$(document).ready(function(){
+	var high='<%= @highlight %>'
+	$("#"+high).parent().css("background-color","#FFFFCC");
+});
 </script>
+
 
 <%= render 'shared/head' %>
 
@@ -144,7 +150,7 @@ _gaq.push(['_trackPageview']);
                           <ul>
                             <% @course.groups.each do |q| %>	
 								<li class="last-child">	
-									<%= link_to q.name, progress_teacher_course_path(@course, :g => q, :type => "modules") , :class => "group"%>
+									<%= link_to q.name, progress_teacher_course_path(@course, :g => q, :type => "modules") , :class => "group", :id => "group_#{q.id}"%>
 								</li>
 							<% end %>
                             
@@ -162,7 +168,7 @@ _gaq.push(['_trackPageview']);
                                   <ul>
                                   	<% g.lectures.each do |q| %>
 									<li class="last-child">
-										<%= link_to "#{q.name}", progress_teacher_course_path(@course, :l => q, :type => "lecture_#{g.id}")  , :class => "lecture"%>
+										<%= link_to "#{q.name}", progress_teacher_course_path(@course, :l => q, :type => "lecture_#{g.id}")  , :class => "lecture", :id =>"lecture_#{g.id}_#{q.id}" %>
 									</li>
                                   	<% end %>
                                   </ul>
@@ -183,7 +189,7 @@ _gaq.push(['_trackPageview']);
                                   <ul>
                                   	<% g.quizzes.where("quiz_type IS NULL or quiz_type != 'survey'").each do |q| %>
 									<li class="last-child">
-										<%= link_to "#{q.name}", progress_teacher_course_path(@course, :q => q, :type => "quiz_#{g.id}") , :class => "quiz"%>
+										<%= link_to "#{q.name}", progress_teacher_course_path(@course, :q => q, :type => "quiz_#{g.id}") , :class => "quiz", :id => "quiz_#{g.id}_#{q.id}"%>
 									</li>
                                   	<% end %>
                                   </ul>
@@ -204,7 +210,7 @@ _gaq.push(['_trackPageview']);
                                   <ul>
                                   	<% g.quizzes.where(:quiz_type => "survey").each do |q| %>
 									<li class="last-child">
-										<%= link_to "#{q.name}", progress_teacher_course_path(@course, :sur => q, :type => "survey_#{g.id}") , :class => "quiz"%>
+										<%= link_to "#{q.name}", progress_teacher_course_path(@course, :sur => q, :type => "survey_#{g.id}") , :class => "quiz", :id => "survey_#{g.id}_#{q.id}"%>
 									</li>
                                   	<% end %>
                                   </ul>
@@ -219,7 +225,7 @@ _gaq.push(['_trackPageview']);
                         <div class="inner" id="progress">
                           <ul>
                           	<li class="last-child">
-                          		<%= link_to "Progress Chart", progress_teacher_course_path(@course, :p => "p", :type => "progress")  , :class => "lecture"%>
+                          		<%= link_to "Progress Chart", progress_teacher_course_path(@course, :p => "p", :type => "progress")  , :class => "lecture", :id => "progress_chart"%>
                           	</li>
                           	
                             <li>
@@ -228,7 +234,7 @@ _gaq.push(['_trackPageview']);
                                   <ul>
                                   	<% @course.groups.each do |g| %>
 									<li class="last-child">
-										<%= link_to "#{g.name}", progress_teacher_course_path(@course, :module_progress => g, :type => "progress_modules")  , :class => "lecture"%>
+										<%= link_to "#{g.name}", progress_teacher_course_path(@course, :module_progress => g, :type => "progress_modules")  , :class => "lecture", :id => "progress_#{g.id}"%>
 									</li>
                                   	<% end %>
                                   </ul>
@@ -243,10 +249,10 @@ _gaq.push(['_trackPageview']);
                         <div class="inner" id="grades">
                           <ul>
                           	<li class="last-child">
-                          		<%= link_to "All", progress_teacher_course_path(@course, :all_student_grades => "p", :type => "grades")  , :class => "lecture"%>
+                          		<%= link_to "All", progress_teacher_course_path(@course, :all_student_grades => "p", :type => "grades")  , :class => "lecture", :id => "students_all"%>
                           	</li>
                           	<li class="last-child">
-                          		<%= link_to "Individual", progress_teacher_course_path(@course, :individual_student_grades => "p", :type => "grades")  , :class => "lecture"%>
+                          		<%= link_to "Individual", progress_teacher_course_path(@course, :individual_student_grades => "p", :type => "grades")  , :class => "lecture", :id => "students_individual"%>
                           	</li>
                           	
                           </ul>
