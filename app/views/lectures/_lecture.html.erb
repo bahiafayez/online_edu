@@ -171,6 +171,8 @@ function markSeen()  // marks that lecture was viewed
 	//pop.play();
 	//playVideo();
 	$.getJSON('<%= @seen_path %>', {"seen":true}, function(response){
+		if(response["done"]==true)
+			$("img#lecture_<%= @q.id %>").attr("src","/assets/check7.png")
 	});
 
 }
@@ -297,8 +299,10 @@ function save(elem)
     				elem.attr('checked','checked');	
     				// and highlight the play button
     				$(".highlight_play").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100);
+    				markSeen();
     				
     			});
+    			
     		}
 
 function checkTime(hid, duration) {

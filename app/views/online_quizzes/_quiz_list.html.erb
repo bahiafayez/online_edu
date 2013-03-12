@@ -4,7 +4,7 @@
 <tr><td>Question</td><td>Time</td><td></td></tr>
 <% @lecture.online_quizzes.each do |quiz|%>
 <tr id=<%="online_quiz_#{quiz.id}"%>>
-	<td><%= link_to quiz.question, "", :remote => true, :id =>"question_label_#{quiz.id}" ,:onclick => "showOnlineQuiz($(this),'#{quiz.time}', '#{quiz.id}', '#{@lecture.id}')" %><input onkeyup="check_enter(event, <%= quiz.id %>)" id="question_<%= quiz.id %>" value="<%=quiz.question%>" type="text" style="display:none"/></td>
+	<td><%= link_to quiz.question, "", :remote => true, :id =>"question_label_#{quiz.id}" ,:class =>"question_link" ,:onclick => "showOnlineQuiz($(this),'#{quiz.time}', '#{quiz.id}', '#{@lecture.id}')" %><input onkeyup="check_enter(event, <%= quiz.id %>)" id="question_<%= quiz.id %>" value="<%=quiz.question%>" type="text" style="display:none"/></td>
 	<td><b id="time_label_<%= quiz.id%>"> <%=Time.seconds_to_time(quiz.time)%> </b><input onkeyup="check_enter(event,<%= quiz.id %>)" id="time_<%= quiz.id %>" value="<%=Time.seconds_to_time(quiz.time) %>" type="text" style="display:none"/></td>
 	<td><%= link_to image_tag("trash2.png"), quiz, :method => :delete, :remote => true, :confirm => "Are you sure you want to delete quiz #{quiz.question}", :style => "float:right;width:20px;"%>
 		<a class="edit_question" href="" data-remote="true" data-time="<%= quiz.time %>" data-id="<%= quiz.id %>" data-question="<%= quiz.question %>" style="float:right;"><img src="/assets/pencil3.png"/></a>
@@ -41,6 +41,8 @@
 
 <script>
 showOnlineQuiz= function(elem,seconds,q,l){
+	if(elem.attr("disabled")!="disabled")
+	{
 	var name = elem.text();
 	$("#current_invideo_viewed").data("id", q); //setting current quiz
 	$("#editing").html("<div class='alert'><div>Editing quiz '"+name+"' at "+formatSecondsAsTime(seconds)+"</div> <a class='btn' id='done' style='margin-top:5px;' onclick='done_editing()'>Done</a></div>")
@@ -56,6 +58,7 @@ showOnlineQuiz= function(elem,seconds,q,l){
 	//$('.edit').attr("disabled","disabled")
 	//elem.addClass('active');
 	//elem.attr("disabled",false)
+	}
 }	
 done_editing = function()
 {
@@ -112,6 +115,12 @@ $(document).ready(function(){
 	     var question = $(this).data('question');
 	     var time = $(this).data('time');
 	     var id= $(this).data('id');
+	     
+	     // seek to that time and pause //
+	     pop.currentTime(time);
+		 pop.pause();
+	     ////////////////////////////////
+	     
 	     $("#question_"+id).val( question );
 	     $("#question_"+id).css("display","inline");
 	     $("#time_"+id).val( formatSecondsAsTime(time) );
@@ -119,6 +128,7 @@ $(document).ready(function(){
 	     $("#question_label_"+id).css("display","none");
 	     $("#time_label_"+id).css("display","none");
 	     $(".edit_question").attr("disabled","disabled");
+	     $(".question_link").attr("disabled","disabled");
 	     $(this).attr("disabled",false);
 	     $(this).html("Save");
 	     $(this).addClass("btn btn-mini");

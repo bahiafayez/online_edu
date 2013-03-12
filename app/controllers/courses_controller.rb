@@ -187,6 +187,7 @@ class CoursesController < ApplicationController
       else
       puts "q issssss #{@q.inspect}"
       @type="quiz"
+      @highlight = "quiz_#{@q.id}"
       @typeGroup=@q.group.id
       @answers= QuizGrade.select("question_id, answer_id").where(:user_id=>current_user.id , :quiz_id=> params[:q])
       free_answers_list= FreeAnswer.select("question_id, answer").where(:user_id=>current_user.id , :quiz_id=> params[:q])
@@ -246,6 +247,7 @@ class CoursesController < ApplicationController
       else
       @type="lecture" 
       @typeGroup=@q.group.id
+      @highlight = "lecture_#{@q.id}"
       @url= get_answers_course_lecture_path(params[:id], params[:l])
       @saveOnline= save_online_course_lecture_path(params[:id], params[:l])
       @answered_path= answered_course_lecture_path(params[:id], params[:l])

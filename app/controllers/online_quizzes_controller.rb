@@ -63,7 +63,7 @@ class OnlineQuizzesController < ApplicationController
       if @online_quiz.update_attributes(params[:online_quiz])
         format.html { redirect_to @online_quiz, notice: 'Online quiz was successfully updated.' }
         format.json { head :no_content }
-        format.js{render "lectures/new_quiz"}
+        format.js{render "lectures/reload_quiz"}
       else
         format.html { render action: "edit" }
         format.json { render json: @online_quiz.errors, status: :unprocessable_entity }

@@ -334,8 +334,9 @@ class LecturesController < ApplicationController
      # #create new one
    LectureView.create(:user_id => current_user.id, :course_id => params[:course_id], :lecture_id => params[:id])
    end
+   done=Lecture.find(params[:id]).done?(current_user.id)
    
-   render json:"done"
+   render json: {:done => done}
   end
   
   def answered

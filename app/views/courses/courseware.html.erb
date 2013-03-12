@@ -59,9 +59,9 @@
 <% if !notseen?(q.id) %>
 <%= image_tag "check7.png" , :style=> "margin-left:10px;margin-right:10px"%> 
 <% else %>
-<%= image_tag "empty7.png" , :style=> "margin-left:10px;margin-right:10px"%>
+<%= image_tag "empty7.png" , :style=> "margin-left:10px;margin-right:10px", :id => "lecture_#{q.id}"%>
 <% end %>
-<%= link_to "Lecture: #{q.name}", courseware_course_path(@course, :l => q) , :class => "quiz", :style => "text-decoration:none"%> 
+<%= link_to "Lecture: #{q.name}", courseware_course_path(@course, :l => q) , :class => "quiz", :style => "text-decoration:none", :id => "lecture_#{q.id}"%> 
 <%= link_to "slides", q.slides, :style =>"font-size:10px;float:right;"  if q.slides!="none" and !q.slides.nil? %>
 <% else %>
 <% if !quiznotseen?(q.id) %>
@@ -70,7 +70,7 @@
 <%= image_tag "empty7.png" , :style=> "margin-left:10px;margin-right:10px"%>
 <% end %>
 
-<%= link_to "#{q.present_quiz_type}: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz" , :style => "text-decoration:none"%>
+<%= link_to "#{q.present_quiz_type}: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz" , :style => "text-decoration:none", :id => "quiz_#{q.id}"%>
 
 <% end %>
 </div>
@@ -95,9 +95,9 @@ Empty
 <% if !notseen?(q.id) %>
 <%= image_tag "check7.png" , :style=> "margin-left:10px;margin-right:10px"%> 
 <% else %>
-<%= image_tag "empty7.png" , :style=> "margin-left:10px;margin-right:10px"%>
+<%= image_tag "empty7.png" , :style=> "margin-left:10px;margin-right:10px", :id => "lecture_#{q.id}"%>
 <% end %>
-<%= link_to "Lecture: #{q.name}", courseware_course_path(@course, :l => q) , :class => "quiz" , :style => "text-decoration:none"%>
+<%= link_to "Lecture: #{q.name}", courseware_course_path(@course, :l => q) , :class => "quiz" , :style => "text-decoration:none", :id => "lecture_#{q.id}"%>
 <%= link_to "slides", q.slides, :style =>"font-size:10px;float:right;" if q.slides!="none" and !q.slides.nil? %>
 <% else %>
 <% if !quiznotseen?(q.id) %>
@@ -105,7 +105,7 @@ Empty
 <% else %>
 <%= image_tag "empty7.png" , :style=> "margin-left:10px;margin-right:10px"%>
 <% end %>
-<%= link_to "#{q.present_quiz_type}: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz" , :style => "text-decoration:none"%> 
+<%= link_to "#{q.present_quiz_type}: #{q.name}", courseware_course_path(@course, :q => q) , :class => "quiz" , :style => "text-decoration:none", :id => "quiz_#{q.id}"%> 
 
 <% end %>
 </div>
@@ -137,4 +137,10 @@ Empty
 </div>
 </div>
 
-
+<script>
+	$(document).ready(function(){
+		var high= '<%= @highlight %>'
+		console.log(high)
+		$("#"+high).parent().css("background-color","#FFFFCC");
+	});
+</script>
