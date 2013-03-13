@@ -10,18 +10,18 @@ class CourseSweeper < ActionController::Caching::Sweeper
   def after_update(course)
     #expire_cache_for(course)
     #expire_cache_for_show(course)
-    expire_fragment(:controller => 'courses', :action => 'show', :id => course.id)
-    expire_fragment(:controller => 'courses', :action => 'edit', :id => course.id)
-    expire_fragment(:controller => 'courses', :action => 'student_show', :id => course.id)
+    #expire_fragment(:controller => 'courses', :action => 'show', :id => course.id)
+    #expire_fragment(:controller => 'courses', :action => 'edit', :id => course.id)
+    #expire_fragment(:controller => 'courses', :action => 'student_show', :id => course.id)
   end
  
   # If our sweeper detects that a Product was deleted call this
   def after_destroy(course)
     #expire_cache_for(course)
-    expire_fragment(:controller => 'courses', :action => 'show', :id => course.id)
-    expire_fragment(:controller => 'courses', :action => 'edit', :id => course.id)
+    #expire_fragment(:controller => 'courses', :action => 'show', :id => course.id)
+    #expire_fragment(:controller => 'courses', :action => 'edit', :id => course.id)
     #expire_fragment(:controller => 'courses', :action => 'course_editor', :id => course.id)
-    expire_fragment(:controller => 'courses', :action => 'student_show', :id => course.id)
+    #expire_fragment(:controller => 'courses', :action => 'student_show', :id => course.id)
     #expire_fragment(:controller => 'courses', :action => 'courseware', :id => course.id)
   end
  
