@@ -4,7 +4,7 @@ class GroupsController < ApplicationController
   # GET /online_answers.json
   
   before_filter :getCourse
-  #before_filter :correct_user
+  before_filter :correct_user
   before_filter :set_zone
  
   

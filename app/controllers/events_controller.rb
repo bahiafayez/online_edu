@@ -6,7 +6,7 @@ class EventsController < ApplicationController
   
   before_filter :get_course
   before_filter :set_zone
- # before_filter :correct_user
+  before_filter :correct_user
  # caches_action :index, :layout => false , :cache_path => proc { |c|
  # { :tag => Event.where(:course_id => c.params[:course_id]).maximum('updated_at').to_i, :num => Event.where(:course_id => c.params[:course_id]).count, :num_ann => Announcement.where(:course_id => c.params[:course_id]).count, :ann => Announcement.where(:course_id => c.params[:course_id]).maximum('updated_at').to_i }
  # }#i need count too, to stale cache IF sthg deleted (won't appear in updated_at)
