@@ -8,7 +8,7 @@ class Course < ActiveRecord::Base
   has_many :events, :dependent => :destroy
   has_many :announcements, :dependent => :destroy
   
-  attr_accessible :description, :duration, :name, :prerequisites, :short_name, :start_date, :user_ids, :user_id, :time_zone
+  attr_accessible :description, :duration, :name, :prerequisites, :short_name, :start_date, :user_ids, :user_id, :time_zone, :discussion_link
   
   validates :name, :duration, :short_name,:start_date, :user_id, :time_zone, :presence => true
   validates :duration, :numericality => { :only_integer => true }

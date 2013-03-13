@@ -9,6 +9,7 @@
     <%= f.input :name %>
     <%= f.input :start_date, :as => :string, :input_html => { :class => 'date_picker' } %>
     <%= f.input :duration, :label => "Duration (weeks)" %>
+    <%= f.input :discussion_link, :label => "Discussion Forum Link" %>
     <%= f.input :description, :input_html => {:style => 'width: 210px; height: 100px'} %>
     <%= f.input :prerequisites, :input_html => {:style => 'width: 210px; height: 100px'} %>
     <%= f.input :time_zone, :collection => ActiveSupport::TimeZone.all.sort{|v1,v2| v1.name <=> v2.name}.map{|v| v.name} %>

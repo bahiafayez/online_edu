@@ -12,6 +12,11 @@ module ApplicationHelper
   def stylesheet(*files)
     content_for(:head) { stylesheet_link_tag(*files) }
   end
+  
+  def url_with_protocol(url)
+    /^http/.match(url) ? url : "http://#{url}"
+  end
+  
 end
 
 

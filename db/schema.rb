@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130217091012) do
+ActiveRecord::Schema.define(:version => 20130313210426) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string    "resource_id",   :null => false
@@ -102,10 +102,11 @@ ActiveRecord::Schema.define(:version => 20130217091012) do
     t.text      "description"
     t.text      "prerequisites"
     t.integer   "user_id"
-    t.timestamp "created_at",        :null => false
-    t.timestamp "updated_at",        :null => false
+    t.timestamp "created_at",                        :null => false
+    t.timestamp "updated_at",                        :null => false
     t.string    "time_zone"
     t.string    "unique_identifier"
+    t.string    "discussion_link",   :default => ""
   end
 
   add_index "courses", ["unique_identifier"], :name => "index_courses_on_unique_identifier", :unique => true
@@ -156,23 +157,23 @@ ActiveRecord::Schema.define(:version => 20130217091012) do
   add_index "events", ["quiz_id"], :name => "index_events_on_quiz_id"
 
   create_table "free_answers", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "quiz_id"
-    t.integer  "question_id"
-    t.text     "answer"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.integer   "user_id"
+    t.integer   "quiz_id"
+    t.integer   "question_id"
+    t.text      "answer"
+    t.timestamp "created_at",  :null => false
+    t.timestamp "updated_at",  :null => false
   end
 
   create_table "groups", :force => true do |t|
-    t.string   "name"
-    t.text     "description"
-    t.integer  "course_id"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
-    t.date     "appearance_time"
-    t.integer  "position"
-    t.date     "due_date"
+    t.string    "name"
+    t.text      "description"
+    t.integer   "course_id"
+    t.timestamp "created_at",      :null => false
+    t.timestamp "updated_at",      :null => false
+    t.date      "appearance_time"
+    t.integer   "position"
+    t.date      "due_date"
   end
 
   add_index "groups", ["course_id"], :name => "index_groups_on_course_id"
@@ -205,20 +206,20 @@ ActiveRecord::Schema.define(:version => 20130217091012) do
   add_index "lecture_views", ["user_id"], :name => "index_lecture_views_on_user_id"
 
   create_table "lectures", :force => true do |t|
-    t.integer  "course_id"
-    t.string   "name"
-    t.text     "description"
-    t.string   "url"
-    t.datetime "created_at",             :null => false
-    t.datetime "updated_at",             :null => false
-    t.integer  "group_id"
-    t.date     "appearance_time"
-    t.date     "due_date"
-    t.float    "duration"
-    t.string   "slides"
-    t.boolean  "appearance_time_module"
-    t.boolean  "due_date_module"
-    t.integer  "position"
+    t.integer   "course_id"
+    t.string    "name"
+    t.text      "description"
+    t.string    "url"
+    t.timestamp "created_at",             :null => false
+    t.timestamp "updated_at",             :null => false
+    t.integer   "group_id"
+    t.date      "appearance_time"
+    t.date      "due_date"
+    t.float     "duration"
+    t.string    "slides"
+    t.boolean   "appearance_time_module"
+    t.boolean   "due_date_module"
+    t.integer   "position"
   end
 
   add_index "lectures", ["course_id"], :name => "index_lectures_on_course_id"
@@ -314,18 +315,18 @@ ActiveRecord::Schema.define(:version => 20130217091012) do
   add_index "quiz_statuses", ["user_id"], :name => "index_quiz_statuses_on_user_id"
 
   create_table "quizzes", :force => true do |t|
-    t.integer  "course_id"
-    t.string   "name"
-    t.text     "instructions"
-    t.datetime "created_at",             :null => false
-    t.datetime "updated_at",             :null => false
-    t.integer  "group_id"
-    t.date     "due_date"
-    t.date     "appearance_time"
-    t.boolean  "appearance_time_module"
-    t.boolean  "due_date_module"
-    t.integer  "position"
-    t.string   "quiz_type"
+    t.integer   "course_id"
+    t.string    "name"
+    t.text      "instructions"
+    t.timestamp "created_at",             :null => false
+    t.timestamp "updated_at",             :null => false
+    t.integer   "group_id"
+    t.date      "due_date"
+    t.date      "appearance_time"
+    t.boolean   "appearance_time_module"
+    t.boolean   "due_date_module"
+    t.integer   "position"
+    t.string    "quiz_type"
   end
 
   add_index "quizzes", ["course_id"], :name => "index_quizzes_on_course_id"

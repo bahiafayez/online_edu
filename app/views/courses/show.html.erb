@@ -30,6 +30,11 @@
 </tr>
 
 <tr>
+  <td><b>Discussion Forum Link:</b></td>
+  <td><%= link_to "#{@course.discussion_link}", url_with_protocol(@course.discussion_link), :target => '_blank' %></td>
+</tr>
+
+<tr>
   <td><b>Description:</b></td>
   <td><%= @course.description %></td>
 </tr>
