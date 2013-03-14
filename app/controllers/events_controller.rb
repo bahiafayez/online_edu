@@ -84,11 +84,20 @@ class EventsController < ApplicationController
       redirect_to :action => :index
     else
       if !@event.quiz_id.nil? and !@quiz.has_not_appeared
-        redirect_to courseware_course_path(@course, :q=>@event.quiz_id)
+        redirect_to courseware_course_path(@course, :q=>@event.quiz_id)   #This is a specific quiz
       elsif !@event.lecture_id.nil? and !@lecture.has_not_appeared
-        redirect_to courseware_course_path(@course, :l=>@event.lecture_id)
-      else
-        redirect_to courseware_course_path(@course)
+        redirect_to courseware_course_path(@course, :l=>@event.lecture_id)   #This is a specific lecture
+      else                                                                    #This is a module
+        first_item=Group.find(@event.group_id).get_items[0]
+        if first_item.nil?
+          redirect_to courseware_course_path(@course)
+        else
+          if first_item.class.name=="Lecture"
+            redirect_to courseware_course_path(@course, :l => first_item.id)
+          else
+            redirect_to courseware_course_path(@course, :q => first_item.id)
+          end
+        end
       end
     end
   end

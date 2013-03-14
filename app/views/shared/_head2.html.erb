@@ -2,12 +2,14 @@
 	<% puts "over hereeeeee" %>
     <ul class="nav nav-pills">
     <!-- <li class=<%= (current_page?(student_notifications_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Notifications", student_notifications_course_path(@course)%></li> -->
-    <li class=<%= (current_page?(course_event_path(@course)) ? 'active' : nil)  %>><%= link_to "Notifications", course_event_path(@course)%></li>
+    <li class=<%= (current_page?(course_event_path(@course)) ? 'active' : nil)  %>><%= link_to "Calendar", course_event_path(@course)%></li>  
+    <li class=<%= (current_page?(courseware_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Lectures", courseware_course_path(@course)%></li>
+    <% if @course.discussion_link!="" %><li><%= link_to "Discussion Forum", url_with_protocol(@course.discussion_link), :target => '_blank' %></li><% end %>
+    <!-- <li class=<%= (current_page?(progress_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Progress", progress_course_path(@course)%></li> -->
     <li class=<%= (current_page?(student_show_course_path(@course)) ? 'active' : nil)  %>>
     <%= link_to "Course Information", student_show_course_path(@course)%>
     </li>
-    <li class=<%= (current_page?(courseware_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Courseware", courseware_course_path(@course)%></li>
-    <li class=<%= (current_page?(progress_course_path(@course)) ? 'active' : nil)  %>><%= link_to "Progress", progress_course_path(@course)%></li>
+    
     <li style="float:right"><b><%="#{@course.short_name} - #{@course.name}"%></b></li>
     </ul>
 <% end %>
