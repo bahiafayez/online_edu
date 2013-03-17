@@ -6,6 +6,7 @@ class Group < ActiveRecord::Base
   belongs_to :course, :touch => true
   has_many :lectures, :order => :position, :dependent => :destroy  #no dependent destroy since they are independent
   has_many :quizzes,:order => :position, :dependent => :destroy #no dependent destroy since they are independent
+  has_many :documents, :dependent => :destroy
   has_many :events
   after_destroy :clean_up
   
@@ -163,7 +164,7 @@ class Group < ActiveRecord::Base
     data={}
     lectures.each do |lec|
       data[lec.url]=[]
-      b=LectureQuestion.get_rounded_display(LectureQuestion.where(:lecture_id => lec.id))
+      b=LectureQuestion.get_rounded_display(LectureQuestion.where(:lecture_id => lec.id, :hide => false)) #those that are not hidden only
       sorted_b=Hash[b.sort]
       sorted_b.each do |k,v|
         num_quizzes+=1
@@ -178,7 +179,7 @@ class Group < ActiveRecord::Base
     
     count=0
     lectures.each do |l|
-       count+=LectureQuestion.get_rounded_time_30(LectureQuestion.where(:lecture_id => l.id)).count
+       count+=LectureQuestion.get_rounded_time_30(LectureQuestion.where(:lecture_id => l.id, :hide => false)).count
        #count+=LectureQuestion.where(:lecture_id => l.id).count #no we want it interms of 30 seconds.
     end
     return count

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130313210426) do
+ActiveRecord::Schema.define(:version => 20130317170854) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string    "resource_id",   :null => false
@@ -112,6 +112,15 @@ ActiveRecord::Schema.define(:version => 20130313210426) do
   add_index "courses", ["unique_identifier"], :name => "index_courses_on_unique_identifier", :unique => true
   add_index "courses", ["user_id"], :name => "index_courses_on_user_id"
 
+  create_table "documents", :force => true do |t|
+    t.string   "name"
+    t.string   "url"
+    t.integer  "group_id"
+    t.integer  "course_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "enrollments", :force => true do |t|
     t.integer   "user_id"
     t.integer   "course_id"
@@ -184,8 +193,9 @@ ActiveRecord::Schema.define(:version => 20130313210426) do
     t.integer   "lecture_id"
     t.float     "time"
     t.text      "question"
-    t.timestamp "created_at", :null => false
-    t.timestamp "updated_at", :null => false
+    t.timestamp "created_at",                    :null => false
+    t.timestamp "updated_at",                    :null => false
+    t.boolean   "hide",       :default => false
   end
 
   add_index "lecture_questions", ["course_id"], :name => "index_lecture_questions_on_course_id"

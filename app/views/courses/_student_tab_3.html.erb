@@ -14,14 +14,14 @@
 <script>
 function lectureSelected()
 {
-	console.log("here")
+	//console.log("here")
 	$('#lecture_panel').html("<p style='font-size:10px;'><center><img src='/assets/loading_small.gif'/> Please Wait</center></p>");
 	$.ajax({url:"/courses/<%=@course.id%>/student_lecture_grade", type:'get',data: { lec_id: $('#human_lecture_id').val(), student_id: <%= @student.id %> }, dataType:'script'});
 }
 
 function groupSelected2() {
-	console.log(quizzes)
-	console.log("hereee")
+	//console.log(quizzes)
+	//console.log("hereee")
   module_id = $('#human_group_id').val();
   $("#human_lecture_id").html("<option value=''>Select a Lecture</option>")
   

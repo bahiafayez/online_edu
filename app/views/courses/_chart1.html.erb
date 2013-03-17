@@ -75,7 +75,7 @@
  setColors()    
 function getSeries()
 {
-	console.debug("over hereeeee")
+	//console.debug("over hereeeee")
 	var x =<%= raw @otherway %>
 	var z=[]
 	for(elem in x)
@@ -83,7 +83,7 @@ function getSeries()
 		z[elem]=[]
 		z[elem]=x[elem]
 	}
-	console.log(z)
+	//console.log(z)
 	return z
 
 //return x;
@@ -92,8 +92,8 @@ function getSeries()
 function setColors()
 {
 	var cor = <%= raw @correct %>
-        console.debug("correct isssss"+cor)
-        console.log(chart2.series[0])
+        //console.debug("correct isssss"+cor)
+        //console.log(chart2.series[0])
       //  console.debug(chart2.series[4].data)
        // chart2.series[4].data[0].update({
        // 	color:'green'
@@ -105,7 +105,7 @@ function setColors()
         {
         	for(var j=0; j<chart2.series[i].data.length; j++)
         	{
-        		console.debug("over here")
+        		//console.debug("over here")
         		chart2.series[i].data[j].update({
         		color:'gray',
         		y : chart2.series[i].data[j].y

@@ -14,7 +14,6 @@ jQuery ->
 
 
 $("#show_now").click ->
-  console.debug "hreeee"
   alert "Handler for .click() called."
   
 

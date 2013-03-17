@@ -20,7 +20,7 @@ var storedData={}
 
 function onDoubleClick(elem)
 {
-	console.debug("in this one"+elem);
+	//console.debug("in this one"+elem);
 	elem.popover('show');
 }
 function callFirst()
@@ -40,9 +40,9 @@ function save(elem)
 {
 	// Save the explanation and the correct to storedData
 	storedData[elem]=[document.getElementById("correct_"+elem).checked, document.getElementById("answer_"+elem).value, document.getElementById("explain_"+elem).value]
-	console.debug("element is "+elem);
-	console.debug("explanation is "+document.getElementById("explain_"+elem).value)
-	console.debug("correct is "+document.getElementById("correct_"+elem).checked)
+	//console.debug("element is "+elem);
+	//console.debug("explanation is "+document.getElementById("explain_"+elem).value)
+	//console.debug("correct is "+document.getElementById("correct_"+elem).checked)
 	if(storedData[elem][0]==true)
 	{
 		for(key in storedData)

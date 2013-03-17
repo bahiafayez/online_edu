@@ -168,7 +168,7 @@ class GroupsController < ApplicationController
     print "here"
     #render json: "a" => "b" 
     @group = @course.groups.build(:name => "New Module", :appearance_time => Time.zone.now.to_date, :due_date => 1.week.from_now.to_date) #added to_date so it won't have time.
-    @group.events << Event.new(:name => "#{@group.name} due", :start_at => Time.zone.now.to_date, :end_at => Time.zone.now.to_date, :all_day => false, :color => "red", :course_id => @course.id)
+    @group.events << Event.new(:name => "#{@group.name} due", :start_at => 1.week.from_now.to_date, :end_at => 1.week.from_now.to_date, :all_day => false, :color => "red", :course_id => @course.id)
     
       if @group.save
         @updated = @group.appearance_time.strftime('%d %b (%a)')
@@ -269,6 +269,55 @@ class GroupsController < ApplicationController
       end
    end
    
+   def save_review_questions
+    to_hide= params[:hide]  
+    if !to_hide.nil?
+        @hide= to_hide.keys  
+    else
+        @hide=[]
+    end
+    
+    @hide= @hide.map{|e| e.to_i}
+    @group=Group.find(params[:id])
+    @lectures= @group.lectures.pluck(:id)
+    
+    puts "hide is #{@hide.inspect}"
+    LectureQuestion.where(:lecture_id => @lectures).each do |l|
+      if @hide.include?(l.id)
+        #l.update_attributes(:hide => true)
+        l.hide = true
+        l.save if l.hide_changed?
+      else
+        l.hide = false
+        l.save if l.hide_changed?
+      end
+    end
+     
+    
+     redirect_to review_questions_course_group_path(@course, @group)
+    
+    
+   end
+   def review_questions
+     
+    @course=Course.find(params[:course_id])
+    @students=@course.users
+    @quizzes=@course.quizzes.where("quiz_type IS NULL or quiz_type != 'survey'")
+    @student_names=[]
+    @type = "modules"
+    @highlight= "group_#{@group.id}"
+    @group=Group.find(params[:id])
+     
+     @lectures= @group.lectures.pluck(:id)
+     @lecture_questions = [] #LectureQuestion.where(:lecture_id => @lectures)
+     @lectures.each do |l|
+       @lecture_questions<<LectureQuestion.where(:lecture_id => l).order(:time)
+     end
+     @lecture_questions.flatten!
+     
+     render "courses/progress_teacher"
+   end
+   
    def display_quizzes    
      @group = Group.find(params[:id])
      @num_lectures= @group.lectures.count
@@ -303,5 +352,24 @@ class GroupsController < ApplicationController
       render :layout => "display"
       end
    end
+   
+   def new_document
+    @group= Group.find(params[:id])
+    course=Course.find(params[:course_id])
+    @document = @group.documents.build(:name => "New Document", :url => "Empty", :course_id => course.id)
+    
+    
+      if @document.save
+        #render json: {"quiz" => @quiz}, status: :created 
+        respond_to do |format|
+          format.js{}
+          format.json{}
+        end
+      else
+       
+        render json: @document.errors, status: :unprocessable_entity 
+      end
+  end
+  
  
 end

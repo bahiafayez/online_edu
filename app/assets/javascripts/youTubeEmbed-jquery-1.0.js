@@ -113,7 +113,7 @@
 			// itself, and not a jquery object:
 			
 			elements.player = elements.container.flash().get(0);
-			console.log("plaer is"+elements.player)
+			//console.log("plaer is"+elements.player)
 			// Creating the control Div. It will act as a ply/pause button
 
 			//var timer=  $('<div>',{"class":'timer',"style":"width:"+width+"px","id":"timer_video_"+haveid}).appendTo(elements.container);
@@ -125,9 +125,9 @@
              else{
              var fullScreen=  $('<div>',{"class":'fullscreenDiv small'}).appendTo(elements.container);	
              }            
-             var confused=  $('<div>',{"class":'confusedDiv', "onclick":"confused('video_"+haveid+"')"}).appendTo(elements.container);
-             var question=  $('<div>',{"class":'questionDiv', "onclick":"fading('video_"+haveid+"')"}).appendTo(elements.container);
-             var shortcuts=  $('<div>',{"class":'shortcutDiv', "onclick":"shortcuts('video_"+haveid+"')"}).appendTo(elements.container);
+             var confused=  $('<div>',{"class":'confusedDiv', "onclick":"confused('video_"+haveid+"')", "title":"Click to tell the teacher you're confused."}).appendTo(elements.container);
+             var question=  $('<div>',{"class":'questionDiv', "onclick":"fading('video_"+haveid+"')", "title":"Click to ask a question."}).appendTo(elements.container);
+             var shortcuts=  $('<div>',{"class":'shortcutDiv', "onclick":"shortcuts('video_"+haveid+"')", "title":"Click for video shortcuts"}).appendTo(elements.container);
              
              var highlight=  $('<div>',{"class":'highlight_play'}).appendTo(elements.container);
              // for the question
@@ -219,7 +219,7 @@
 					}
 					else{
 						
-					var lf= ($(".flashContainer").width() - ($("#video_youVideo").height()-32)*16.0/9.0)/2.0;
+					var lf= ($(".flashContainer").width() - $("#ontop_video_youVideo").width())/2.0;
 					//$("#video_youVideo").css("margin-left", lf+"px");
 					$("#ontop_video_youVideo").css("margin-left", lf+"px");
 					}
@@ -406,11 +406,11 @@
 			// (required by YouTube's player API):
 			
 			window['eventListener_'+settings.safeID] = function(status){  //onstatechange
- 				console.log("time is "+ elements.player.getCurrentTime());
+ 				//console.log("time is "+ elements.player.getCurrentTime());
 				var interval;
 						
 				
-				console.log(elements.player.getPlayerState());
+				//console.log(elements.player.getPlayerState());
 				
 				if(elements.player.getPlayerState()==1){
 								
@@ -433,11 +433,11 @@
 								
 							} else if(elements.player.getPlayerState()==2){ 
 								// here if paused
-								console.log("in pause")
+								//console.log("in pause")
 								
 								// If the video is currently playing, pause it:
 								if(buffering!=true && paused==false){
-									console.log("inside method");
+									//console.log("inside method");
 									pause(elements.player.getCurrentTime());
 								}
 								elements.control.removeClass('pause').addClass('play');
@@ -457,7 +457,7 @@
 				
 				if(status==-1)	// video is loaded
 				{
-                console.log("time is "+ elements.player.getCurrentTime());
+                //console.log("time is "+ elements.player.getCurrentTime());
                 
                 
 					if(!initialized)
@@ -527,8 +527,8 @@
                     //var interval = window.setInterval(function() { checkTime(); }, 1000);
                     //console.log(interval);
                      var interval = window.setInterval(function() { checkTime('video_'+playerID, $(document.getElementById('video_'+playerID)).children("param[name='duration']:first").val()); }, 100);
-                    console.log("int is "+interval);
-                    
+                    //console.log("int is "+interval);
+                    $("#cover_quizzes").css("display","none");
                     //console.log("cuureent "+('video_'+playerID).getCurrentTime());
                     document.getElementById('video_'+playerID).playVideo();
                    

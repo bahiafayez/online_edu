@@ -120,7 +120,7 @@ setup_buttons = function(h)
 
 function onYouTubeIframeAPIReady() {
 	lectures= <%= raw @lecture_list.to_json %>
-	console.log(lectures)
+	//console.log(lectures)
 	display=<%= raw @display_data.to_json %>
 	var first_lecture="";
 	for(var elem in lectures)
@@ -141,7 +141,7 @@ function onYouTubeIframeAPIReady() {
 	if(first_lecture!="")
 		{
 	   var v=first_lecture.split("=")[1].split("&")[0]
-      	console.log("in here");
+      	//console.log("in here");
         player = new YT.Player('resizable', {
           //height: '390',
           //width: '640',
@@ -181,18 +181,18 @@ function setup_alert()
 
 function onPlayerReady(event) {
         //event.target.playVideo();
-        console.log(first_quiz)
+        //console.log(first_quiz)
         event.target.seekTo(first_quiz);
-        console.log(event.target.getCurrentTime());
+        //console.log(event.target.getCurrentTime());
         player.mute();
         $("#cover").css("display","none");
         
  }    
 function onPlayerStateChange(){
-	console.log("here "+player.getPlayerState());
+	//console.log("here "+player.getPlayerState());
 	if(player.getPlayerState()==1  && play==0)
 	{
-		console.log("here in playing")
+		//console.log("here in playing")
 		player.pauseVideo();
 	}
 }
@@ -246,8 +246,8 @@ get_next_quiz = function()
 				for(elem2 in lec_quizzes)
 				{
 					quiz=lec_quizzes[elem2]
-					console.log(quiz)
-					console.log("current quiz is "+current_quiz);
+					//console.log(quiz)
+					//console.log("current quiz is "+current_quiz);
 					if(quiz[1]<= current_quiz)
 						{continue;}
 					else{
@@ -277,7 +277,7 @@ get_next_quiz = function()
 	{
 	
 		var v=first_lecture.split("=")[1].split("&")[0]
-      	console.log("in here");
+      	//console.log("in here");
         player.loadVideoById(v, first_quiz);
 		player.seekTo(first_quiz);
 		player.playVideo();
@@ -315,7 +315,7 @@ get_previous_quiz = function()
 				for(var j=lec_quizzes.length-1; j>=0; j--)
 				{
 					quiz=lec_quizzes[j]
-					console.log(quiz);
+					//console.log(quiz);
 					if(quiz[1]>= current_quiz)
 						{continue;}
 					else{
@@ -345,7 +345,7 @@ get_previous_quiz = function()
 	if(old_lecture!=current_lecture)
 	{
 		var v=first_lecture.split("=")[1].split("&")[0]
-      	console.log("in here");
+      	//console.log("in here");
         player.loadVideoById(v, first_quiz);
 		player.seekTo(first_quiz);
 		player.playVideo();
@@ -367,10 +367,10 @@ setup_actions= function()
 {
 $("#plus_5").click(function(event){
 	//pop.currentTime(pop.currentTime()+3);
-	console.log(player);
+	//console.log(player);
 	player.seekTo(player.getCurrentTime()+5);
 	player.playVideo();
-	console.log(player.getCurrentTime());
+	//console.log(player.getCurrentTime());
 });
 $("#minus_5").click(function(event){
 	//pop.currentTime(pop.currentTime()-3);
@@ -382,7 +382,7 @@ $("#next").click(function(event){
 	$("#previous").attr("disabled",false);
 	if(current_quiz== num_of_quizzes)
 	{
-		console.log("current is "+current_quiz)
+		//console.log("current is "+current_quiz)
 		return;
 	}
 	get_next_quiz();

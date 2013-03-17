@@ -19,7 +19,7 @@ OnlineEdu::Application.routes.draw do
 
   resources :online_quizzes
 
-
+  resources :documents
 
   resources :quiz_grades
 
@@ -76,6 +76,9 @@ OnlineEdu::Application.routes.draw do
         get 'details'
         get 'display_quizzes'
         get 'display_questions'
+        get 'new_document'
+        get 'review_questions'
+        post 'save_review_questions'
       end
       collection do
         post 'sort'

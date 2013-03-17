@@ -103,7 +103,7 @@ function skip_to(time)
 	{
 		pop.currentTime(time-0.5);
 	}
-	console.debug(pop.currentTime())
+	//console.debug(pop.currentTime())
 	//pop.play();	
 }
 
@@ -115,8 +115,8 @@ $(document).ready(function() {
   	left= parseFloat(e.pageX) - parseFloat(offset.left) //not clientX because client depends on window.. so numbers change when scrolling.
   	right = parseFloat(e.pageY) - parseFloat(offset.top)
   	
-  	console.debug("offset is "+ left)
-  	console.debug("left is "+left + " and top is "+right)
+  	//console.debug("offset is "+ left)
+  	//console.debug("left is "+left + " and top is "+right)
   	
     //document.getElementById('pos').innerHTML = 'Mouse position is: X='+left+' Y='+right;
 	//document.getElementById('pos').style.left = left;
@@ -142,10 +142,10 @@ var pop
 	
 //}
 add_quiz = function(lecture,url) {
-    console.debug("time is "+pop.currentTime())
+    //console.debug("time is "+pop.currentTime())
     $.getJSON(url,{"lecture":lecture, "time":pop.currentTime()}, function(resp){
     html="<table class='table table-striped'>"
-    console.debug(resp['q'])
+    //console.debug(resp['q'])
     
     for(e in resp['q'])
     {
@@ -167,7 +167,7 @@ remove_quiz = function(quiz,url) {
     //console.debug("time is "+pop.currentTime())
     $.getJSON(url,{"quiz":quiz }, function(resp){
     html="<table class='table table-striped'>"
-    console.debug(resp['q'])
+    //console.debug(resp['q'])
     
     for(e in resp['q'])
     {
@@ -203,7 +203,7 @@ var slides = {1.2 : [4, 1, "This is my first question"],  //need to change cuepo
 //    addSlide(key, value); // value is [4,1,"my first question"]
 //    _results.push(this.events.call);
 //}
- console.debug("pop duration isss"+pop.duration())         
+ //console.debug("pop duration isss"+pop.duration())         
 
 student= <%= @s %>
 //console.debug("student isss "+student)
@@ -221,7 +221,7 @@ data= <%= raw @lecture.online_quizzes.find(:all, :order => 'time').to_json %>;  
            }
 skip+="</select>";
 document.getElementById("foo").innerHTML=skip
-console.debug("inside student is true")
+//console.debug("inside student is true")
 }            
 
 
@@ -259,7 +259,7 @@ if(student==true)
            				title="<b style='color:red'>Incorrect</b>"
            			}
            			
-           			console.debug( "x: "+top3+" y:"+left+" reason: "+resp['answers'][answer].answer)
+           			//console.debug( "x: "+top3+" y:"+left+" reason: "+resp['answers'][answer].answer)
            			
            			html+="<button rel='popover' id='"+resp['answers'][answer].id+"' data-original-title=\""+title+"\" class='pop' data-content=\""+reason+"\"  style='position:absolute; width: 3px; height: 5px; border: 1px solid #006; background: #9cf; top:"+top3+"px; left: "+left+"px;'></button>"
            			//onclick='show_reason(\""+reason+"\")'

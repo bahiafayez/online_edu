@@ -1,0 +1,81 @@
+Link to External Documents:<br /><br />
+<p style='list-style-type: none' id='attention'></p>
+<table class="table">
+<tr><td>Name</td><td>URL</td><td></td></tr>
+<% group.documents.each do |document|%>
+<tr id=<%="document_#{document.id}"%>>
+	<td><b id="name_label_<%= document.id%>"> <%= document.name %> </b><input onkeyup="check_enter(event, <%= document.id %>)" id="name_<%= document.id %>" value="<%=document.name %>" type="text" style="display:none"/></td>
+	<td><b id="url_label_<%= document.id%>"> <%= document.url %> </b><input onkeyup="check_enter(event,<%= document.id %>)" id="url_<%= document.id %>" value="<%=document.url %>" type="text" style="display:none"/></td>
+	<td><%= link_to image_tag("trash2.png"), document, :method => :delete, :remote => true, :confirm => "Are you sure you want to delete document #{document.name}", :style => "float:right;width:20px;"%>
+		<a class="edit_question" href="" data-remote="true" data-name="<%= document.name %>" data-id="<%= document.id %>" data-url="<%= document.url %>" style="float:right;"><img src="/assets/pencil3.png"/></a>
+	</td>
+</tr>
+<% end %>
+</table>
+
+<div id="foo"><center><%= link_to "Add Document","",:id =>"add_document", :class=>"btn", :remote => true %></center></div>
+
+<script>
+
+$('#add_document').click(function(event){
+  	$('#attention').append("<li style='font-size:10px;'><center><img src='/assets/loading_small.gif'/>Please Wait</center></li>");
+  	$.ajax({url:"/courses/<%=@course.id%>/groups/<%=group.id%>/new_document", type:'get', dataType:'script'}); 
+	return false;
+ });
+
+
+
+check_enter = function(ev,the_id)
+{
+	if (ev.keyCode == 13) {
+        // Do something
+    var id= the_id;
+	$.ajax({url:"/documents/"+id, type:'put',data: { "document": {url:$("#url_"+id).val(), name:$("#name_"+id).val()}}, dataType:'script'}); //save with time
+			
+	
+	}
+}
+
+$(document).ready(function(){
+	//$(document).on("click", ".edit_question", function () {
+	$(".edit_question").click(function(event){
+		if($(this).attr("disabled")!="disabled")
+		{
+		if($(this).html()=="Save")
+		{
+			var id= $(this).data('id');
+				$.ajax({url:"/documents/"+id, type:'put',data: { "document": {url:$("#url_"+id).val(), name:$("#name_"+id).val()}}, dataType:'script'}); //save with time
+			
+		
+		
+		//time: pop2.currentTime(), 
+		}else{
+		
+	     var name = $(this).data('name');
+	     var url = $(this).data('url');
+	     var id= $(this).data('id');
+	     
+	    
+	     $("#name_"+id).val( name );
+	     $("#name_"+id).css("display","inline");
+	     $("#url_"+id).val( url );
+	     $("#url_"+id).css("display","inline");
+	     $("#name_label_"+id).css("display","none");
+	     $("#url_label_"+id).css("display","none");
+	     $(".edit_question").attr("disabled","disabled");
+	     $(this).attr("disabled",false);
+	     $(this).html("Save");
+	     $(this).addClass("btn btn-mini");
+	     $("#name_"+id).focus();
+	     $("#name_"+id).select();
+	    }
+	    
+	   }
+     return false;
+    
+});
+
+});
+
+
+</script>

@@ -1,0 +1,17 @@
+<%= link_to @group.name , progress_teacher_course_path(@course, :g => @group, :type => "modules") %> >>  Review Questions
+<br /><br />
+<%= form_tag("save_review_questions") do %>
+<%= submit_tag 'Save', :class => 'btn' , :style =>"float:right" %><br /><br />
+<table class='table table-striped'>
+<tr><td>Question</td><td>Lecture</td><td>Time</td><td>Hide?</td></tr>
+<% @lecture_questions.each do |question| %>
+<tr>
+<td><%= question.question %></td>
+<td><%= Lecture.find(question.lecture_id).name %></td>	
+<td><%= Time.seconds_to_time(question.time) %></td>
+<td><%= check_box_tag "hide[#{question.id}]", 'yes', question.hide %></td>
+</tr>
+<% end %>
+</table>
+<%= submit_tag 'Save', :class => 'btn', :style =>"float:right" %>
+<% end %>

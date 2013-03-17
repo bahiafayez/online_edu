@@ -81,7 +81,7 @@ $(function () {
         });
         
         var cor = <%= raw @correct %>
-        console.debug("correct isssss"+cor)
+        //console.debug("correct isssss"+cor)
       //  console.debug(chart2.series[4].data)
        // chart2.series[4].data[0].update({
        // 	color:'green'
@@ -93,7 +93,7 @@ $(function () {
         {
         	for(var j=0; j<chart2.series[i].data.length; j++)
         	{
-        		console.debug("over here")
+        		//console.debug("over here")
         		chart2.series[i].data[j].update({
         		color:'gray',
         		y : chart2.series[i].data[j].y
@@ -125,8 +125,8 @@ $(function () {
            
 function question(x, y)
 {
-	console.log(x)
-	console.log(y)
+	//console.log(x)
+	//console.log(y)
 	var answers= <%= raw @answers %>
 	var all= answers[x]
 	var newy=(y.split(" "))[1]

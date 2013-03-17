@@ -1,5 +1,6 @@
 <script src="http://popcornjs.org/code/dist/popcorn-complete.js"></script>
 <center><b><%= @modulechart.name %></b></center><br />
+<%= link_to "Review Questions", review_questions_course_group_path(@course, @modulechart), :style => "float:right;" %><br />
 <%= link_to "Display Quizzes", display_quizzes_course_group_path(@course, @modulechart) , :style => "float:right;"%><br />
 <%= link_to "Display Questions", display_questions_course_group_path(@course, @modulechart), :style => "float:right;" %><br /><br />
 <div id="all_charts"></div>
@@ -134,7 +135,7 @@ Highcharts.exportCharts = function(charts, options) {
 					     var url = $(this).data('url');
 					     var time = $(this).data('time');
 					     
-					     console.log("time is "+time);
+					     //console.log("time is "+time);
 					     $("#snapshot").html("");
 					     pop2 = Popcorn.youtube( "#snapshot", url ,{ width: 500, controls: 0}); //youtube unlike normal html5 needs to be run from a webserver
 					  	 //pop2.on("canplay", function(){
@@ -149,8 +150,8 @@ Highcharts.exportCharts = function(charts, options) {
 					  	 pop2.on("loadeddata", function() {
 					  	 	 pop2.pause();
 					  	 	 pop2.currentTime(parseInt(time));
-					  	 	 console.log(pop2);
-					  	 	 console.log(pop2.currentTime());
+					  	 	 //console.log(pop2);
+					  	 	 //console.log(pop2.currentTime());
 						 });
 					  	 
 					  	 
@@ -243,8 +244,8 @@ Highcharts.exportCharts = function(charts, options) {
         all.push(chart)
         }
         $('#export').click(function() {
-        	console.log("all isss")
-        	console.log(all);
+        	//console.log("all isss")
+        	//console.log(all);
         	type=$('#image_type').val();
     		Highcharts.exportCharts(all,{type:type, filename:'<%= @modulechart.name %>'}); //filename: 'my-pdf'
 		});
@@ -277,7 +278,7 @@ Highcharts.exportCharts = function(charts, options) {
   function getCount()
   {
   	var studentProgress= <%= raw @module_question_ids.to_json %>
-  	console.log("here"+studentProgress.length)
+  	//console.log("here"+studentProgress.length)
   	return studentProgress
   }
   function getName(id)
@@ -304,7 +305,7 @@ Highcharts.exportCharts = function(charts, options) {
         	
         }
         
-        console.debug(x)
+        //console.debug(x)
         return x
 	}     
 

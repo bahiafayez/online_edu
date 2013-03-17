@@ -264,7 +264,10 @@ $(document).ready(function(){
                     
 </div>
 
-<div class="span9">
+<div id='details' class="span9">
+<% if @lecture_questions %>
+<%= render "groups/review_questions" %>
+<% end %>
 <% if @quizchart %>
 	<%= render 'new_quiz' %>
 <% end %>

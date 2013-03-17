@@ -14,14 +14,14 @@
 <script>
 function quizSelected()
 {
-	console.log("here")
+	//console.log("here")
 	$('#quiz_panel').html("<p style='font-size:10px;'><center><img src='/assets/loading_small.gif'/> Please Wait</center></p>");
 	$.ajax({url:"/courses/<%=@course.id%>/student_quiz_grade", type:'get',data: { quiz_id: $('#person_quiz_id').val(), student_id: <%= @student.id %> }, dataType:'script'});
 }
 
 function groupSelected() {
-	console.log(quizzes)
-	console.log("hereee")
+	//console.log(quizzes)
+	//console.log("hereee")
   module_id = $('#person_group_id').val();
   $("#person_quiz_id").html("<option value=''>Select a Quiz</option>")
   
@@ -47,7 +47,7 @@ $(document).ready(function() {
   quizzes.push(new Array(<%= quiz.group_id %>, '<%=h quiz.name %>', <%= quiz.id %>));
 <% end -%>
 
-console.log("here?"+quizzes)
+//console.log("here?"+quizzes)
   groupSelected();
   
   $("#person_quiz_id").change(function(event){

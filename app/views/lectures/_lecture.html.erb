@@ -56,6 +56,14 @@ textarea{
 .popover{
 		z-index:2000 !important;
 	}
+	
+#spinner{
+	position: absolute;
+	  top: 45%;
+	  left: 47%;
+	  width:30px;
+	  z-index: 100;
+}
 </style>
 <div id="error"></div>
 
@@ -68,6 +76,7 @@ textarea{
 <%  cache :hash => {:tag => lecture.updated_at.to_i, :lecture => lecture.id} do %>
 
 <!-- <a id='f_screen'>full screen</a> -->
+<center><h4 style="margin-left:-30px"><%= lecture.name %></h4></center>
 
 <div id="page">
 	<div class="ontop" id="ontop_video_youVideo" style="height:448px;"></div>
@@ -77,25 +86,20 @@ textarea{
 </div>
 <% end %>
 
-<p>
-  <b>Name:</b>
-  <%= lecture.name %>
-</p>
+<div id="cover_quizzes" style="position:absolute;background-color: #fff;opacity:0.5;margin-top:-10px;"><%= image_tag "loading2.gif", :id => "spinner"%></div>
+<div id="quizzes_list" style="margin-top:-20px; margin-left:20px;">
+<h6>Lecture Questions:</h6>
+<table style="width:90%;font-size: 12px;">
+<% lecture.online_quizzes.each do |q| %>
+<tr>
+<td id="quiz_<%=q.id%>" style="width:50px;"><%= image_tag "check7.png" if online_quiz_done(q.id, current_user.id) %></td>
+<td><%= link_to q.question, "", :remote => true, :onclick => "skipto(#{q.time})" %></td>
+<td><%= Time.seconds_to_time(q.time) %></td>
+</tr>
+<% end %>
+</table>
+</div>
 
-<p>
-  <b>Description:</b>
-  <%= lecture.description %>
-</p>
-
-<p style="display:inline">
-  <b style="display:inline">Duration:</b>
-  <p style="display:inline" id='dur' ></p>
-</p>
-
-<p>
-	<b>Number of Questions:</b>
-	<%= lecture.online_quizzes.count %>
-</p>
 
 	<div id="evaluation" style='width:800px;'></div>
 
@@ -142,6 +146,11 @@ var currentID=""
 
 //$('.best_in_place').bind('ajax:success', function(){ this.innerHTML = this.innerHTML.replace(/\n/g, '<br />') });
 
+function skipto(time)
+{
+	 document.getElementById("video_youVideo").seekTo(time-3,true); // 4 to go right b4 quiz.
+}
+
 function fading(hid)
 {
 	
@@ -181,8 +190,8 @@ add_lecture_buttons = function()
 {
 	var next='<%= @next_lecture  %>'
 	var previous = '<%= @previous_lecture  %>'
-	console.log(previous)
-	console.log(next)
+	//console.log(previous)
+	//console.log(next)
 	$("<div class='next_and_previous'></div>").appendTo($(".flashContainer"));
 	if(next!="")
 		var next_lecture = $("<a class='btn btn-primary next_lecture' href="+next+" >Next Lecture</a>").appendTo($(".next_and_previous"));
@@ -200,9 +209,9 @@ remove_lecture_buttons = function()
 function showEvaluation(hid)
 {
 	$.getJSON('<%= @get_evaluation_path %>', {"course_id":<%= @course.id %>, "lecture_id":<%= @q.id %>}, function(response){
-	console.log(response)
+	//console.log(response)
 	value= response['first']
-	console.log(value)
+	//console.log(value)
 	if(value==true)
 	$("#evaluation").html("<b>Evaluate Lecture:</b><br><textarea id='evaluate' rows='5' style='width:100%;'/><input type='button' class='btn btn-primary' style='float:right;' onclick='saveEval()' value='Save'>");
 	else
@@ -292,7 +301,9 @@ function save(elem)
     			//x=$("#details").offset();
 				//$(".popover").css("left",x.left);
     			
-    			console.log("in save");
+    			// mark question as solved (in list below video)
+    			$("#quiz_"+currentID).html('<%= image_tag "check7.png" %>');
+    			//console.log("in save");
     			
     			var answer_id= elem.attr("id")
 				// here call the controller function to save to database!!
@@ -344,11 +355,11 @@ function checkTime(hid, duration) {
                
                 if(document.getElementById(hid).getPlayerState()==1) // when it's playing.
                     //console.log();
-                {    console.log("TIME: "+ player.getCurrentTime())
-                	console.log("duration "+ duration)
+                {    //console.log("TIME: "+ player.getCurrentTime())
+                	//console.log("duration "+ duration)
                 	//console.log("player width isss "+player.width);
-                	console.log("quality"+ player.getPlaybackQuality())
-                	console.log(player.getAvailableQualityLevels())
+                	//console.log("quality"+ player.getPlaybackQuality())
+                	//console.log(player.getAvailableQualityLevels())
                 
                 	
                 	//logStudent(player.getCurrentTime(), duration) #stopped that - 75% 50% and 25%
@@ -375,11 +386,11 @@ function checkTime(hid, duration) {
            last=parseFloat(a[key].time)
            currentID = a[key].id
            // now i want to get the answers
-           console.debug("before "+a[key].id)
+           //console.debug("before "+a[key].id)
           
             $.getJSON("<%= @url %>",{"quiz":a[key].id }, function(resp){
-    			console.debug("after "+a[key].id) // changes for some reason so stick to currentID
-    			console.log(resp)
+    			//console.debug("after "+a[key].id) // changes for some reason so stick to currentID
+    			//console.log(resp)
     			everything={}
     			ordered={}
     			html=""
@@ -398,11 +409,11 @@ function checkTime(hid, duration) {
            				t2="Incorrect"
            			}
            			
-           			console.debug( "x: "+top3+" y:"+left+" reason: "+resp['answers'][answer].explanation)
+           			//console.debug( "x: "+top3+" y:"+left+" reason: "+resp['answers'][answer].explanation)
            			everything[resp['answers'][answer].id]=[t2, reason]
            			ordered[parseInt(resp['answers'][answer].ycoor)]=[resp['answers'][answer].id,title, reason]
-           			console.debug("current ID is "+currentID)
-           			console.debug("a[key].id iss "+a[key].id)
+           			//console.debug("current ID is "+currentID)
+           			//console.debug("a[key].id iss "+a[key].id)
            			html+="<input name='button_"+currentID+"'type='radio' onclick='save($(this))' rel='clickover' id='"+resp['answers'][answer].id+"' data-original-title=\""+title+"\" class='pop' data-content=\""+reason+"\" style='position:absolute; border: 1px solid #006; background: #9cf; top:"+top3+"px; left: "+left+"px;margin-top:0px'>"
            			//onclick='show_reason(\""+reason+"\")'
            			//$('.pop').popover()
@@ -416,7 +427,7 @@ function checkTime(hid, duration) {
            			//document.getElementById("ontop").innerHTML=html;
            			// absolute therefore xpos relative to parent div. i.e. xpos min awel el video.
     		}
-    		console.debug("answereddd? "+resp['ans'])
+    		//console.debug("answereddd? "+resp['ans'])
     		//document.getElementById("checkButton").innerHTML= "<input class='check btn' type='button' value='Check My Answer'></button>"
     		// this creates the red answered ontop of video
     		//html+="<p id='tochange' style='color:red; background-color:white;position:relative;'>"+resp['ans']+"</p>"
@@ -481,11 +492,15 @@ $(document).ready(function(){
 	flag=0;
 	markSeen();
 	
+	// cover questions
+	$("#cover_quizzes").width($("#quizzes_list").width());
+	$("#cover_quizzes").height($("#quizzes_list").height());
+	
 	$('#player').youTubeEmbed("<%= lecture.url %>",800,500,'small', 'youVideo');
 	//playVideo("video_youVideo");
 	
 //.youTubeEmbed('http://www.youtube.com/watch?v=quwebVjAEJA');				
-	console.log("<%= lecture.url %>")
+	//console.log("<%= lecture.url %>")
 
 	// adding shortcuts
 	 // add shortcuts
@@ -543,7 +558,7 @@ $(document).ready(function(){
 		//alert("hey");
 		 if($('#myModal2').css("display")=="none"){
 				document.getElementById("video_youVideo").setPlaybackRate(2);
-				console.log(document.getElementById("video_youVideo").getAvailablePlaybackRates())
+				//console.log(document.getElementById("video_youVideo").getAvailablePlaybackRates())
 		}else{
 				document.getElementById("video_bigVideo").setPlaybackRate(2);
 		}

@@ -100,7 +100,7 @@ label{
 	
 	$(document).on("nested:fieldAdded:questions", function(event){
 		$(".type").unbind();
-		console.log("in here question");
+		//console.log("in here question");
 		$(".type").change(function(event){
 		if($(this).val()== "Free Text Question"){
 			//$(this).closest(".fields").children("p").children(".fields").remove();
@@ -118,7 +118,7 @@ label{
 	$(document).on('nested:fieldAdded:answers', function(event){
 	  // this field was just inserted into your form
 	  var field = event.field; 
-	  console.log(field)
+	  //console.log(field)
 	  // it's a jQuery object already! Now you can find date input
 	  //var dateField = field.find('.date');
 	  // and activate datepicker on it

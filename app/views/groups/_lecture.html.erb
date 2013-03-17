@@ -84,7 +84,7 @@ function skip_to(time)
 	{
 		pop.currentTime(time-0.5);
 	}
-	console.debug(pop.currentTime())
+	//console.debug(pop.currentTime())
 	//pop.play();	
 }
 
@@ -97,8 +97,8 @@ $(document).ready(function() {
   	left= parseFloat(e.pageX) - parseFloat(offset.left) //not clientX because client depends on window.. so numbers change when scrolling.
   	right = parseFloat(e.pageY) - parseFloat(offset.top)
   	
-  	console.debug("offset is "+ left)
-  	console.debug("left is "+left + " and top is "+right)
+  	//console.debug("offset is "+ left)
+  	//console.debug("left is "+left + " and top is "+right)
   	
     //document.getElementById('pos').innerHTML = 'Mouse position is: X='+left+' Y='+right;
 	//document.getElementById('pos').style.left = left;
@@ -120,16 +120,16 @@ $(document).ready(function() {
   var neww=$("#loading-image").position().left - 10;
   $("#please").css("top", newh);
   $("#please").css("left", neww);
-  console.log("loading")
+  //console.log("loading")
   pop.on("loadeddata", function() {
 					  	 	 //pop2.pause();
 					  	 	 //pop2.currentTime(parseInt(time));
 					  	 	 $('#loading').hide();
-					  	 	 console.log("loaded")
-					  	 	 console.log(pop);
-					  	 	 console.log(pop.currentTime());
+					  	 	 //console.log("loaded")
+					  	 	 //console.log(pop);
+					  	 	 //console.log(pop.currentTime());
 						 });
-  console.log(pop);
+  //console.log(pop);
   
   $('#insert_quiz').click(function(event){
   	$('#attention').append("<li style='font-size:10px;'><center><img src='/assets/loading_small.gif'/>Please Wait</center></li>");
@@ -162,7 +162,7 @@ var pop
 
 function onDoubleClick(elem)
 {
-	console.debug("in this one"+elem);
+	//console.debug("in this one"+elem);
 	elem.popover('show');
 }
 function callFirst()
@@ -177,8 +177,8 @@ function addDoubleClickBind(q,l)
   	left= parseFloat(e.pageX) - parseFloat(offset.left) -5//not clientX because client depends on window.. so numbers change when scrolling.
   	top2 = parseFloat(e.pageY) - parseFloat(offset.top) -5
   	
-  	console.debug("offset is "+ left)
-  	console.debug("offset is "+ top2)
+  	//console.debug("offset is "+ left)
+  	//console.debug("offset is "+ top2)
   	
   	
   	// OK SO OVER HERE CREATE A NEW BUTTON AND ADD IT TO DROAPPABLE WITH ALL REQUIRED ATTRIBUTES LIKE WHEN DRAGGING. ALTER BELOW.
@@ -191,16 +191,16 @@ function addDoubleClickBind(q,l)
     $('#ontop').append(toadd) 
     
      var the_top = parseFloat(toadd.position().top)/($("#ontop").height() -32);
-     console.log("the top is:"+the_top+" top px is "+ toadd.position().top+" height ontop is "+$("#ontop").height());
+     //console.log("the top is:"+the_top+" top px is "+ toadd.position().top+" height ontop is "+$("#ontop").height());
      var the_left = parseFloat(toadd.position().left)/$("#ontop").width()
      
   	 $.getJSON('<%= add_answer_course_lecture_path(@course, @lecture) %>',{"left":the_left, "top":the_top, "quiz": q, "flag":true, "correct":false}, function(resp){
-                	console.log("current quiz is "+q)
+       //         	console.log("current quiz is "+q)
                 	storedData[resp['current'].id]=[false,"", ""]
-                	console.debug("current id issss "+ resp['current'].id)
-                	console.debug("to add isss "+toadd.attr("id"))
+                	//console.debug("current id issss "+ resp['current'].id)
+                	//console.debug("to add isss "+toadd.attr("id"))
                 	toadd.attr("id", ""+resp['current'].id) 
-                	console.debug("to add isss "+toadd.attr("id"))
+                	//console.debug("to add isss "+toadd.attr("id"))
                 	toadd.attr("onclick","load('"+toadd.attr('id')+"')")
 	        		toadd.attr("rel","popover").attr("data-content","Correct:<input name='group1' id='correct_"+toadd.attr('id') +"' style='margin-left:20px;margin-bottom:2px' type='radio'/><br>Answer: <textarea rows=3 id='answer_"+toadd.attr('id') +"' type='text' /><br>Explanation:<textarea rows=3 id='explain_"+toadd.attr('id') +"' type='text' /><br><input type='button'  class='btn btn-primary' value='Save' onclick=save('"+toadd.attr('id')+"') data-dismiss='clickover' /><input type='button' data-dismiss='clickover' class='btn' value='Cancel'/><input type='button' onclick=removeElem('"+toadd.attr('id')+"') class='btn btn-danger' value='Remove' data-dismiss='clickover'/>")//.attr()
 	                toadd.attr("data-original-title","")
@@ -254,9 +254,9 @@ function save(elem)
 {
 	// Save the explanation and the correct to storedData
 	storedData[elem]=[document.getElementById("correct_"+elem).checked, document.getElementById("answer_"+elem).value, document.getElementById("explain_"+elem).value]
-	console.debug("element is "+elem);
-	console.debug("explanation is "+document.getElementById("explain_"+elem).value)
-	console.debug("correct is "+document.getElementById("correct_"+elem).checked)
+	//console.debug("element is "+elem);
+	//console.debug("explanation is "+document.getElementById("explain_"+elem).value)
+	//console.debug("correct is "+document.getElementById("correct_"+elem).checked)
 	if(storedData[elem][0]==true)
 	{
 		$('img#'+elem).attr("src","/assets/button_green.png")
@@ -276,23 +276,23 @@ function saveAll()
 {
 	// This is called at the very end, to save everything in the storedData and positions to the database.
 	// Then redirect to lecture page.
-	console.debug(storedData)
+	//console.debug(storedData)
 	var storedData2={}
 	for(key in storedData){
 		storedData2[key]=[]
-		console.debug("key:"+storedData[key])
+		//console.debug("key:"+storedData[key])
 		//storedData2[key].push.apply(storedData2[key],storedData[key],[$('#'+key).position().top,$('#'+key).position().left]);
 		var new_y= parseFloat($('#'+key).position().top)/($("#ontop").height() - 32);
 		//32 because ontop includes control bar!
 		var new_x= parseFloat($('#'+key).position().left)/$("#ontop").width();
 		storedData2[key]= storedData[key].concat([new_y,new_x])
 	}
-	console.debug(storedData)
-	console.debug(storedData2)
+	//console.debug(storedData)
+	//console.debug(storedData2)
 	
 	$.getJSON('<%= save_answers2_course_lecture_path(@course, @lecture) %>',{"stored":storedData2}, function(resp){
-		console.debug(resp)
-		console.debug("calling redirect")
+		//console.debug(resp)
+		//console.debug("calling redirect")
 	//	$('#notify').html("<div class='alert alert-success'>Saved</div>")
 		//redirect()
 		
@@ -302,7 +302,7 @@ function saveAll()
 function load(elem)
 {
 	// When call popover, its loaded from here.
-	console.debug("elem is "+elem)
+	//console.debug("elem is "+elem)
 	if(document.getElementById("correct_"+elem)==null)
 		return
 	document.getElementById("correct_"+elem).checked=storedData[elem][0]
@@ -331,7 +331,7 @@ jQuery(function() {
             }).attr("id","circle_"+count)//.attr("ondbclick","callme()");
             count++;
             
-            console.debug("z is "+z)
+            //console.debug("z is "+z)
             return z;
         },
         //cursor: 'move',
@@ -351,7 +351,7 @@ jQuery(function() {
                 
                 toadd=jQuery(ui.helper)  // every time a button is dragged it is here in toadd. could get its position and save it.
                 
-                console.debug("new position is "+toadd.position().top+" and id is "+toadd.id+" explanation is ")//+document.getElementById('explain_'+toadd.id).value() )
+                //console.debug("new position is "+toadd.position().top+" and id is "+toadd.id+" explanation is ")//+document.getElementById('explain_'+toadd.id).value() )
                	saveAll(); // save all when change position.
                 }
                

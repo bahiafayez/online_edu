@@ -169,7 +169,7 @@ Highcharts.exportCharts = function(charts, options) {
         all.push(chart)
         }
         $('#export').click(function() {
-        	console.log(all);
+        	//console.log(all);
         	type=$('#image_type').val();
     		Highcharts.exportCharts(all,{type:type, filename:'<%= @surveychart.name %>'}); //filename: 'my-pdf'
 		});
@@ -187,7 +187,7 @@ Highcharts.exportCharts = function(charts, options) {
   function getCount()
   {
   	var studentProgress= <%= raw @survey_questions.to_json %>
-  	console.log("here"+studentProgress.length)
+  	//console.log("here"+studentProgress.length)
   	return studentProgress.length
   }
   function getName(count)
@@ -211,7 +211,7 @@ Highcharts.exportCharts = function(charts, options) {
         		x[v]={color: colors[v],"y":0}
         		for(var key2 in z[v])
         		{	
-        			console.log(key2)
+        			//console.log(key2)
         			//x[v].name=key2
         			x[v]["y"]=(z[v][key2])
         		}
@@ -219,7 +219,7 @@ Highcharts.exportCharts = function(charts, options) {
         	
         }
         
-        console.debug(x)
+        //console.debug(x)
         return x
 	}     
 

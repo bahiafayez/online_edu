@@ -78,7 +78,7 @@ var chart;
                     point: {
                         events: {
                             click: function() {
-                            	console.log(this.x)
+                            	//console.log(this.x)
                             	var d= new Date()
                             	var date=new Date(this.x + d.getTimezoneOffset()*60*1000);
                             	var seek=date.getHours()*60*60 + date.getMinutes()*60 + date.getSeconds();
@@ -120,7 +120,7 @@ chart.tooltip.options.formatter = function() {
  
     else{
     	questions=<%= raw @questions %>
-    	console.log(questions)
+    	//console.log(questions)
     	//return '<b>'+ this.series.name +'</b><br/>'+
           return  Highcharts.dateFormat('%H:%M:%S', this.x) +' = '+ this.y +' students<br>'+ questions[this.point.x/1000].join("<br>");
     }
@@ -133,9 +133,9 @@ getData = function(type){
 	var confused= <%= raw @confused_chart %>
 	var d= new Date()
 	for(e in confused){
-		console.log(confused[e])
+		//console.log(confused[e])
 		confused[e][0]= confused[e][0] *1000 //+ d.getTimezoneOffset()*60*1000
-		console.log("confused is "+confused[e][0]+ "and offset is"+ d.getTimezoneOffset()*60*1000);
+		//console.log("confused is "+confused[e][0]+ "and offset is"+ d.getTimezoneOffset()*60*1000);
 	}
 	return confused
 	}
@@ -144,9 +144,9 @@ getData = function(type){
 		var questions= <%= raw @questions_chart %>
 		var d= new Date()
 		for(e in questions){
-			console.log(questions[e])
+			//console.log(questions[e])
 			questions[e][0]= questions[e][0] *1000 //+ d.getTimezoneOffset()*60*1000
-			console.log("confused is "+questions[e][0]+ "and offset is"+ d.getTimezoneOffset()*60*1000);
+			//console.log("confused is "+questions[e][0]+ "and offset is"+ d.getTimezoneOffset()*60*1000);
 		}
 		return questions
 	}
@@ -155,9 +155,9 @@ getData = function(type){
 	var confused= <%= raw @back_chart %>
 	var d= new Date()
 	for(e in confused){
-		console.log(confused[e])
+		//console.log(confused[e])
 		confused[e][0]= confused[e][0] *1000 //+ d.getTimezoneOffset()*60*1000
-		console.log("confused is "+confused[e][0]+ "and offset is"+ d.getTimezoneOffset()*60*1000);
+		//console.log("confused is "+confused[e][0]+ "and offset is"+ d.getTimezoneOffset()*60*1000);
 	}
 	return confused
 	}
@@ -167,9 +167,9 @@ getData = function(type){
 	var confused= <%= raw @pause_chart %>
 	var d= new Date()
 	for(e in confused){
-		console.log(confused[e])
+		//console.log(confused[e])
 		confused[e][0]= confused[e][0] *1000 //+ d.getTimezoneOffset()*60*1000
-		console.log("confused is "+confused[e][0]+ "and offset is"+ d.getTimezoneOffset()*60*1000);
+		//console.log("confused is "+confused[e][0]+ "and offset is"+ d.getTimezoneOffset()*60*1000);
 	}
 	return confused
 	}

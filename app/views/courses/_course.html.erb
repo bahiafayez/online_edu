@@ -36,7 +36,7 @@ items: 'li.modules',
 opacity: 0.4,
 scroll: true,
 update: function(){
-console.log(this)
+//console.log(this)
 $.ajax({
 type: 'post',
 data: $('#acc1').sortable('serialize'),
@@ -59,7 +59,7 @@ items: 'li.last-child',
 opacity: 0.4,
 scroll: true,
 update: function(){
-console.log(this)
+//console.log(this)
 var id_group=parseInt($(this).attr("id").split("_")[2]);
 $.ajax({
 	type: 'post',

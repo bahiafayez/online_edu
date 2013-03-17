@@ -87,7 +87,7 @@ Highcharts.exportCharts = function(charts, options) {
     	
     	for(var count=0; count<getCount(); count++)
     	{
-    	console.log("here");
+    	//console.log("here");
     	$("#all_charts").append("<div style='min-width: 300px; height: 300px; margin: 0 auto' id=container_"+count+"></div><br>")	
     		
     		
@@ -175,7 +175,7 @@ Highcharts.exportCharts = function(charts, options) {
         all.push(chart)
         }
         $('#export').click(function() {
-        	console.log(all);
+        	//console.log(all);
         	type=$('#image_type').val();
     		Highcharts.exportCharts(all,{type:type, filename:'<%= @quizchart.name %>'}); //filename: 'my-pdf'
 		});
@@ -220,12 +220,12 @@ Highcharts.exportCharts = function(charts, options) {
   }
  function getSeries2(count,colors)
 	{
-	console.log("count is "+count)	
+	//console.log("count is "+count)	
 	var studentProgress= <%= raw @chart_data %>
 	
 		    x=[{"name":'Correct', "data":[], "color":[]}, {"name":'Incorrect', "data":[], "color":[]}];
 		    d= studentProgress[count];
-		     console.log(studentProgress);
+		     //console.log(studentProgress);
 		        	//console.debug(studentProgress[key][1])
 		     if(studentProgress["empty"] == true)
 			{
@@ -243,7 +243,7 @@ Highcharts.exportCharts = function(charts, options) {
 		     x[1].color = "red";
 		        
 		        
-		        console.debug(x);
+		        //console.debug(x);
 		        return x;
 	
 	}     

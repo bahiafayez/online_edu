@@ -51,6 +51,10 @@ confused.png: confused-d59b26042b1ee561ee428c2d2a28aafd.png
 confused/index.png: confused-d59b26042b1ee561ee428c2d2a28aafd.png
 confused2.png: confused2-ffe269d7d3ddab15fb309c6f20f34a43.png
 confused2/index.png: confused2-ffe269d7d3ddab15fb309c6f20f34a43.png
+document_icon.png: document_icon-3581f9301611202388b1f17897ea2390.png
+document_icon/index.png: document_icon-3581f9301611202388b1f17897ea2390.png
+document_icon2.png: document_icon2-15efd624e78bb49b17501d386a1caeb9.png
+document_icon2/index.png: document_icon2-15efd624e78bb49b17501d386a1caeb9.png
 empty7.png: empty7-f97bb50f790748f07747411c7a6d3524.png
 empty7/index.png: empty7-f97bb50f790748f07747411c7a6d3524.png
 film_movie_clip_2.png: film_movie_clip_2-ffe3f91c5013d83c6577602acd42fad7.png
@@ -203,8 +207,8 @@ video1.jpg: video1-46cb5b58b00582a54e958266b5b2b838.jpg
 video1/index.jpg: video1-46cb5b58b00582a54e958266b5b2b838.jpg
 active_admin.js: active_admin-7c2ef1834a4bb718f80f4b1a10d59c49.js
 active_admin/index.js: active_admin-7c2ef1834a4bb718f80f4b1a10d59c49.js
-application.js: application-6ebce34b87046231fde6f7cece63b93e.js
-application/index.js: application-6ebce34b87046231fde6f7cece63b93e.js
+application.js: application-c3a6a026cf70feb72d035c75c40b065d.js
+application/index.js: application-c3a6a026cf70feb72d035c75c40b065d.js
 bootstrap-datetimepicker.min.js: bootstrap-datetimepicker.min-3181a95fe3bca97fadd8b7b3e9150e54.js
 bootstrap-datetimepicker/index.min.js: bootstrap-datetimepicker.min-3181a95fe3bca97fadd8b7b3e9150e54.js
 bootstrapx-clickover.js: bootstrapx-clickover-4a898dda74328a242c156e85501e74d9.js
@@ -225,8 +229,8 @@ nicEdit.js: nicEdit-5e3dd7ebbefb5e87ec7147a761805732.js
 nicEdit/index.js: nicEdit-5e3dd7ebbefb5e87ec7147a761805732.js
 shortcut.js: shortcut-86b7a080a50ac3fba881156e6979b501.js
 shortcut/index.js: shortcut-86b7a080a50ac3fba881156e6979b501.js
-youTubeEmbed-jquery-1.0.js: youTubeEmbed-jquery-1.0-bc443fd82558c04537a19b6c3415ca42.js
-youTubeEmbed-jquery-1/index.0.js: youTubeEmbed-jquery-1.0-bc443fd82558c04537a19b6c3415ca42.js
+youTubeEmbed-jquery-1.0.js: youTubeEmbed-jquery-1.0-afbeca8812f1a34302b971814481a808.js
+youTubeEmbed-jquery-1/index.0.js: youTubeEmbed-jquery-1.0-afbeca8812f1a34302b971814481a808.js
 application.css: application-0d7b071a4d90c5e65dbe40f4d344028d.css
 application/index.css: application-0d7b071a4d90c5e65dbe40f4d344028d.css
 bootstrap-datetimepicker.min.css: bootstrap-datetimepicker.min-7783a5096cbfae3fdcb4fc3f97b430d7.css

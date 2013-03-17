@@ -75,7 +75,17 @@
 
 <% end %>
 </div>
+
 <% end %>
+<% end %>
+
+
+<% g.documents.each do |d| %>
+<% flag=0 %>
+<div class="accordion-inner">
+<%= image_tag "document_icon2.png" , :style=> "margin-left:10px;margin-right:10px"%>
+<%= link_to d.name, url_with_protocol(d.url) , :style => "display:inline;text-decoration:none", :target => '_blank'%>	
+</div>
 <% end %>
 
 <% if flag==1 %>
@@ -85,6 +95,8 @@ Empty
 <% end %>
 
 <% end %>
+
+
 <% else %>
 <%= div_for(g, :class =>"accordion-body collapse" ) do %> <!-- closing the groups we're not in -->
 <% flag=1 %>
@@ -112,6 +124,15 @@ Empty
 </div>
 <% end %>
 <% end %>
+
+<% g.documents.each do |d| %>
+<% flag=0 %>
+<div class="accordion-inner">
+<%= image_tag "document_icon2.png" , :style=> "margin-left:10px;margin-right:10px"%>
+<%= link_to d.name, url_with_protocol(d.url) , :style => "display:inline;text-decoration:none", :target => '_blank'%>	
+</div>
+<% end %>
+
 
 <% if flag==1 %>
 <div class="accordion-inner">
@@ -141,7 +162,7 @@ Empty
 <script>
 	$(document).ready(function(){
 		var high= '<%= @highlight %>'
-		console.log(high)
+		//console.log(high)
 		$("#"+high).parent().css("background-color","#FFFFCC");
 	});
 </script>

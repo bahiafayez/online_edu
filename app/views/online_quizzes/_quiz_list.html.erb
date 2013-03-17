@@ -111,7 +111,7 @@ $(document).ready(function(){
 		}else{
 			
 		 done_editing();
-		 console.log("in edit");
+		 //console.log("in edit");
 	     var question = $(this).data('question');
 	     var time = $(this).data('time');
 	     var id= $(this).data('id');
@@ -175,7 +175,7 @@ $(document).ready(function(){
 });
 
 function validate(elem) {
-	console.log("in validate")
+	//console.log("in validate")
 	var intRegex = /^\d\d:\d\d:\d\d$/;  //checking format
 	if(intRegex.test(elem.val())) {
 	   		   
@@ -184,13 +184,13 @@ function validate(elem) {
 	    var hours = parseInt(hhmm[0]); // get hours and parse it to an int
 	    var minutes = parseInt(hhmm[1]); // get minutes and parse it to an int
 	    var seconds = parseInt(hhmm[2]);
-	    console.log(elem.val());
-		console.log(hours);
-		console.log(minutes);
-		console.log(seconds);
+	    //console.log(elem.val());
+		//console.log(hours);
+		//console.log(minutes);
+		//console.log(seconds);
 	    // check if hours or minutes are incorrect
 	    if(hours < 0 || hours > 24 || minutes < 0 || minutes > 59 || seconds< 0 || seconds > 59) {
-	        console.log("in bad format");
+	        //console.log("in bad format");
 	        //alert('NOPE'); // display error
 	        $("#val_problem").html("<div class='alert alert-danger'><b>Incorrect Format for Time</b></div>");
 	        return false; // stop the form from sending
