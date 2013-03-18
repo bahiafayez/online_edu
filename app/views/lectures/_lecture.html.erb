@@ -87,13 +87,21 @@ textarea{
 <% end %>
 
 <div id="cover_quizzes" style="position:absolute;background-color: #fff;opacity:0.5;margin-top:-10px;"><%= image_tag "loading2.gif", :id => "spinner"%></div>
-<div id="quizzes_list" style="margin-top:-20px; margin-left:20px;">
+<div id="quizzes_list" style="margin-top:-50px; margin-left:20px;">
 <h6>Lecture Questions:</h6>
 <table style="width:90%;font-size: 12px;">
 <% lecture.online_quizzes.each do |q| %>
 <tr>
 <td id="quiz_<%=q.id%>" style="width:50px;"><%= image_tag "check7.png" if online_quiz_done(q.id, current_user.id) %></td>
-<td><%= link_to q.question, "", :remote => true,:id => "link_#{q.id}", :onclick => "skipto($(this),#{q.time})", :disabled => !online_quiz_done(q.id, current_user.id) %></td>
+<td>
+	<% if online_quiz_done(q.id, current_user.id) %>
+		<p id="link_text_<%= q.id %>" style="display:none;"><%= q.question %></p>
+		<%= link_to q.question, "", :remote => true,:id => "link_#{q.id}", :onclick => "skipto($(this),#{q.time})", :style => "display:inline" %>
+	<% else %>
+		<p id="link_text_<%= q.id %>" style="display:inline;"><%= q.question %></p>
+		<%= link_to q.question, "", :remote => true,:id => "link_#{q.id}", :onclick => "skipto($(this),#{q.time})", :style => "display:none" %>
+	<% end %>
+</td>
 <td>
 	<% if online_quiz_done(q.id, current_user.id) %>
 		<p id="time_<%= q.id %>" style="display:inline;"><%= Time.seconds_to_time(q.time) %></p>
@@ -314,8 +322,9 @@ function save(elem)
     			
     			// mark question as solved (in list below video)
     			$("#quiz_"+currentID).html('<%= image_tag "check7.png" %>');
-    			$("#link_"+currentID).attr("disabled",false);
+    			$("#link_"+currentID).css("display","inline");
     			$("#time_"+currentID).css("display","inline");
+    			$("#link_text_"+currentID).css("display","none");
     			//console.log("in save");
     			
     			var answer_id= elem.attr("id")
