@@ -309,11 +309,11 @@ class GroupsController < ApplicationController
     @group=Group.find(params[:id])
      
      @lectures= @group.lectures.pluck(:id)
-     @lecture_questions = [] #LectureQuestion.where(:lecture_id => @lectures)
+     @lecture_questions2 = [] #LectureQuestion.where(:lecture_id => @lectures)
      @lectures.each do |l|
-       @lecture_questions<<LectureQuestion.where(:lecture_id => l).order(:time)
+       @lecture_questions2<<LectureQuestion.where(:lecture_id => l).order(:time)
      end
-     @lecture_questions.flatten!
+     @lecture_questions2.flatten!
      
      render "courses/progress_teacher"
    end

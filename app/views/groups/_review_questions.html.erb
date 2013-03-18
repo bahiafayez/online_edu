@@ -4,7 +4,7 @@
 <%= submit_tag 'Save', :class => 'btn' , :style =>"float:right" %><br /><br />
 <table class='table table-striped'>
 <tr><td>Question</td><td>Lecture</td><td>Time</td><td>Hide?</td></tr>
-<% @lecture_questions.each do |question| %>
+<% @lecture_questions2.each do |question| %>
 <tr>
 <td><%= question.question %></td>
 <td><%= Lecture.find(question.lecture_id).name %></td>	
