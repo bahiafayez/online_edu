@@ -93,8 +93,14 @@ textarea{
 <% lecture.online_quizzes.each do |q| %>
 <tr>
 <td id="quiz_<%=q.id%>" style="width:50px;"><%= image_tag "check7.png" if online_quiz_done(q.id, current_user.id) %></td>
-<td><%= link_to q.question, "", :remote => true, :onclick => "skipto(#{q.time})" %></td>
-<td><%= Time.seconds_to_time(q.time) %></td>
+<td><%= link_to q.question, "", :remote => true,:id => "link_#{q.id}", :onclick => "skipto($(this),#{q.time})", :disabled => !online_quiz_done(q.id, current_user.id) %></td>
+<td>
+	<% if online_quiz_done(q.id, current_user.id) %>
+		<p id="time_<%= q.id %>" style="display:inline;"><%= Time.seconds_to_time(q.time) %></p>
+	<% else %>
+		<p id="time_<%= q.id %>" style="display:none;"><%= Time.seconds_to_time(q.time) %></p>
+	<% end %>
+</td>
 </tr>
 <% end %>
 </table>
@@ -146,9 +152,14 @@ var currentID=""
 
 //$('.best_in_place').bind('ajax:success', function(){ this.innerHTML = this.innerHTML.replace(/\n/g, '<br />') });
 
-function skipto(time)
+function skipto(elem,time)
 {
-	 document.getElementById("video_youVideo").seekTo(time-3,true); // 4 to go right b4 quiz.
+	if (elem.attr("disabled")=="disabled") {
+		return false;
+
+	}else{
+	 	document.getElementById("video_youVideo").seekTo(time-3,true); // 4 to go right b4 quiz.
+	}
 }
 
 function fading(hid)
@@ -303,6 +314,8 @@ function save(elem)
     			
     			// mark question as solved (in list below video)
     			$("#quiz_"+currentID).html('<%= image_tag "check7.png" %>');
+    			$("#link_"+currentID).attr("disabled",false);
+    			$("#time_"+currentID).css("display","inline");
     			//console.log("in save");
     			
     			var answer_id= elem.attr("id")

@@ -17,6 +17,7 @@ module ApplicationHelper
     /^http/.match(url) ? url : "http://#{url}"
   end
   
+  
 end
 
 
